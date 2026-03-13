@@ -76,7 +76,53 @@ const APP_DATA = [
       },
     ]
   },
-  { id: 'events',        label: 'Events Calendar',            icon: '📅', subcategories: [] },
+  {
+    id: 'events',
+    label: 'Events Calendar',
+    icon: '📅',
+    subcategories: [
+      {
+        id: 'city-government-events',
+        label: 'City & Government',
+        icon: '🏛',
+        links: [
+          { name: 'Tampa.gov — Events',         url: 'https://www.tampa.gov/guide/tampa-events' },
+          { name: 'Tampa.gov — Arts & Nightlife', url: 'https://www.tampa.gov/guide/tampa-events#section-20466' },
+          { name: 'The Tampa Riverwalk',        url: 'https://thetampariverwalk.com/events/event-calendar.html' },
+        ]
+      },
+      {
+        id: 'venues-attractions',
+        label: 'Venues & Attractions',
+        icon: '🎭',
+        links: [
+          { name: 'Straz Center',               url: 'https://www.strazcenter.org/calendar/' },
+          { name: 'Benchmark International Arena', url: 'https://www.benchmarkintlarena.com/events' },
+          { name: 'Armature Works',             url: 'https://www.armatureworks.com/all-events/' },
+        ]
+      },
+      {
+        id: 'local-media-community',
+        label: 'Local Media & Community',
+        icon: '📰',
+        links: [
+          { name: "That's So Tampa",            url: 'https://thatssotampa.com/events/map/' },
+          { name: 'Patch — South Tampa',        url: 'https://patch.com/florida/southtampa/calendar' },
+          { name: 'Creative Loafing Tampa',     url: 'https://community.cltampa.com/tampa/EventSearch?neighborhoodGroup=12315336&sortType=date&v=d' },
+          { name: 'Facebook Events',            url: 'https://www.facebook.com/events' },
+        ]
+      },
+      {
+        id: 'tourism-visitor-events',
+        label: 'Tourism & Visitor Resources',
+        icon: '🌴',
+        links: [
+          { name: 'Visit Tampa Bay — Events',   url: 'https://www.visittampabay.com/tampa-events/' },
+          { name: 'Discover in Town',           url: 'https://www.discoverintown.com/default.aspx?redirect=/contentManaged/BL-LandingPage/BL-LandingPage.aspx' },
+        ]
+      },
+    ]
+  },
   {
     id: 'deals',
     label: 'Deals & Discounts',
