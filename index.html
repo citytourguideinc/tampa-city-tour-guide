@@ -3,15 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Tampa City Tour Guide — a curated directory of the best resources for visitors and residents of Tampa, FL." />
+  <meta name="description" content="Tampa City Tour Guide — Ask anything about Tampa! Find tours, events, deals, museums, volunteer opportunities and more." />
   <title>Tampa City Tour Guide</title>
   <link rel="stylesheet" href="styles.css" />
-  <!-- Favicon emoji fallback -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌴</text></svg>" />
 </head>
 <body>
 
-  <!-- ── Header ──────────────────────────────────────────── -->
+  <!-- ── Header ──────────────────────────────────────────────── -->
   <header>
     <div class="container">
       <div class="header-eyebrow">
@@ -19,57 +18,58 @@
         Tampa, Florida
       </div>
       <h1>Tampa City Tour Guide</h1>
-      <p class="header-subtitle">
-        Your curated gateway to the best of Tampa Bay — from waterfront parks to local culture.
-      </p>
-
-      <!-- Search -->
-      <div class="search-wrap">
-        <span class="search-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-        </span>
-        <input
-          type="search"
-          id="search"
-          placeholder="Search all resources…"
-          autocomplete="off"
-          spellcheck="false"
-          aria-label="Search resources"
-        />
-        <button class="search-clear" id="search-clear" aria-label="Clear search">✕</button>
-      </div>
+      <p class="header-sub">Ask me anything about Tampa Bay ✨</p>
     </div>
   </header>
 
-  <!-- ── Top Navigation ──────────────────────────────────── -->
-  <nav class="top-nav-section" aria-label="Main categories">
-    <div id="top-nav" class="top-nav" role="tablist"></div>
-  </nav>
-
-  <!-- ── Main Content ────────────────────────────────────── -->
-  <main>
+  <!-- ── Chat Area ────────────────────────────────────────────── -->
+  <main class="chat-wrap">
     <div class="container">
 
-      <!-- Search results panel -->
-      <div id="search-results-panel" aria-live="polite">
-        <div class="search-results-header">
-          <span class="search-results-title">Search Results</span>
-          <span class="search-results-count" id="search-count">0 results</span>
+      <!-- Welcome message -->
+      <div class="welcome-card">
+        <div class="bot-row">
+          <div class="bot-avatar">🌴</div>
+          <div class="bot-bubble">
+            <p>Hi! I'm your <strong>Tampa City Guide</strong> — here to help you discover the best of Tampa Bay.</p>
+            <p>Ask me about tours, events, deals, museums, volunteering, or anything else you're looking for!</p>
+          </div>
         </div>
-        <div id="search-results-body"></div>
       </div>
 
-      <!-- Category panels -->
-      <div id="categories-wrap"></div>
+      <!-- Suggested prompts -->
+      <div class="prompts-section">
+        <div class="prompts-label">Quick searches</div>
+        <div class="prompts-grid" id="prompts-grid"></div>
+      </div>
+
+      <!-- Chat history (user messages + bot responses) -->
+      <div class="chat-history" id="chat-history"></div>
 
     </div>
   </main>
 
-  <!-- ── Footer ──────────────────────────────────────────── -->
+  <!-- ── Sticky Input ─────────────────────────────────────────── -->
+  <div class="input-section">
+    <div class="container">
+      <div class="input-wrap">
+        <input
+          type="text"
+          id="chat-input"
+          placeholder="Ask about tours, events, deals, museums…"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Search Tampa City Guide"
+          maxlength="200"
+        />
+        <button class="send-btn" id="send-btn" aria-label="Send" disabled>↑</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ───────────────────────────────────────────────── -->
   <footer>
-    <p>Made with ☀️ for <span>Tampa Bay</span> — all links open the official external sites.</p>
+    <p>Made with ☀️ for <span>Tampa Bay</span> — all links open official external sites in a new tab.</p>
   </footer>
 
   <script src="app.js"></script>

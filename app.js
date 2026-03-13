@@ -1,427 +1,234 @@
-/* ── Tampa City Tour Guide — app.js ─────────────────────────── */
+/* ── Tampa City Guide — Chat App ─────────────────────────────── */
 
-const APP_DATA = [
-  {
-    id: 'things-to-do',
-    label: 'Things To Do',
-    icon: '🌴',
-    subcategories: [
-      {
-        id: 'city-parks',
-        label: 'City Parks',
-        icon: '🌿',
-        links: [
-          { name: 'Curtis Hixon Waterfront Park', url: 'https://www.tampa.gov/parks-and-recreation/featured-parks/curtis-hixon' },
-          { name: 'Florida State Parks',           url: 'https://www.floridastateparks.org/experiences-amenities' },
-        ]
-      },
-      {
-        id: 'city-resources',
-        label: 'City Resources',
-        icon: '🏛',
-        links: [
-          { name: 'Tampa.gov',                url: 'https://www.tampa.gov/info/things-to-do' },
-          { name: 'Tampa Downtown Partnership', url: 'https://www.tampasdowntown.com/community-events/' },
-        ]
-      },
-      {
-        id: 'entertainment-sports',
-        label: 'Entertainment & Sports',
-        icon: '🏟',
-        links: [
-          { name: 'Benchmark International Arena', url: 'https://www.benchmarkintlarena.com/events' },
-          { name: 'Tampa Convention Center',        url: 'https://www.tampa.gov/tcc/area-attractions' },
-        ]
-      },
-      {
-        id: 'museums-culture',
-        label: 'Museums / Culture',
-        icon: '🎨',
-        links: [
-          { name: 'Ybor Museum',              url: 'https://www.ybormuseum.org/events-programs' },
-          { name: 'Tampa Bay History Center', url: 'https://tampabayhistorycenter.org/events/' },
-          { name: 'Tampa Fire Fighters Museum', url: 'https://www.tampafirefightersmuseum.org/' },
-          { name: 'Tampa Museum of Art',      url: 'https://tampamuseum.org/' },
-        ]
-      },
-      {
-        id: 'tourism-activities',
-        label: 'Tourism & Activities',
-        icon: '🗺',
-        links: [
-          { name: 'Get Your Guide',      url: 'https://www.getyourguide.com/tampa-l1187/' },
-          { name: 'Local City Guides',   url: 'https://www.localcityguides.com/en/tampa/activities/all-activities' },
-          { name: 'TripAdvisor',         url: 'https://www.tripadvisor.com/Attractions-g34678-Activities-Tampa_Florida.html' },
-          { name: 'Viator',              url: 'https://www.viator.com/Tampa-tourism/d666-r47106901905-s954938836' },
-          { name: 'Visit Florida',       url: 'https://www.visitflorida.com/places-to-go/central-west/tampa/' },
-          { name: 'Visit Tampa Bay',     url: 'https://www.visittampabay.com/things-to-do/tours/' },
-        ]
-      },
-      {
-        id: 'community',
-        label: 'Community',
-        icon: '🤝',
-        links: [
-          { name: 'Meetup', url: 'https://www.meetup.com/find/?location=us--fl--Tampa' },
-        ]
-      },
-      {
-        id: 'media-platforms',
-        label: 'Media Platforms',
-        icon: '📰',
-        links: [
-          { name: 'Tampa Entertainment Guide', url: 'https://tampa-bay.events/' },
-          { name: '83 Degrees',                url: 'https://83degreesmedia.com/place/tampa/' },
-        ]
-      },
-    ]
-  },
-  {
-    id: 'events',
-    label: 'Events Calendar',
-    icon: '📅',
-    subcategories: [
-      {
-        id: 'city-government-events',
-        label: 'City & Government',
-        icon: '🏛',
-        links: [
-          { name: 'Tampa.gov — Events',         url: 'https://www.tampa.gov/guide/tampa-events' },
-          { name: 'Tampa.gov — Arts & Nightlife', url: 'https://www.tampa.gov/guide/tampa-events#section-20466' },
-          { name: 'The Tampa Riverwalk',        url: 'https://thetampariverwalk.com/events/event-calendar.html' },
-        ]
-      },
-      {
-        id: 'venues-attractions',
-        label: 'Venues & Attractions',
-        icon: '🎭',
-        links: [
-          { name: 'Straz Center',               url: 'https://www.strazcenter.org/calendar/' },
-          { name: 'Benchmark International Arena', url: 'https://www.benchmarkintlarena.com/events' },
-          { name: 'Armature Works',             url: 'https://www.armatureworks.com/all-events/' },
-        ]
-      },
-      {
-        id: 'local-media-community',
-        label: 'Local Media & Community',
-        icon: '📰',
-        links: [
-          { name: "That's So Tampa",            url: 'https://thatssotampa.com/events/map/' },
-          { name: 'Patch — South Tampa',        url: 'https://patch.com/florida/southtampa/calendar' },
-          { name: 'Creative Loafing Tampa',     url: 'https://community.cltampa.com/tampa/EventSearch?neighborhoodGroup=12315336&sortType=date&v=d' },
-          { name: 'Facebook Events',            url: 'https://www.facebook.com/events' },
-        ]
-      },
-      {
-        id: 'tourism-visitor-events',
-        label: 'Tourism & Visitor Resources',
-        icon: '🌴',
-        links: [
-          { name: 'Visit Tampa Bay — Events',   url: 'https://www.visittampabay.com/tampa-events/' },
-          { name: 'Discover in Town',           url: 'https://www.discoverintown.com/default.aspx?redirect=/contentManaged/BL-LandingPage/BL-LandingPage.aspx' },
-        ]
-      },
-    ]
-  },
-  {
-    id: 'deals',
-    label: 'Deals & Discounts',
-    icon: '🎟',
-    subcategories: [
-      {
-        id: 'savings-platforms',
-        label: 'Savings Platforms',
-        icon: '💰',
-        links: [
-          { name: 'LivingSocial', url: 'https://www.livingsocial.com/local/tampa/sightseeing-and-tours?page=3' },
-          { name: 'Groupon',      url: 'https://www.groupon.com/local/tampa/sightseeing-and-tours' },
-          { name: 'CityPASS Tampa', url: 'https://www.citypass.com/tampa' },
-        ]
-      },
-      {
-        id: 'tourism-visitor-info',
-        label: 'Tourism & Visitor Info',
-        icon: '🗺',
-        links: [
-          { name: 'Discover Downtown Tampa', url: 'https://tampa.discoverdowntown.com/default.aspx?redirect=/specialOffers/specialOffers.aspx' },
-          { name: 'Visit Tampa Bay — Unlock Deals', url: 'https://www.visittampabay.com/unlock-deals/' },
-        ]
-      },
-    ]
-  },
-  {
-    id: 'guides',
-    label: 'Digital Guides',
-    icon: '📖',
-    subcategories: [
-      {
-        id: 'guides-directories',
-        label: 'Directories',
-        icon: '📍',
-        links: [
-          { name: 'Tampa.gov — Downtown Guide',       url: 'https://www.tampa.gov/guide/downtown-tampa' },
-          { name: 'Tampa Downtown Partnership — Places', url: 'https://www.tampasdowntown.com/place_category/featured/?place_category=&orderby=post_title&post_type=place' },
-        ]
-      },
-    ]
-  },
-  {
-    id: 'projects',
-    label: 'City Projects & Developments',
-    icon: '🏗',
-    subcategories: [
-      {
-        id: 'city-projects-gov',
-        label: 'City Government Projects',
-        icon: '🏛',
-        links: [
-          { name: 'Tampa.gov — City Projects', url: 'https://www.tampa.gov/project' },
-        ]
-      },
-    ]
-  },
-  {
-    id: 'volunteer',
-    label: 'Volunteer Opportunities',
-    icon: '🙌',
-    subcategories: [
-      {
-        id: 'environmental-conservation',
-        label: 'Environmental Conservation',
-        icon: '🌿',
-        links: [
-          { name: 'Keep Tampa Bay Beautiful',           url: 'https://www.keeptampabaybeautiful.org/' },
-          { name: 'Keep Tampa Bay Beautiful — Volunteer', url: 'https://www.keeptampabaybeautiful.org/become-a-volunteer' },
-          { name: 'The Tampa Riverwalk — How to Help',  url: 'https://thetampariverwalk.com/how-to-help/donate.html' },
-        ]
-      },
-      {
-        id: 'cultural-educational',
-        label: 'Cultural & Educational',
-        icon: '🎨',
-        links: [
-          { name: 'The Florida Aquarium — Volunteer',   url: 'https://www.flaquarium.org/gift-give/volunteer/' },
-          { name: 'Tampa Bay History Center — Volunteer', url: 'https://tampabayhistorycenter.org/volunteer/' },
-          { name: 'Straz Center — Volunteer',           url: 'https://www.strazcenter.org/about-us/volunteer-opportunities/' },
-        ]
-      },
-    ]
-  },
+/* ── Private Data (never displayed as a list) ─────────────────── */
+const _DB = [
+  /* ── THINGS TO DO ──────────────────────────────────────────── */
+  { name:'Curtis Hixon Waterfront Park',   url:'https://www.tampa.gov/parks-and-recreation/featured-parks/curtis-hixon',      cat:'Things To Do', sub:'City Parks',            icon:'🌿', keywords:['park','outdoor','waterfront','riverwalk','family','kids','free','picnic','nature','walk'] },
+  { name:'Florida State Parks',            url:'https://www.floridastateparks.org/experiences-amenities',                      cat:'Things To Do', sub:'City Parks',            icon:'🌿', keywords:['park','nature','hike','camping','outdoor','state','family','wildlife','beach','trail'] },
+  { name:'Tampa.gov — Things To Do',       url:'https://www.tampa.gov/info/things-to-do',                                      cat:'Things To Do', sub:'City Resources',        icon:'🏛', keywords:['city','government','guide','resources','official','information'] },
+  { name:'Tampa Downtown Partnership',     url:'https://www.tampasdowntown.com/community-events/',                             cat:'Things To Do', sub:'City Resources',        icon:'🏛', keywords:['downtown','community','events','local','partnership','business'] },
+  { name:'Benchmark International Arena', url:'https://www.benchmarkintlarena.com/events',                                    cat:'Things To Do', sub:'Entertainment & Sports', icon:'🏟', keywords:['arena','concerts','sports','hockey','lightning','events','live','music','shows','tickets'] },
+  { name:'Tampa Convention Center',        url:'https://www.tampa.gov/tcc/area-attractions',                                   cat:'Things To Do', sub:'Entertainment & Sports', icon:'🏟', keywords:['convention','events','conference','attractions','waterfront','shows'] },
+  { name:'Ybor Museum',                    url:'https://www.ybormuseum.org/events-programs',                                   cat:'Things To Do', sub:'Museums / Culture',     icon:'🎨', keywords:['museum','history','ybor','culture','cuban','cigar','heritage','arts'] },
+  { name:'Tampa Bay History Center',       url:'https://tampabayhistorycenter.org/events/',                                    cat:'Things To Do', sub:'Museums / Culture',     icon:'🎨', keywords:['museum','history','heritage','culture','exhibits','family','kids','education'] },
+  { name:'Tampa Fire Fighters Museum',     url:'https://www.tampafirefightersmuseum.org/',                                     cat:'Things To Do', sub:'Museums / Culture',     icon:'🎨', keywords:['museum','fire','firefighter','history','kids','family','education'] },
+  { name:'Tampa Museum of Art',            url:'https://tampamuseum.org/',                                                     cat:'Things To Do', sub:'Museums / Culture',     icon:'🎨', keywords:['museum','art','culture','exhibits','gallery','waterfront','events'] },
+  { name:'Get Your Guide',                 url:'https://www.getyourguide.com/tampa-l1187/',                                    cat:'Things To Do', sub:'Tourism & Activities',  icon:'🗺', keywords:['tours','activities','guided','tickets','golf cart','boat','kayak','sightseeing','adventure','outdoor','fun','day trip','excursion'] },
+  { name:'Local City Guides',              url:'https://www.localcityguides.com/en/tampa/activities/all-activities',           cat:'Things To Do', sub:'Tourism & Activities',  icon:'🗺', keywords:['tours','activities','local','guide','sightseeing','things to do','attractions'] },
+  { name:'TripAdvisor',                    url:'https://www.tripadvisor.com/Attractions-g34678-Activities-Tampa_Florida.html', cat:'Things To Do', sub:'Tourism & Activities',  icon:'🗺', keywords:['tours','activities','restaurants','hotels','reviews','attractions','sightseeing','things to do'] },
+  { name:'Viator',                         url:'https://www.viator.com/Tampa-tourism/d666-r47106901905-s954938836',            cat:'Things To Do', sub:'Tourism & Activities',  icon:'🗺', keywords:['tours','activities','booking','guided','excursion','sightseeing','golf cart','boat','kayak','adventure'] },
+  { name:'Visit Florida',                  url:'https://www.visitflorida.com/places-to-go/central-west/tampa/',               cat:'Things To Do', sub:'Tourism & Activities',  icon:'🗺', keywords:['tourism','florida','travel','things to do','beaches','attractions','visit','vacation'] },
+  { name:'Visit Tampa Bay',                url:'https://www.visittampabay.com/things-to-do/tours/',                           cat:'Things To Do', sub:'Tourism & Activities',  icon:'🗺', keywords:['tours','tampa','bay','tourism','activities','sightseeing','official','visitor','things to do','golf cart','boat','kayak'] },
+  { name:'Meetup',                         url:'https://www.meetup.com/find/?location=us--fl--Tampa',                         cat:'Things To Do', sub:'Community',             icon:'🤝', keywords:['community','meetup','social','groups','networking','events','local','people','friends'] },
+  { name:'Tampa Entertainment Guide',      url:'https://tampa-bay.events/',                                                   cat:'Things To Do', sub:'Media Platforms',       icon:'📰', keywords:['events','entertainment','guide','nightlife','shows','concerts','things to do','weekend'] },
+  { name:'83 Degrees',                     url:'https://83degreesmedia.com/place/tampa/',                                     cat:'Things To Do', sub:'Media Platforms',       icon:'📰', keywords:['media','news','local','things to do','arts','culture','innovation','events'] },
+
+  /* ── EVENTS CALENDAR ───────────────────────────────────────── */
+  { name:'Tampa.gov — Events',             url:'https://www.tampa.gov/guide/tampa-events',                                    cat:'Events Calendar', sub:'City & Government',           icon:'🏛', keywords:['events','city','government','calendar','official','things to do','weekend'] },
+  { name:'Tampa.gov — Arts & Nightlife',   url:'https://www.tampa.gov/guide/tampa-events#section-20466',                     cat:'Events Calendar', sub:'City & Government',           icon:'🏛', keywords:['arts','nightlife','bars','music','entertainment','events','weekend','night out'] },
+  { name:'The Tampa Riverwalk',            url:'https://thetampariverwalk.com/events/event-calendar.html',                   cat:'Events Calendar', sub:'City & Government',           icon:'🌊', keywords:['riverwalk','waterfront','events','outdoor','family','free','weekend','walk','park'] },
+  { name:'Straz Center',                   url:'https://www.strazcenter.org/calendar/',                                       cat:'Events Calendar', sub:'Venues & Attractions',        icon:'🎭', keywords:['theater','performing arts','shows','broadway','concerts','events','tickets','culture'] },
+  { name:'Benchmark International Arena', url:'https://www.benchmarkintlarena.com/events',                                   cat:'Events Calendar', sub:'Venues & Attractions',        icon:'🏟', keywords:['arena','concerts','sports','events','tickets','shows','live','music','hockey'] },
+  { name:'Armature Works',                 url:'https://www.armatureworks.com/all-events/',                                   cat:'Events Calendar', sub:'Venues & Attractions',        icon:'🏗', keywords:['events','food','market','nightlife','waterfront','social','weekend','fun'] },
+  { name:"That's So Tampa",               url:'https://thatssotampa.com/events/map/',                                        cat:'Events Calendar', sub:'Local Media & Community',     icon:'📍', keywords:['events','local','guide','map','things to do','weekend','entertainment','nightlife'] },
+  { name:'Patch — South Tampa',            url:'https://patch.com/florida/southtampa/calendar',                              cat:'Events Calendar', sub:'Local Media & Community',     icon:'📰', keywords:['local','news','events','calendar','south tampa','community','things to do'] },
+  { name:'Creative Loafing Tampa',         url:'https://community.cltampa.com/tampa/EventSearch?neighborhoodGroup=12315336&sortType=date&v=d', cat:'Events Calendar', sub:'Local Media & Community', icon:'📰', keywords:['arts','culture','events','music','food','nightlife','weekend','local','guide'] },
+  { name:'Facebook Events',               url:'https://www.facebook.com/events',                                             cat:'Events Calendar', sub:'Local Media & Community',     icon:'👥', keywords:['events','social','community','local','parties','meetups','entertainment'] },
+  { name:'Visit Tampa Bay — Events',       url:'https://www.visittampabay.com/tampa-events/',                                 cat:'Events Calendar', sub:'Tourism & Visitor Resources', icon:'🌴', keywords:['events','tourism','visitor','official','things to do','calendar','weekend','tampa bay'] },
+  { name:'Discover in Town',              url:'https://www.discoverintown.com/default.aspx?redirect=/contentManaged/BL-LandingPage/BL-LandingPage.aspx', cat:'Events Calendar', sub:'Tourism & Visitor Resources', icon:'🗺', keywords:['events','discover','local','guide','things to do','calendar'] },
+
+  /* ── DEALS & DISCOUNTS ─────────────────────────────────────── */
+  { name:'LivingSocial',                   url:'https://www.livingsocial.com/local/tampa/sightseeing-and-tours?page=3',       cat:'Deals & Discounts', sub:'Savings Platforms',      icon:'💰', keywords:['deals','discounts','coupons','savings','tours','sightseeing','cheap','affordable'] },
+  { name:'Groupon',                        url:'https://www.groupon.com/local/tampa/sightseeing-and-tours',                   cat:'Deals & Discounts', sub:'Savings Platforms',      icon:'💰', keywords:['deals','discounts','coupons','groupon','tours','sightseeing','save','cheap','affordable','restaurants'] },
+  { name:'CityPASS Tampa',                 url:'https://www.citypass.com/tampa',                                              cat:'Deals & Discounts', sub:'Savings Platforms',      icon:'🎟', keywords:['deals','pass','attractions','discount','save','family','bundle','tickets','aquarium','zoo','busch gardens'] },
+  { name:'Discover Downtown Tampa',        url:'https://tampa.discoverdowntown.com/default.aspx?redirect=/specialOffers/specialOffers.aspx', cat:'Deals & Discounts', sub:'Tourism & Visitor Info', icon:'🏙', keywords:['deals','downtown','offers','discounts','restaurants','shopping','attractions'] },
+  { name:'Visit Tampa Bay — Unlock Deals', url:'https://www.visittampabay.com/unlock-deals/',                                 cat:'Deals & Discounts', sub:'Tourism & Visitor Info', icon:'🌴', keywords:['deals','discounts','offers','savings','tourism','visitor','official','tampa bay'] },
+
+  /* ── DIGITAL GUIDES ────────────────────────────────────────── */
+  { name:'Tampa.gov — Downtown Guide',         url:'https://www.tampa.gov/guide/downtown-tampa',                             cat:'Digital Guides', sub:'Directories',    icon:'📍', keywords:['guide','downtown','directory','official','map','neighborhoods','things to do','city'] },
+  { name:'Tampa Downtown Partnership — Places', url:'https://www.tampasdowntown.com/place_category/featured/?place_category=&orderby=post_title&post_type=place', cat:'Digital Guides', sub:'Directories', icon:'📍', keywords:['directory','places','downtown','restaurants','shops','businesses','map','guide'] },
+
+  /* ── CITY PROJECTS ─────────────────────────────────────────── */
+  { name:'Tampa.gov — City Projects',      url:'https://www.tampa.gov/project',                                              cat:'City Projects & Developments', sub:'City Government Projects', icon:'🏗', keywords:['projects','development','construction','city','government','infrastructure','plans','zoning'] },
+
+  /* ── VOLUNTEER ─────────────────────────────────────────────── */
+  { name:'Keep Tampa Bay Beautiful',                url:'https://www.keeptampabaybeautiful.org/',                            cat:'Volunteer Opportunities', sub:'Environmental Conservation', icon:'🌿', keywords:['volunteer','environment','conservation','clean','beach','community','service','bay'] },
+  { name:'Keep Tampa Bay Beautiful — Volunteer',    url:'https://www.keeptampabaybeautiful.org/become-a-volunteer',          cat:'Volunteer Opportunities', sub:'Environmental Conservation', icon:'🌿', keywords:['volunteer','sign up','environment','conservation','cleanup','community','service'] },
+  { name:'The Tampa Riverwalk — How to Help',       url:'https://thetampariverwalk.com/how-to-help/donate.html',            cat:'Volunteer Opportunities', sub:'Environmental Conservation', icon:'🌊', keywords:['volunteer','donate','help','riverwalk','conservation','community','waterfront'] },
+  { name:'The Florida Aquarium — Volunteer',        url:'https://www.flaquarium.org/gift-give/volunteer/',                  cat:'Volunteer Opportunities', sub:'Cultural & Educational',    icon:'🐠', keywords:['volunteer','aquarium','marine','education','animals','conservation','kids','family'] },
+  { name:'Tampa Bay History Center — Volunteer',    url:'https://tampabayhistorycenter.org/volunteer/',                     cat:'Volunteer Opportunities', sub:'Cultural & Educational',    icon:'🏛', keywords:['volunteer','museum','history','education','culture','community','service'] },
+  { name:'Straz Center — Volunteer',                url:'https://www.strazcenter.org/about-us/volunteer-opportunities/',    cat:'Volunteer Opportunities', sub:'Cultural & Educational',    icon:'🎭', keywords:['volunteer','theater','arts','performing','usher','events','community','culture'] },
 ];
 
-/* ── State ─────────────────────────────────────────────── */
-let activeCategory = APP_DATA[0].id;
-let searchQuery    = '';
+/* ── Suggested prompts ────────────────────────────────────────── */
+const PROMPTS = [
+  { icon:'🌴', label:'Things to do this weekend',    query:'things to do weekend' },
+  { icon:'🗺', label:'Tours & activities',            query:'tours activities sightseeing' },
+  { icon:'🎟', label:'Deals & discounts',             query:'deals discounts save' },
+  { icon:'📅', label:"What's happening tonight",     query:'events tonight calendar' },
+  { icon:'🎨', label:'Museums & culture',             query:'museum culture arts history' },
+  { icon:'🤝', label:'Volunteer opportunities',       query:'volunteer' },
+  { icon:'🌿', label:'Parks & outdoor',              query:'park outdoor nature waterfront' },
+  { icon:'💰', label:'Free & cheap activities',       query:'free cheap affordable' },
+];
 
-/* ── DOM Refs ──────────────────────────────────────────── */
-const topNav           = document.getElementById('top-nav');
-const categoriesWrap   = document.getElementById('categories-wrap');
-const searchInput      = document.getElementById('search');
-const searchClear      = document.getElementById('search-clear');
-const searchPanel      = document.getElementById('search-results-panel');
-const searchResultsBody = document.getElementById('search-results-body');
-const searchCountEl    = document.getElementById('search-count');
+/* ── DOM ──────────────────────────────────────────────────────── */
+const chatHistory  = document.getElementById('chat-history');
+const chatInput    = document.getElementById('chat-input');
+const sendBtn      = document.getElementById('send-btn');
+const promptsGrid  = document.getElementById('prompts-grid');
 
-/* ── Helpers ───────────────────────────────────────────── */
-function escapeHtml(str) {
-  return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* ── Helpers ──────────────────────────────────────────────────── */
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function highlight(text, query) {
-  if (!query) return escapeHtml(text);
-  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return escapeHtml(text).replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+function search(query) {
+  const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const scored = _DB.map(item => {
+    let score = 0;
+    terms.forEach(t => {
+      if (item.name.toLowerCase().includes(t))       score += 4;
+      if (item.sub.toLowerCase().includes(t))        score += 3;
+      if (item.cat.toLowerCase().includes(t))        score += 2;
+      if (item.keywords.some(k => k.includes(t)))    score += 2;
+      if (item.keywords.some(k => t.includes(k)))    score += 1;
+    });
+    return { item, score };
+  }).filter(x => x.score > 0)
+    .sort((a,b) => b.score - a.score);
+  return scored.map(x => x.item);
 }
 
-/* ── Build Nav ─────────────────────────────────────────── */
-function buildNav() {
-  topNav.innerHTML = APP_DATA.map(cat => `
-    <button
-      class="top-nav-btn${cat.id === activeCategory ? ' active' : ''}"
-      data-cat="${cat.id}"
-      id="nav-${cat.id}"
-      aria-pressed="${cat.id === activeCategory}"
-    >
-      <span class="nav-icon">${cat.icon}</span>
-      ${escapeHtml(cat.label)}
+/* ── Render result cards ──────────────────────────────────────── */
+function renderResults(results, query) {
+  if (results.length === 0) {
+    return `<div class="no-results">
+      <div class="nr-icon">🔍</div>
+      <p>No matches for <strong>"${escHtml(query)}"</strong>.<br>
+      Try different keywords like "tours", "museum", or "volunteer".</p>
+    </div>`;
+  }
+
+  const cards = results.map(item => `
+    <a href="${item.url}" target="_blank" rel="noopener noreferrer"
+       class="result-card" aria-label="${escHtml(item.name)}">
+      <div class="result-card-top">
+        <div class="result-card-icon">${item.icon}</div>
+        <span class="result-card-arrow">↗</span>
+      </div>
+      <div class="result-card-name">${escHtml(item.name)}</div>
+      <span class="result-card-tag">${escHtml(item.sub)}</span>
+    </a>
+  `).join('');
+
+  return `<div class="results-grid">${cards}</div>`;
+}
+
+/* ── Add message to chat ──────────────────────────────────────── */
+function addUserMsg(text) {
+  const el = document.createElement('div');
+  el.className = 'user-msg';
+  el.innerHTML = `<div class="user-bubble">${escHtml(text)}</div>`;
+  chatHistory.appendChild(el);
+  scrollBottom();
+}
+
+function addTyping() {
+  const el = document.createElement('div');
+  el.className = 'typing-indicator';
+  el.id = 'typing';
+  el.innerHTML = `
+    <div class="bot-avatar">🌴</div>
+    <div class="typing-dots">
+      <span></span><span></span><span></span>
+    </div>`;
+  chatHistory.appendChild(el);
+  scrollBottom();
+  return el;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typing');
+  if (el) el.remove();
+}
+
+function addBotResponse(query, results) {
+  const intro = results.length > 0
+    ? `Found <strong>${results.length}</strong> match${results.length > 1 ? 'es' : ''} for <em>"${escHtml(query)}"</em> — tap any card to visit the site:`
+    : `Here's what I found:`;
+
+  const el = document.createElement('div');
+  el.className = 'bot-response';
+  el.innerHTML = `
+    <div class="bot-avatar">🌴</div>
+    <div class="response-body">
+      <p class="response-intro">${intro}</p>
+      ${renderResults(results, query)}
+    </div>`;
+  chatHistory.appendChild(el);
+  scrollBottom();
+}
+
+function scrollBottom() {
+  setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 50);
+}
+
+/* ── Handle a query ───────────────────────────────────────────── */
+function handleQuery(query) {
+  query = query.trim();
+  if (!query) return;
+
+  addUserMsg(query);
+  chatInput.value = '';
+  sendBtn.disabled = true;
+
+  const typing = addTyping();
+
+  setTimeout(() => {
+    removeTyping();
+    const results = search(query);
+    addBotResponse(query, results);
+    sendBtn.disabled = false;
+    chatInput.focus();
+  }, 600);
+}
+
+/* ── Build prompt tiles ───────────────────────────────────────── */
+function buildPrompts() {
+  promptsGrid.innerHTML = PROMPTS.map(p => `
+    <button class="prompt-btn" data-query="${escHtml(p.query)}">
+      <span class="p-icon">${p.icon}</span>
+      <span>${escHtml(p.label)}</span>
     </button>
   `).join('');
 
-  topNav.querySelectorAll('.top-nav-btn').forEach(btn => {
+  promptsGrid.querySelectorAll('.prompt-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      setCategory(btn.dataset.cat);
+      handleQuery(btn.dataset.query);
+      // Scroll past prompts to chat history
+      chatHistory.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 }
 
-/* ── Build Category Panels ─────────────────────────────── */
-function buildPanels() {
-  categoriesWrap.innerHTML = APP_DATA.map(cat => {
-    let body = '';
+/* ── Events ───────────────────────────────────────────────────── */
+sendBtn.addEventListener('click', () => handleQuery(chatInput.value));
 
-    if (cat.subcategories.length === 0) {
-      body = `
-        <div class="coming-soon">
-          <div class="coming-soon-icon">${cat.icon}</div>
-          <span class="coming-soon-badge">Coming Soon</span>
-          <h3>${escapeHtml(cat.label)}</h3>
-          <p>This section is being curated. Check back soon for hand-picked Tampa resources.</p>
-        </div>`;
-    } else {
-      body = cat.subcategories.map((sub, i) => `
-        <div class="subcategory-section" id="sub-${sub.id}">
-          <div class="subcategory-header">
-            <div class="subcategory-icon">${sub.icon}</div>
-            <span class="subcategory-title">${escapeHtml(sub.label)}</span>
-            <span class="subcategory-count">${sub.links.length}</span>
-          </div>
-          <div class="links-grid">
-            ${sub.links.map(link => `
-              <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="link-card"
-                 id="link-${sub.id}-${link.name.replace(/\s+/g,'-').toLowerCase()}"
-                 data-name="${escapeHtml(link.name)}"
-                 data-sub="${escapeHtml(sub.label)}"
-                 data-cat="${escapeHtml(cat.label)}">
-                <span class="link-card-icon">🔗</span>
-                <span class="link-card-name">${escapeHtml(link.name)}</span>
-                <span class="link-card-arrow">↗</span>
-              </a>
-            `).join('')}
-          </div>
-          ${i < cat.subcategories.length - 1 ? '<div class="section-divider"></div>' : ''}
-        </div>
-      `).join('');
-    }
-
-    return `
-      <div class="category-panel${cat.id === activeCategory ? ' active' : ''}"
-           id="panel-${cat.id}"
-           role="tabpanel"
-           aria-labelledby="nav-${cat.id}">
-        ${body}
-      </div>`;
-  }).join('');
-}
-
-/* ── Set Active Category ───────────────────────────────── */
-function setCategory(id) {
-  activeCategory = id;
-  clearSearch();
-
-  // Update nav buttons
-  topNav.querySelectorAll('.top-nav-btn').forEach(btn => {
-    const isActive = btn.dataset.cat === id;
-    btn.classList.toggle('active', isActive);
-    btn.setAttribute('aria-pressed', isActive);
-  });
-
-  // Update panels
-  categoriesWrap.querySelectorAll('.category-panel').forEach(panel => {
-    panel.classList.toggle('active', panel.id === `panel-${id}`);
-  });
-}
-
-/* ── Search ────────────────────────────────────────────── */
-function doSearch(query) {
-  searchQuery = query.trim().toLowerCase();
-
-  if (!searchQuery) {
-    clearSearch();
-    return;
-  }
-
-  // Hide category panels, show search panel
-  categoriesWrap.querySelectorAll('.category-panel').forEach(p => p.classList.remove('active'));
-  searchPanel.classList.add('active');
-  searchClear.classList.add('visible');
-
-  // Deactivate nav
-  topNav.querySelectorAll('.top-nav-btn').forEach(btn => btn.classList.remove('active'));
-
-  // Gather matches across all data
-  const matches = [];
-  APP_DATA.forEach(cat => {
-    cat.subcategories.forEach(sub => {
-      sub.links.forEach(link => {
-        if (link.name.toLowerCase().includes(searchQuery)) {
-          matches.push({ link, sub, cat });
-        }
-      });
-    });
-  });
-
-  // Render
-  searchCountEl.textContent = `${matches.length} result${matches.length !== 1 ? 's' : ''}`;
-
-  if (matches.length === 0) {
-    searchResultsBody.innerHTML = `
-      <div class="search-no-results">
-        <div class="no-results-icon">🔍</div>
-        <p>No results for <strong>"${escapeHtml(query)}"</strong><br>Try a different search term.</p>
-      </div>`;
-    return;
-  }
-
-  searchResultsBody.innerHTML = `
-    <div class="links-grid">
-      ${matches.map(({ link, sub, cat }) => `
-        <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="link-card">
-          <span class="link-card-icon">🔗</span>
-          <span class="link-card-name">
-            ${highlight(link.name, query)}
-            <br>
-            <span class="search-result-tag">${escapeHtml(sub.label)}</span>
-          </span>
-          <span class="link-card-arrow">↗</span>
-        </a>
-      `).join('')}
-    </div>`;
-}
-
-function clearSearch() {
-  searchInput.value = '';
-  searchQuery = '';
-  searchPanel.classList.remove('active');
-  searchClear.classList.remove('visible');
-
-  // Re-show the active category panel
-  categoriesWrap.querySelectorAll('.category-panel').forEach(panel => {
-    panel.classList.toggle('active', panel.id === `panel-${activeCategory}`);
-  });
-
-  // Re-activate the nav button
-  topNav.querySelectorAll('.top-nav-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.cat === activeCategory);
-  });
-}
-
-/* ── Event Listeners ───────────────────────────────────── */
-searchInput.addEventListener('input', e => {
-  const val = e.target.value;
-  if (val.trim()) {
-    searchClear.classList.add('visible');
-    doSearch(val);
-  } else {
-    clearSearch();
+chatInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleQuery(chatInput.value);
   }
 });
 
-searchClear.addEventListener('click', () => {
-  clearSearch();
-  searchInput.focus();
+chatInput.addEventListener('input', () => {
+  sendBtn.disabled = chatInput.value.trim().length === 0;
 });
 
-searchInput.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    clearSearch();
-    searchInput.blur();
-  }
+/* ── Init ─────────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  buildPrompts();
+  sendBtn.disabled = true;
 });
-
-/* ── Init ──────────────────────────────────────────────── */
-function init() {
-  buildNav();
-  buildPanels();
-}
-
-document.addEventListener('DOMContentLoaded', init);
