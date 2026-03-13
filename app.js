@@ -149,7 +149,22 @@ const APP_DATA = [
       },
     ]
   },
-  { id: 'guides',        label: 'Digital Guides',             icon: '📖', subcategories: [] },
+  {
+    id: 'guides',
+    label: 'Digital Guides',
+    icon: '📖',
+    subcategories: [
+      {
+        id: 'guides-directories',
+        label: 'Directories',
+        icon: '📍',
+        links: [
+          { name: 'Tampa.gov — Downtown Guide',       url: 'https://www.tampa.gov/guide/downtown-tampa' },
+          { name: 'Tampa Downtown Partnership — Places', url: 'https://www.tampasdowntown.com/place_category/featured/?place_category=&orderby=post_title&post_type=place' },
+        ]
+      },
+    ]
+  },
   { id: 'projects',      label: 'City Projects & Developments', icon: '🏗', subcategories: [] },
   { id: 'volunteer',     label: 'Volunteer Opportunities',    icon: '🙌', subcategories: [] },
 ];
