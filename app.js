@@ -180,7 +180,33 @@ const APP_DATA = [
       },
     ]
   },
-  { id: 'volunteer',     label: 'Volunteer Opportunities',    icon: '🙌', subcategories: [] },
+  {
+    id: 'volunteer',
+    label: 'Volunteer Opportunities',
+    icon: '🙌',
+    subcategories: [
+      {
+        id: 'environmental-conservation',
+        label: 'Environmental Conservation',
+        icon: '🌿',
+        links: [
+          { name: 'Keep Tampa Bay Beautiful',           url: 'https://www.keeptampabaybeautiful.org/' },
+          { name: 'Keep Tampa Bay Beautiful — Volunteer', url: 'https://www.keeptampabaybeautiful.org/become-a-volunteer' },
+          { name: 'The Tampa Riverwalk — How to Help',  url: 'https://thetampariverwalk.com/how-to-help/donate.html' },
+        ]
+      },
+      {
+        id: 'cultural-educational',
+        label: 'Cultural & Educational',
+        icon: '🎨',
+        links: [
+          { name: 'The Florida Aquarium — Volunteer',   url: 'https://www.flaquarium.org/gift-give/volunteer/' },
+          { name: 'Tampa Bay History Center — Volunteer', url: 'https://tampabayhistorycenter.org/volunteer/' },
+          { name: 'Straz Center — Volunteer',           url: 'https://www.strazcenter.org/about-us/volunteer-opportunities/' },
+        ]
+      },
+    ]
+  },
 ];
 
 /* ── State ─────────────────────────────────────────────── */
