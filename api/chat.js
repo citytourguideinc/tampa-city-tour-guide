@@ -53,6 +53,39 @@ const DB_CONTEXT = DB.map((d,i) =>
   `[${i}] ${d.name} (${d.cat} › ${d.sub}) — keywords: ${d.kw}`
 ).join('\n');
 
+// ── Affiliate & featured vendor config (from Vercel env vars) ──
+function enhanceLinks(links) {
+  const gygId   = process.env.GETYOURGUIDE_PARTNER_ID;  // sign up: partner.getyourguide.com
+  const viatorId = process.env.VIATOR_AFFILIATE_ID;       // sign up: partnerresources.viator.com
+  const featuredName = process.env.FEATURED_VENDOR_NAME;
+  const featuredUrl  = process.env.FEATURED_VENDOR_URL;
+  const featuredSub  = process.env.FEATURED_VENDOR_SUB || 'Featured Partner';
+  const featuredIcon = process.env.FEATURED_VENDOR_ICON || '⭐';
+
+  const enhanced = links.map(link => {
+    let url = link.url;
+    if (gygId && url.includes('getyourguide.com')) {
+      url = url + (url.includes('?') ? '&' : '?') + `partner_id=${gygId}`;
+    }
+    if (viatorId && url.includes('viator.com')) {
+      url = url + (url.includes('?') ? '&' : '?') + `mcid=${viatorId}&pid=P00`;
+    }
+    return { ...link, url };
+  });
+
+  // Inject featured vendor as first card if configured
+  if (featuredName && featuredUrl) {
+    enhanced.unshift({
+      name: featuredName,
+      url:  featuredUrl,
+      sub:  featuredSub,
+      icon: featuredIcon,
+      featured: true,
+    });
+  }
+  return enhanced;
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -115,11 +148,11 @@ Respond ONLY with valid JSON in this exact format (no markdown, no code block):
       .filter(i => i >= 0 && i < DB.length)
       .map(i => ({ name: DB[i].name, url: DB[i].url, sub: DB[i].sub, icon: DB[i].icon }));
 
-    return res.status(200).json({ reply: parsed.reply || null, links });
+    return res.status(200).json({ reply: parsed.reply || null, links: enhanceLinks(links) });
   } catch (err) {
     console.error('Gemini API error:', err.message);
     // Graceful fallback to keyword search
-    return res.status(200).json({ reply: null, links: fallbackSearch(query) });
+    return res.status(200).json({ reply: null, links: enhanceLinks(fallbackSearch(query)) });
   }
 }
 

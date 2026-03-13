@@ -123,12 +123,13 @@ function renderResults(links, query) {
   }
   const cards = links.map(item => `
     <a href="${item.url}" target="_blank" rel="noopener noreferrer"
-       class="result-card" aria-label="${escHtml(item.name)}"
-       onclick="track('card_click',{card_name:'${escHtml(item.name)}',card_category:'${escHtml(item.sub)}'})">
+       class="result-card${item.featured ? ' featured' : ''}" aria-label="${escHtml(item.name)}"
+       onclick="track('card_click',{card_name:'${escHtml(item.name)}',card_category:'${escHtml(item.sub)}',featured:${!!item.featured}})">
       <div class="result-card-top">
         <div class="result-card-icon">${item.icon}</div>
         <span class="result-card-arrow">↗</span>
       </div>
+      ${item.featured ? '<span class="featured-badge">⭐ Sponsored</span>' : ''}
       <div class="result-card-name">${escHtml(item.name)}</div>
       <span class="result-card-tag">${escHtml(item.sub)}</span>
     </a>
