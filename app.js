@@ -1,5 +1,10 @@
 /* ── Tampa City Guide — Chat App (Phase 3: Gemini AI) ─────────── */
 
+/* ── Analytics helper ────────────────────────────────────────── */
+function track(eventName, params) {
+  if (typeof gtag === 'function') gtag('event', eventName, params);
+}
+
 /* ── Local fallback DB (used if API unreachable) ──────────────── */
 const _FALLBACK_DB = [
   { name:'Curtis Hixon Waterfront Park',        url:'https://www.tampa.gov/parks-and-recreation/featured-parks/curtis-hixon',      sub:'City Parks',             icon:'🌿', kw:['park','outdoor','waterfront','family','kids','free','nature','walk'] },
@@ -118,7 +123,8 @@ function renderResults(links, query) {
   }
   const cards = links.map(item => `
     <a href="${item.url}" target="_blank" rel="noopener noreferrer"
-       class="result-card" aria-label="${escHtml(item.name)}">
+       class="result-card" aria-label="${escHtml(item.name)}"
+       onclick="track('card_click',{card_name:'${escHtml(item.name)}',card_category:'${escHtml(item.sub)}'})">
       <div class="result-card-top">
         <div class="result-card-icon">${item.icon}</div>
         <span class="result-card-arrow">↗</span>
@@ -183,6 +189,8 @@ function scrollBottom() {
 async function handleQuery(query) {
   query = query.trim();
   if (!query) return;
+
+  track('search', { search_term: query });
 
   addUserMsg(query);
   chatInput.value = '';
