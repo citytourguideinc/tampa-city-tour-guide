@@ -118,7 +118,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no code block):
   } catch (err) {
     console.error('Gemini API error:', err.message);
     // Graceful fallback to keyword search
-    return res.status(200).json({ reply: null, links: fallbackSearch(query) });
+    return res.status(200).json({ reply: null, links: fallbackSearch(query), _debug: err.message });
   }
 }
 
