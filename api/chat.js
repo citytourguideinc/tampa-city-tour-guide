@@ -106,9 +106,10 @@ Respond ONLY with valid JSON in this exact format (no markdown, no code block):
     const data = await geminiRes.json();
     const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-    // Strip any accidental markdown fences
-    const cleaned = raw.replace(/```[a-z]*\n?/g, '').replace(/```/g, '').trim();
-    const parsed = JSON.parse(cleaned);
+    // Extract the JSON object robustly regardless of surrounding text or markdown
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error(`No JSON found in Gemini response: ${raw.slice(0, 200)}`);
+    const parsed = JSON.parse(jsonMatch[0]);
 
     const links = (parsed.indices || [])
       .filter(i => i >= 0 && i < DB.length)
