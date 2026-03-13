@@ -53,7 +53,7 @@ const DB_CONTEXT = DB.map((d,i) =>
   `[${i}] ${d.name} (${d.cat} › ${d.sub}) — keywords: ${d.kw}`
 ).join('\n');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
