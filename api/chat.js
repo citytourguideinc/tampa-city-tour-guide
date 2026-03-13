@@ -1,57 +1,22 @@
 // api/chat.js — Vercel Serverless Function
 // Receives a user query, sends it to Gemini with the curated DB as context,
 // returns a conversational reply + matched link objects.
+// Supports multiple cities — detects city from request hostname.
 
-const DB = [
-  { name:'Curtis Hixon Waterfront Park',        url:'https://www.tampa.gov/parks-and-recreation/featured-parks/curtis-hixon',                                                              cat:'Things To Do', sub:'City Parks',             icon:'🌿', kw:'park outdoor waterfront riverwalk family kids free picnic nature walk' },
-  { name:'Florida State Parks',                  url:'https://www.floridastateparks.org/experiences-amenities',                                                                             cat:'Things To Do', sub:'City Parks',             icon:'🌿', kw:'park nature hike camping outdoor state family wildlife beach trail' },
-  { name:'Tampa.gov — Things To Do',             url:'https://www.tampa.gov/info/things-to-do',                                                                                             cat:'Things To Do', sub:'City Resources',         icon:'🏛', kw:'city government guide resources official information' },
-  { name:'Tampa Downtown Partnership',           url:'https://www.tampasdowntown.com/community-events/',                                                                                    cat:'Things To Do', sub:'City Resources',         icon:'🏛', kw:'downtown community events local partnership business' },
-  { name:'Benchmark International Arena',        url:'https://www.benchmarkintlarena.com/events',                                                                                           cat:'Things To Do', sub:'Entertainment & Sports', icon:'🏟', kw:'arena concerts sports hockey lightning events live music shows tickets' },
-  { name:'Tampa Convention Center',              url:'https://www.tampa.gov/tcc/area-attractions',                                                                                          cat:'Things To Do', sub:'Entertainment & Sports', icon:'🏟', kw:'convention events conference attractions waterfront shows' },
-  { name:'Ybor Museum',                          url:'https://www.ybormuseum.org/events-programs',                                                                                          cat:'Things To Do', sub:'Museums / Culture',      icon:'🎨', kw:'museum history ybor culture cuban cigar heritage arts' },
-  { name:'Tampa Bay History Center',             url:'https://tampabayhistorycenter.org/events/',                                                                                           cat:'Things To Do', sub:'Museums / Culture',      icon:'🎨', kw:'museum history heritage culture exhibits family kids education' },
-  { name:'Tampa Fire Fighters Museum',           url:'https://www.tampafirefightersmuseum.org/',                                                                                            cat:'Things To Do', sub:'Museums / Culture',      icon:'🎨', kw:'museum fire firefighter history kids family education' },
-  { name:'Tampa Museum of Art',                  url:'https://tampamuseum.org/',                                                                                                            cat:'Things To Do', sub:'Museums / Culture',      icon:'🎨', kw:'museum art culture exhibits gallery waterfront events' },
-  { name:'Get Your Guide',                       url:'https://www.getyourguide.com/tampa-l1187/',                                                                                           cat:'Things To Do', sub:'Tourism & Activities',   icon:'🗺', kw:'tours activities guided tickets golf cart boat kayak sightseeing adventure outdoor fun day trip excursion' },
-  { name:'Local City Guides',                    url:'https://www.localcityguides.com/en/tampa/activities/all-activities',                                                                  cat:'Things To Do', sub:'Tourism & Activities',   icon:'🗺', kw:'tours activities local guide sightseeing things to do attractions' },
-  { name:'TripAdvisor',                          url:'https://www.tripadvisor.com/Attractions-g34678-Activities-Tampa_Florida.html',                                                       cat:'Things To Do', sub:'Tourism & Activities',   icon:'🗺', kw:'tours activities restaurants hotels reviews attractions sightseeing things to do' },
-  { name:'Viator',                               url:'https://www.viator.com/Tampa-tourism/d666-r47106901905-s954938836',                                                                  cat:'Things To Do', sub:'Tourism & Activities',   icon:'🗺', kw:'tours activities booking guided excursion sightseeing golf cart boat kayak adventure' },
-  { name:'Visit Florida',                        url:'https://www.visitflorida.com/places-to-go/central-west/tampa/',                                                                      cat:'Things To Do', sub:'Tourism & Activities',   icon:'🗺', kw:'tourism florida travel things to do beaches attractions visit vacation' },
-  { name:'Visit Tampa Bay',                      url:'https://www.visittampabay.com/things-to-do/tours/',                                                                                  cat:'Things To Do', sub:'Tourism & Activities',   icon:'🗺', kw:'tours tampa bay tourism activities sightseeing official visitor things to do golf cart boat kayak' },
-  { name:'Meetup',                               url:'https://www.meetup.com/find/?location=us--fl--Tampa',                                                                                cat:'Things To Do', sub:'Community',              icon:'🤝', kw:'community meetup social groups networking events local people friends' },
-  { name:'Tampa Entertainment Guide',            url:'https://tampa-bay.events/',                                                                                                           cat:'Things To Do', sub:'Media Platforms',        icon:'📰', kw:'events entertainment guide nightlife shows concerts things to do weekend' },
-  { name:'83 Degrees',                           url:'https://83degreesmedia.com/place/tampa/',                                                                                            cat:'Things To Do', sub:'Media Platforms',        icon:'📰', kw:'media news local things to do arts culture innovation events' },
-  { name:'Tampa.gov — Events',                   url:'https://www.tampa.gov/guide/tampa-events',                                                                                           cat:'Events Calendar', sub:'City & Government',            icon:'🏛', kw:'events city government calendar official things to do weekend' },
-  { name:'Tampa.gov — Arts & Nightlife',         url:'https://www.tampa.gov/guide/tampa-events#section-20466',                                                                             cat:'Events Calendar', sub:'City & Government',            icon:'🏛', kw:'arts nightlife bars music entertainment events weekend night out' },
-  { name:'The Tampa Riverwalk',                  url:'https://thetampariverwalk.com/events/event-calendar.html',                                                                           cat:'Events Calendar', sub:'City & Government',            icon:'🌊', kw:'riverwalk waterfront events outdoor family free weekend walk park' },
-  { name:'Straz Center',                         url:'https://www.strazcenter.org/calendar/',                                                                                              cat:'Events Calendar', sub:'Venues & Attractions',         icon:'🎭', kw:'theater performing arts shows broadway concerts events tickets culture' },
-  { name:'Armature Works',                       url:'https://www.armatureworks.com/all-events/',                                                                                          cat:'Events Calendar', sub:'Venues & Attractions',         icon:'🏗', kw:'events food market nightlife waterfront social weekend fun' },
-  { name:"That's So Tampa",                     url:'https://thatssotampa.com/events/map/',                                                                                               cat:'Events Calendar', sub:'Local Media & Community',      icon:'📍', kw:'events local guide map things to do weekend entertainment nightlife' },
-  { name:'Patch — South Tampa',                  url:'https://patch.com/florida/southtampa/calendar',                                                                                     cat:'Events Calendar', sub:'Local Media & Community',      icon:'📰', kw:'local news events calendar south tampa community things to do' },
-  { name:'Creative Loafing Tampa',               url:'https://community.cltampa.com/tampa/EventSearch?neighborhoodGroup=12315336&sortType=date&v=d',                                       cat:'Events Calendar', sub:'Local Media & Community',      icon:'📰', kw:'arts culture events music food nightlife weekend local guide' },
-  { name:'Facebook Events',                      url:'https://www.facebook.com/events',                                                                                                   cat:'Events Calendar', sub:'Local Media & Community',      icon:'👥', kw:'events social community local parties meetups entertainment' },
-  { name:'Visit Tampa Bay — Events',             url:'https://www.visittampabay.com/tampa-events/',                                                                                       cat:'Events Calendar', sub:'Tourism & Visitor Resources',  icon:'🌴', kw:'events tourism visitor official things to do calendar weekend tampa bay' },
-  { name:'Discover in Town',                     url:'https://www.discoverintown.com/default.aspx?redirect=/contentManaged/BL-LandingPage/BL-LandingPage.aspx',                           cat:'Events Calendar', sub:'Tourism & Visitor Resources',  icon:'🗺', kw:'events discover local guide things to do calendar' },
-  { name:'LivingSocial',                         url:'https://www.livingsocial.com/local/tampa/sightseeing-and-tours?page=3',                                                             cat:'Deals & Discounts', sub:'Savings Platforms',     icon:'💰', kw:'deals discounts coupons savings tours sightseeing cheap affordable' },
-  { name:'Groupon',                              url:'https://www.groupon.com/local/tampa/sightseeing-and-tours',                                                                         cat:'Deals & Discounts', sub:'Savings Platforms',     icon:'💰', kw:'deals discounts coupons groupon tours sightseeing save cheap affordable restaurants' },
-  { name:'CityPASS Tampa',                       url:'https://www.citypass.com/tampa',                                                                                                   cat:'Deals & Discounts', sub:'Savings Platforms',     icon:'🎟', kw:'deals pass attractions discount save family bundle tickets aquarium zoo busch gardens' },
-  { name:'Discover Downtown Tampa',              url:'https://tampa.discoverdowntown.com/default.aspx?redirect=/specialOffers/specialOffers.aspx',                                        cat:'Deals & Discounts', sub:'Tourism & Visitor Info', icon:'🏙', kw:'deals downtown offers discounts restaurants shopping attractions' },
-  { name:'Visit Tampa Bay — Unlock Deals',       url:'https://www.visittampabay.com/unlock-deals/',                                                                                      cat:'Deals & Discounts', sub:'Tourism & Visitor Info', icon:'🌴', kw:'deals discounts offers savings tourism visitor official tampa bay' },
-  { name:'Tampa.gov — Downtown Guide',           url:'https://www.tampa.gov/guide/downtown-tampa',                                                                                        cat:'Digital Guides', sub:'Directories',   icon:'📍', kw:'guide downtown directory official map neighborhoods things to do city' },
-  { name:'Tampa Downtown Partnership — Places',  url:'https://www.tampasdowntown.com/place_category/featured/?place_category=&orderby=post_title&post_type=place',                       cat:'Digital Guides', sub:'Directories',   icon:'📍', kw:'directory places downtown restaurants shops businesses map guide' },
-  { name:'Tampa.gov — City Projects',            url:'https://www.tampa.gov/project',                                                                                                    cat:'City Projects', sub:'City Government',icon:'🏗', kw:'projects development construction city government infrastructure plans zoning' },
-  { name:'Keep Tampa Bay Beautiful',             url:'https://www.keeptampabaybeautiful.org/',                                                                                           cat:'Volunteer', sub:'Environmental', icon:'🌿', kw:'volunteer environment conservation clean beach community service bay' },
-  { name:'Keep Tampa Bay Beautiful — Volunteer', url:'https://www.keeptampabaybeautiful.org/become-a-volunteer',                                                                         cat:'Volunteer', sub:'Environmental', icon:'🌿', kw:'volunteer sign up environment conservation cleanup community service' },
-  { name:'The Tampa Riverwalk — How to Help',    url:'https://thetampariverwalk.com/how-to-help/donate.html',                                                                            cat:'Volunteer', sub:'Environmental', icon:'🌊', kw:'volunteer donate help riverwalk conservation community waterfront' },
-  { name:'The Florida Aquarium — Volunteer',     url:'https://www.flaquarium.org/gift-give/volunteer/',                                                                                  cat:'Volunteer', sub:'Cultural',      icon:'🐠', kw:'volunteer aquarium marine education animals conservation kids family' },
-  { name:'Tampa Bay History Center — Volunteer', url:'https://tampabayhistorycenter.org/volunteer/',                                                                                     cat:'Volunteer', sub:'Cultural',      icon:'🏛', kw:'volunteer museum history education culture community service' },
-  { name:'Straz Center — Volunteer',             url:'https://www.strazcenter.org/about-us/volunteer-opportunities/',                                                                    cat:'Volunteer', sub:'Cultural',      icon:'🎭', kw:'volunteer theater arts performing usher events community culture' },
-];
+// ── City config registry ───────────────────────────────────────
+const CITY_CONFIGS = {
+  tampa:  require('../cities/tampa'),
+  miami:  require('../cities/miami'),
+  // Add more cities here: orlando: require('../cities/orlando'),
+};
 
-const DB_CONTEXT = DB.map((d,i) =>
-  `[${i}] ${d.name} (${d.cat} › ${d.sub}) — keywords: ${d.kw}`
-).join('\n');
+function getCityConfig(hostname) {
+  const host = (hostname || '').toLowerCase();
+  for (const cityKey of Object.keys(CITY_CONFIGS)) {
+    if (host.includes(cityKey)) return CITY_CONFIGS[cityKey];
+  }
+  return CITY_CONFIGS.tampa; // default
+}
 
 // ── Affiliate & featured vendor config (from Vercel env vars) ──
 function enhanceLinks(links) {
@@ -97,18 +62,22 @@ module.exports = async function handler(req, res) {
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
+
+  // Load city config based on hostname (tampa.citytourguide.app → Tampa, etc.)
+  const cityConfig = getCityConfig(req.headers.host);
+  const DB = cityConfig.db;
+  const DB_CONTEXT = DB.map((d, i) =>
+    `[${i}] ${d.name} (${d.cat} › ${d.sub}) — keywords: ${d.kw}`
+  ).join('\n');
+
   if (!apiKey) {
-    // Fallback: simple keyword search when no API key configured
-    return res.status(200).json({
-      reply: null,
-      links: fallbackSearch(query),
-    });
+    return res.status(200).json({ reply: null, links: enhanceLinks(fallbackSearch(query, DB)) });
   }
 
-  const prompt = `You are a helpful Tampa Bay, Florida city guide assistant.
+  const prompt = `${cityConfig.aiContext}
 A visitor asked: "${query.trim()}"
 
-Below is your curated database of Tampa resources (index: name, category, subcategory, keywords):
+Below is your curated database of ${cityConfig.city} resources (index: name, category, subcategory, keywords):
 ${DB_CONTEXT}
 
 Your task:
@@ -152,11 +121,12 @@ Respond ONLY with valid JSON in this exact format (no markdown, no code block):
   } catch (err) {
     console.error('Gemini API error:', err.message);
     // Graceful fallback to keyword search
-    return res.status(200).json({ reply: null, links: enhanceLinks(fallbackSearch(query)) });
+    return res.status(200).json({ reply: null, links: enhanceLinks(fallbackSearch(query, DB)) });
   }
 }
 
-function fallbackSearch(query) {
+function fallbackSearch(query, DB) {
+  if (!DB || !DB.length) return [];
   const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
   return DB.map(item => {
     let score = 0;
