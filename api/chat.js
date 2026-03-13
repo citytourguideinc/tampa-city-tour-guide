@@ -98,7 +98,10 @@ Respond ONLY with valid JSON in this exact format (no markdown, no code block):
       }
     );
 
-    if (!geminiRes.ok) throw new Error(`Gemini error: ${geminiRes.status}`);
+    if (!geminiRes.ok) {
+      const errBody = await geminiRes.text();
+      throw new Error(`Gemini ${geminiRes.status}: ${errBody}`);
+    }
 
     const data = await geminiRes.json();
     const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -114,8 +117,8 @@ Respond ONLY with valid JSON in this exact format (no markdown, no code block):
     return res.status(200).json({ reply: parsed.reply || null, links });
   } catch (err) {
     console.error('Gemini API error:', err.message);
-    // Graceful fallback to keyword search
-    return res.status(200).json({ reply: null, links: fallbackSearch(query) });
+    // Return error details temporarily for debugging
+    return res.status(200).json({ reply: null, links: fallbackSearch(query), _debug: err.message });
   }
 }
 
