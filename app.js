@@ -77,7 +77,32 @@ const APP_DATA = [
     ]
   },
   { id: 'events',        label: 'Events Calendar',            icon: '📅', subcategories: [] },
-  { id: 'deals',         label: 'Deals & Discounts',          icon: '🎟',  subcategories: [] },
+  {
+    id: 'deals',
+    label: 'Deals & Discounts',
+    icon: '🎟',
+    subcategories: [
+      {
+        id: 'savings-platforms',
+        label: 'Savings Platforms',
+        icon: '💰',
+        links: [
+          { name: 'LivingSocial', url: 'https://www.livingsocial.com/local/tampa/sightseeing-and-tours?page=3' },
+          { name: 'Groupon',      url: 'https://www.groupon.com/local/tampa/sightseeing-and-tours' },
+          { name: 'CityPASS Tampa', url: 'https://www.citypass.com/tampa' },
+        ]
+      },
+      {
+        id: 'tourism-visitor-info',
+        label: 'Tourism & Visitor Info',
+        icon: '🗺',
+        links: [
+          { name: 'Discover Downtown Tampa', url: 'https://tampa.discoverdowntown.com/default.aspx?redirect=/specialOffers/specialOffers.aspx' },
+          { name: 'Visit Tampa Bay — Unlock Deals', url: 'https://www.visittampabay.com/unlock-deals/' },
+        ]
+      },
+    ]
+  },
   { id: 'guides',        label: 'Digital Guides',             icon: '📖', subcategories: [] },
   { id: 'projects',      label: 'City Projects & Developments', icon: '🏗', subcategories: [] },
   { id: 'volunteer',     label: 'Volunteer Opportunities',    icon: '🙌', subcategories: [] },
