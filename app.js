@@ -165,7 +165,21 @@ const APP_DATA = [
       },
     ]
   },
-  { id: 'projects',      label: 'City Projects & Developments', icon: '🏗', subcategories: [] },
+  {
+    id: 'projects',
+    label: 'City Projects & Developments',
+    icon: '🏗',
+    subcategories: [
+      {
+        id: 'city-projects-gov',
+        label: 'City Government Projects',
+        icon: '🏛',
+        links: [
+          { name: 'Tampa.gov — City Projects', url: 'https://www.tampa.gov/project' },
+        ]
+      },
+    ]
+  },
   { id: 'volunteer',     label: 'Volunteer Opportunities',    icon: '🙌', subcategories: [] },
 ];
 
