@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Become a Featured Partner — Tampa City Tour Guide</title>
+  <meta name="description" content="Put your Tampa business in front of thousands of visitors. Become a Featured Partner on Tampa City Tour Guide.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌴</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0c12;
+      --surface:  #10131d;
+      --border:   rgba(255,255,255,0.08);
+      --gold:     #f5c842;
+      --sunset1:  #ff6a2f;
+      --sunset2:  #ff9d4d;
+      --teal:     #38bfb0;
+      --text:     #f0f1f5;
+      --muted:    #8a8fa8;
+      --grad:     linear-gradient(135deg, #ff6a2f, #ff9d4d, #ffcd6b);
+      --radius:   16px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,106,47,0.14) 0%, transparent 70%), #0a0c12;
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+
+    /* NAV */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      max-width: 820px; margin: 0 auto;
+    }
+    .nav-logo { font-family:'Outfit',sans-serif; font-weight:700; font-size:1rem;
+      background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .nav-back { font-size:0.83rem; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+    .nav-back:hover { color:var(--text); }
+
+    /* HERO */
+    .hero { text-align:center; padding: 64px 24px 48px; }
+    .badge {
+      display:inline-flex; align-items:center; gap:7px;
+      font-size:0.72rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase;
+      color:var(--gold); background:rgba(245,200,66,0.1); border:1px solid rgba(245,200,66,0.25);
+      padding:5px 14px; border-radius:99px; margin-bottom:22px;
+    }
+    h1 {
+      font-family:'Outfit',sans-serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:800;
+      letter-spacing:-0.02em; line-height:1.1;
+      background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:16px;
+    }
+    .hero-sub { font-size:1.05rem; color:var(--muted); max-width:520px; margin:0 auto 40px; line-height:1.6; }
+
+    .hero-stats {
+      display:flex; justify-content:center; gap:40px; flex-wrap:wrap;
+      margin-bottom:48px;
+    }
+    .stat { text-align:center; }
+    .stat-num { font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800;
+      background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .stat-label { font-size:0.78rem; color:var(--muted); margin-top:3px; }
+
+    /* PREVIEW CARD */
+    .preview-wrap { margin:0 auto 72px; max-width:480px; }
+    .preview-label { font-size:0.72rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+      color:var(--muted); margin-bottom:12px; }
+    .preview-card {
+      display:flex; align-items:center; gap:16px; padding:18px 20px;
+      background:linear-gradient(135deg, rgba(245,200,66,0.07), rgba(255,106,47,0.06));
+      border:1px solid rgba(245,200,66,0.35); border-radius:var(--radius);
+      position:relative; overflow:hidden;
+    }
+    .preview-card::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(90deg, transparent, rgba(245,200,66,0.04), transparent);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+    @keyframes shimmer { 0%,100%{opacity:0} 50%{opacity:1} }
+    .preview-icon {
+      width:52px; height:52px; border-radius:10px;
+      background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12);
+      display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;
+    }
+    .preview-body { flex:1; }
+    .preview-sponsored {
+      font-size:0.62rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+      color:var(--gold); margin-bottom:4px;
+    }
+    .preview-name { font-size:0.95rem; font-weight:600; margin-bottom:2px; }
+    .preview-sub { font-size:0.78rem; color:var(--muted); }
+    .preview-cta {
+      background:var(--grad); color:#fff; border:none;
+      padding:9px 18px; border-radius:99px; font-size:0.8rem; font-weight:600;
+      cursor:pointer; white-space:nowrap; text-decoration:none;
+      box-shadow:0 2px 10px rgba(255,106,47,0.3);
+    }
+
+    /* BENEFITS */
+    .section-title {
+      font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:700;
+      margin-bottom:8px; text-align:center;
+    }
+    .section-sub { color:var(--muted); font-size:0.9rem; text-align:center; margin-bottom:36px; }
+
+    .benefits-grid {
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:16px; margin-bottom:72px;
+    }
+    .benefit {
+      background:rgba(255,255,255,0.03); border:1px solid var(--border);
+      border-radius:var(--radius); padding:22px;
+    }
+    .benefit-icon { font-size:1.6rem; margin-bottom:12px; }
+    .benefit-title { font-weight:600; font-size:0.92rem; margin-bottom:6px; }
+    .benefit-desc { font-size:0.82rem; color:var(--muted); line-height:1.5; }
+
+    /* PRICING */
+    .pricing-wrap { display:flex; justify-content:center; margin-bottom:72px; }
+    .pricing-card {
+      background:rgba(255,255,255,0.03); border:1px solid rgba(245,200,66,0.3);
+      border-radius:20px; padding:36px 40px; text-align:center; max-width:340px; width:100%;
+    }
+    .pricing-plan { font-size:0.75rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase;
+      color:var(--gold); margin-bottom:12px; }
+    .pricing-amount { font-family:'Outfit',sans-serif; font-size:3rem; font-weight:800;
+      background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .pricing-period { font-size:0.85rem; color:var(--muted); margin-bottom:24px; }
+    .pricing-features { list-style:none; text-align:left; margin-bottom:28px; }
+    .pricing-features li { display:flex; align-items:flex-start; gap:9px; font-size:0.87rem;
+      color:var(--muted); padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+    .pricing-features li::before { content:'✓'; color:var(--teal); font-weight:700; flex-shrink:0; margin-top:1px; }
+    .pricing-cta {
+      width:100%; padding:14px; border-radius:99px; border:none;
+      background:var(--grad); color:#fff; font-family:inherit; font-size:0.95rem;
+      font-weight:700; cursor:pointer; box-shadow:0 4px 20px rgba(255,106,47,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .pricing-cta:hover { transform:translateY(-2px); box-shadow:0 6px 28px rgba(255,106,47,0.5); }
+
+    /* FORM */
+    .form-wrap {
+      background:rgba(255,255,255,0.03); border:1px solid var(--border);
+      border-radius:20px; padding:40px; margin-bottom:60px;
+    }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+    .form-group { display:flex; flex-direction:column; gap:7px; }
+    .form-group.full { grid-column:1/-1; }
+    label { font-size:0.78rem; font-weight:600; color:var(--muted); letter-spacing:0.05em; }
+    input, select, textarea {
+      background:rgba(255,255,255,0.05); border:1px solid var(--border);
+      border-radius:10px; padding:12px 14px; color:var(--text);
+      font-family:inherit; font-size:0.9rem; outline:none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color:rgba(255,106,47,0.5); }
+    input::placeholder, textarea::placeholder { color:rgba(255,255,255,0.2); }
+    select option { background:#10131d; }
+    textarea { resize:vertical; min-height:90px; }
+    .submit-btn {
+      width:100%; padding:15px; border-radius:99px; border:none;
+      background:var(--grad); color:#fff; font-family:inherit; font-size:1rem;
+      font-weight:700; cursor:pointer; margin-top:8px;
+      box-shadow:0 4px 20px rgba(255,106,47,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .submit-btn:hover { transform:translateY(-2px); box-shadow:0 6px 30px rgba(255,106,47,0.5); }
+
+    /* SUCCESS */
+    .success-msg {
+      display:none; text-align:center; padding:24px;
+      background:rgba(56,191,176,0.08); border:1px solid rgba(56,191,176,0.25);
+      border-radius:var(--radius); margin-top:16px;
+    }
+    .success-msg h3 { color:var(--teal); margin-bottom:6px; font-size:1rem; }
+    .success-msg p { color:var(--muted); font-size:0.87rem; }
+
+    /* FOOTER */
+    footer { text-align:center; padding:24px; color:var(--muted); font-size:0.78rem;
+      border-top:1px solid var(--border); }
+
+    @media(max-width:600px){
+      .form-grid { grid-template-columns:1fr; }
+      .hero { padding:48px 16px 36px; }
+      .hero-stats { gap:24px; }
+      .form-wrap { padding:24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <span class="nav-logo">🌴 Tampa City Tour Guide</span>
+    <a class="nav-back" href="/">← Back to Guide</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero container">
+    <div class="badge">⭐ Featured Partner Program</div>
+    <h1>Put Your Business<br>In Front of Tampa Visitors</h1>
+    <p class="hero-sub">Thousands of tourists, new residents, and locals use our AI-powered city guide every month to discover the best of Tampa Bay. Be the first thing they see.</p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">AI</div>
+        <div class="stat-label">Powered Recommendations</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">1st</div>
+        <div class="stat-label">Result Every Search</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Tampa-Focused Audience</div>
+      </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="preview-wrap">
+      <div class="preview-label">Your business will appear like this:</div>
+      <div class="preview-card">
+        <div class="preview-icon">🚤</div>
+        <div class="preview-body">
+          <div class="preview-sponsored">⭐ Sponsored</div>
+          <div class="preview-name">Your Business Name</div>
+          <div class="preview-sub">Featured Partner · Tampa Bay</div>
+        </div>
+        <a class="preview-cta" href="#partner-form">Book</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section class="container" style="margin-bottom:72px;">
+    <div class="section-title">Why Partner With Us?</div>
+    <div class="section-sub">Be seen exactly when visitors are ready to act</div>
+    <div class="benefits-grid">
+      <div class="benefit">
+        <div class="benefit-icon">🎯</div>
+        <div class="benefit-title">Intent-Driven Audience</div>
+        <div class="benefit-desc">Every visitor is actively searching for things to do in Tampa — the highest-intent audience possible.</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon">🤖</div>
+        <div class="benefit-title">AI-Recommended First</div>
+        <div class="benefit-desc">Your card appears before every set of AI results — more visible than any organic listing.</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon">📱</div>
+        <div class="benefit-title">Mobile-First</div>
+        <div class="benefit-desc">Optimized for tourists on their phones, hotel guests at check-in, and locals planning their weekend.</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon">🔗</div>
+        <div class="benefit-title">Direct Link to You</div>
+        <div class="benefit-desc">One tap takes users directly to your booking page, website, or phone number. No middleman.</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon">📊</div>
+        <div class="benefit-title">Performance Reports</div>
+        <div class="benefit-desc">Monthly report showing impressions, clicks, and what visitors were searching when they found you.</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon">✏️</div>
+        <div class="benefit-title">You Control the Message</div>
+        <div class="benefit-desc">Customize your card name, icon, and link. Update anytime with 24-hour turnaround.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="container">
+    <div class="section-title">Simple Pricing</div>
+    <div class="section-sub">No contracts. Cancel anytime.</div>
+    <div class="pricing-wrap">
+      <div class="pricing-card">
+        <div class="pricing-plan">Featured Partner</div>
+        <div class="pricing-amount">$199</div>
+        <div class="pricing-period">per month · billed monthly</div>
+        <ul class="pricing-features">
+          <li>Featured card shown on every search result</li>
+          <li>Gold-highlighted design stands out from organic results</li>
+          <li>Direct link to your booking page or website</li>
+          <li>Custom icon, name, and branding</li>
+          <li>Monthly click & impression report</li>
+          <li>Priority placement — first result every time</li>
+          <li>Cancel anytime, no commitments</li>
+        </ul>
+        <button class="pricing-cta" onclick="document.getElementById('partner-form').scrollIntoView({behavior:'smooth'})">
+          Apply Now →
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM -->
+  <section class="container" id="partner-form">
+    <div class="form-wrap">
+      <div class="section-title" style="margin-bottom:6px;">Ready to Get Started?</div>
+      <div class="section-sub" style="margin-bottom:28px;">Fill out the form below and we'll reach out within 1 business day.</div>
+
+      <form id="apply-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="biz-name">Business Name *</label>
+            <input id="biz-name" type="text" placeholder="Tampa Bay Water Tours" required />
+          </div>
+          <div class="form-group">
+            <label for="contact-name">Your Name *</label>
+            <input id="contact-name" type="text" placeholder="Jane Smith" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input id="email" type="email" placeholder="jane@mycompany.com" required />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input id="phone" type="tel" placeholder="(813) 555-0100" />
+          </div>
+          <div class="form-group">
+            <label for="website">Website / Booking Link *</label>
+            <input id="website" type="url" placeholder="https://..." required />
+          </div>
+          <div class="form-group">
+            <label for="category">Business Category *</label>
+            <select id="category" required>
+              <option value="">Select category…</option>
+              <option>Tours & Activities</option>
+              <option>Restaurants & Food</option>
+              <option>Hotels & Accommodations</option>
+              <option>Museums & Culture</option>
+              <option>Entertainment & Nightlife</option>
+              <option>Outdoor & Recreation</option>
+              <option>Shopping</option>
+              <option>Health & Wellness</option>
+              <option>Transportation</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label for="message">Tell Us About Your Business</label>
+            <textarea id="message" placeholder="What do you offer? Who is your typical customer? Any questions for us?"></textarea>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Submit Application →</button>
+      </form>
+
+      <div class="success-msg" id="success-msg">
+        <h3>🎉 Application Received!</h3>
+        <p>Thank you! We'll review your application and reach out to <span id="success-email"></span> within 1 business day. We look forward to partnering with you!</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 City Tour Guide, Inc. · <a href="/" style="color:inherit">tampa.citytourguide.app</a> · <a href="mailto:info@tampamichele.com" style="color:inherit">info@tampamichele.com</a></p>
+  </footer>
+
+  <script>
+    document.getElementById('apply-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      document.getElementById('success-email').textContent = email;
+      document.getElementById('apply-form').style.display = 'none';
+      const msg = document.getElementById('success-msg');
+      msg.style.display = 'block';
+      // Track in GA4
+      if (typeof gtag === 'function') {
+        gtag('event', 'partner_application', {
+          business_name: document.getElementById('biz-name').value,
+          category: document.getElementById('category').value,
+        });
+      }
+    });
+  </script>
+</body>
+</html>
