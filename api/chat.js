@@ -87,7 +87,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no code block):
 
   try {
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-lite:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -117,8 +117,8 @@ Respond ONLY with valid JSON in this exact format (no markdown, no code block):
     return res.status(200).json({ reply: parsed.reply || null, links });
   } catch (err) {
     console.error('Gemini API error:', err.message);
-    // Return error details temporarily for debugging
-    return res.status(200).json({ reply: null, links: fallbackSearch(query), _debug: err.message });
+    // Graceful fallback to keyword search
+    return res.status(200).json({ reply: null, links: fallbackSearch(query) });
   }
 }
 
