@@ -1,0 +1,111 @@
+/* components/ResultRow.module.css — Craigslist-style one-line listing row */
+
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.12s;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.row:hover {
+  background: rgba(255,255,255,0.04);
+}
+.row:last-child {
+  border-bottom: none;
+}
+
+/* Date stamp on the left — like CL's date column */
+.date {
+  font-size: 0.72rem;
+  color: var(--dim, #555);
+  min-width: 48px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+/* Title — the clickable blue link */
+.title {
+  font-size: 0.875rem;
+  color: #7eb8f7;
+  font-weight: 500;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.title:hover {
+  text-decoration: underline;
+}
+
+/* Category badge */
+.cat {
+  font-size: 0.7rem;
+  color: var(--muted, #888);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 4px;
+  padding: 1px 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Price pill */
+.price {
+  font-size: 0.7rem;
+  color: #4ade80;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Area */
+.area {
+  font-size: 0.7rem;
+  color: var(--dim, #555);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Source label */
+.source {
+  font-size: 0.68rem;
+  color: var(--dim, #555);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Separator dot */
+.dot {
+  font-size: 0.65rem;
+  color: var(--dim, #444);
+  flex-shrink: 0;
+}
+
+/* ── Date section header (groups rows by date) ── */
+.dateGroup {
+  padding: 12px 12px 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted, #888);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.015);
+}
+
+/* ── New today indicator ── */
+.newBadge {
+  font-size: 0.63rem;
+  font-weight: 700;
+  color: #fb923c;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .area, .source, .dot:last-of-type { display: none; }
+}

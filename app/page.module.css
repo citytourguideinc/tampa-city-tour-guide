@@ -192,13 +192,210 @@
 .brand { color: var(--sunset2); font-weight: 600; }
 .footerDisclaimer { font-size: 0.71rem; color: var(--dim); opacity: 0.75; margin-top: 4px; }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .toolbar { flex-direction: column; }
-  .savedDrawer { width: 100%; position: static; max-height: none; }
-  .content { flex-direction: column; }
+/* ── Filter row ─────────────────────────────────────── */
+.filterRow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 0 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 16px;
 }
+
+/* Category pills */
+.filterPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 99px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.pill:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+.pillActive {
+  background: rgba(255,106,47,0.12) !important;
+  border-color: rgba(255,106,47,0.35) !important;
+  color: var(--sunset2) !important;
+  font-weight: 600;
+}
+.pillCount {
+  font-size: 0.65rem;
+  opacity: 0.55;
+}
+
+/* Date quick-filters */
+.dateFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.datePill {
+  padding: 4px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 99px;
+  font-family: inherit;
+  font-size: 0.73rem;
+  color: var(--dim);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.datePill:hover { background: rgba(255,255,255,0.07); color: var(--muted); }
+.datePillActive {
+  background: rgba(124,58,237,0.15) !important;
+  border-color: rgba(124,58,237,0.3) !important;
+  color: #a78bfa !important;
+  font-weight: 600;
+}
+.datePicker {
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.73rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  color-scheme: dark;
+}
+.datePicker:hover { border-color: rgba(255,255,255,0.15); }
+
+/* Result count */
+.resultCount {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+.sourceTag {
+  color: var(--sunset2);
+  font-size: 0.75rem;
+}
+
+/* ── Featured section (paid cards) ──────────────────── */
+.featuredSection {
+  margin-bottom: 24px;
+}
+.featuredLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── Craigslist list section ────────────────────────── */
+.listSection {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+/* Date group header inside list */
+.dateGroupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.groupCount {
+  font-size: 0.65rem;
+  opacity: 0.5;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Loading skeleton rows */
+.loadingList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+}
+.skeletonRow {
+  height: 20px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%   { opacity: 0.5; }
+  50%  { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+/* Empty state */
+.empty { text-align: center; padding: 60px 0; }
+.empty p { color: var(--muted); font-size: 0.93rem; margin-bottom: 16px; }
+.emptyIcon { font-size: 2rem; margin-bottom: 12px; display: block; }
+.clearBtn {
+  padding: 8px 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.83rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.clearBtn:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+/* Partner note */
+.partnerNote {
+  margin-top: 24px;
+  font-size: 0.75rem;
+  color: var(--dim);
+  text-align: center;
+  padding: 10px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Footer */
+.footer {
+  padding: 20px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--dim); font-size: 0.78rem;
+}
+.footerLinks { margin-bottom: 6px; }
+.footer a { color: var(--muted); text-decoration: none; transition: color var(--t); }
+.footer a:hover { color: var(--sunset2); }
+.brand { color: var(--sunset2); font-weight: 600; }
+.footerDisclaimer { font-size: 0.71rem; color: var(--dim); opacity: 0.75; margin-top: 4px; }
+
+/* Responsive */
 @media (max-width: 600px) {
   .header { padding: 36px 0 28px; }
-  .grid { grid-template-columns: 1fr; }
+  .filterPills, .dateFilters { gap: 4px; }
+  .pill, .datePill { font-size: 0.71rem; padding: 4px 10px; }
 }
+
