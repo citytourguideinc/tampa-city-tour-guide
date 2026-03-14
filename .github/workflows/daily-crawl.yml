@@ -1,0 +1,46 @@
+name: Daily Crawl — Tampa Downtown Partnership
+
+on:
+  schedule:
+    # Every day at 6:00 AM UTC (2:00 AM ET)
+    - cron: '0 6 * * *'
+  # Allow manual trigger from GitHub Actions tab
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no DB writes)'
+        required: false
+        default: 'false'
+
+jobs:
+  crawl:
+    name: Crawl trusted sources
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Trigger crawl API
+        run: |
+          DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
+          echo "Triggering crawl (dryRun=$DRY_RUN)..."
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -X POST "${{ secrets.SITE_URL }}/api/crawl" \
+            -H "Content-Type: application/json" \
+            -H "x-crawl-secret: ${{ secrets.CRAWL_SECRET }}" \
+            -d "{\"autoApprove\": true, \"dryRun\": $DRY_RUN}" \
+            --max-time 300)
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | head -n-1)
+
+          echo "HTTP Status: $HTTP_CODE"
+          echo "Response:"
+          echo "$BODY" | python3 -m json.tool 2>/dev/null || echo "$BODY"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "❌ Crawl failed with status $HTTP_CODE"
+            exit 1
+          fi
+
+          echo "✅ Crawl completed successfully"
