@@ -177,7 +177,7 @@ export default function Home() {
           <div className={styles.container}>
             <p className={styles.heroEyebrow}>🌴 Your City. Your Guide.</p>
             <h1 className={styles.heroTitle}>Discover What's Happening</h1>
-            <p className={styles.heroSub}>Events, activities &amp; things to do — updated daily</p>
+            <p className={styles.heroSub}>Events, activities &amp; things to do. Updated daily.</p>
             <div className={styles.heroSearch}>
               <SearchBar onSearch={handleSearch} loading={loading} />
             </div>

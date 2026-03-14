@@ -7,11 +7,11 @@ const outfit = Outfit({ subsets: ['latin'], weight: ['600','700','800'] });
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export const metadata = {
-  title: 'Tampa City Tour Guide — AI-Powered City Discovery',
-  description: 'Discover the best tours, events, deals, and things to do in Tampa Bay. Powered by AI.',
+  title: 'City Tour Guide | Tampa Bay Events, Tours and Things To Do',
+  description: 'Discover the best tours, events, and things to do in Tampa Bay. Updated daily.',
   openGraph: {
-    title: 'Tampa City Tour Guide',
-    description: 'AI-powered local discovery for Tampa Bay — tours, events, restaurants, deals and more.',
+    title: 'City Tour Guide',
+    description: 'Local discovery for Tampa Bay. Tours, events, restaurants, deals and more.',
     url: 'https://tampa.citytourguide.app',
     siteName: 'City Tour Guide',
   },
