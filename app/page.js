@@ -128,9 +128,8 @@ export default function Home() {
       <header className={styles.navbar}>
         <div className={styles.navInner}>
 
-          {/* LEFT — Logo + Brand */}
           <a href="/" className={styles.logoLink} aria-label="City Tour Guide home">
-            <img src="/logo.svg" alt="City Tour Guide" className={styles.logoImg} />
+            <img src="/logo.png" alt="City Tour Guide" className={styles.logoImg} />
           </a>
 
           {/* CENTER — City / Region Picker */}

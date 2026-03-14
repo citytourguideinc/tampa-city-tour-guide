@@ -13,7 +13,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
-  height: 68px;
+  height: 76px;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -28,9 +28,10 @@
   justify-self: start;
 }
 .logoImg {
-  height: 40px;
+  height: 56px;
   width: auto;
   display: block;
+  object-fit: contain;
 }
 
 /* CENTER — City picker pill */
@@ -100,20 +101,20 @@
 }
 .heroTitle {
   font-family: 'Outfit', sans-serif;
-  font-size: clamp(2.4rem, 5vw, 3.8rem);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.8rem, 6vw, 4.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
   color: #111827;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 .heroSub {
   font-family: 'Inter', sans-serif;
-  font-size: 1.05rem;
-  color: #6B7280;
-  font-weight: 400;
-  margin-bottom: 36px;
-  letter-spacing: 0.01em;
+  font-size: 1.15rem;
+  color: #4B5563;
+  font-weight: 500;
+  margin-bottom: 40px;
+  letter-spacing: 0.005em;
 }
 .heroSearch {
   max-width: 620px;
