@@ -4,36 +4,37 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* Colors */
-  --bg:           #0a0c12;
-  --surface:      #10131d;
-  --surface2:     #171a28;
-  --card:         rgba(255,255,255,0.04);
-  --card-hover:   rgba(255,255,255,0.07);
-  --border:       rgba(255,255,255,0.08);
-  --border-focus: rgba(255,106,47,0.45);
+  /* ── Light Tampa palette ───────────────────────────── */
+  --bg:           #F8F7F4;   /* warm off-white */
+  --surface:      #FFFFFF;   /* card background */
+  --surface2:     #F2F1EE;   /* slightly darker surface */
+  --card:         #FFFFFF;
+  --card-hover:   #FDF6F2;
+  --border:       rgba(0,0,0,0.08);
+  --border-focus: rgba(232,67,26,0.45);
 
-  --sunset1:  #ff6a2f;
-  --sunset2:  #ff9d4d;
-  --sunset3:  #ffcd6b;
-  --teal:     #38bfb0;
-  --teal-dim: rgba(56,191,176,0.15);
-  --gold:     #f5c842;
-  --green:    #4ade80;
+  /* Tampa brand colors */
+  --sunset1:  #E8431A;   /* coral / primary CTA */
+  --sunset2:  #F05A28;   /* slightly lighter coral */
+  --sunset3:  #F5A623;   /* warm amber accent */
+  --teal:     #0D7490;   /* Tampa Bay teal */
+  --teal-dim: rgba(13,116,144,0.1);
+  --gold:     #F5A623;
+  --green:    #059669;   /* emerald — free/value signal */
 
-  --text:     #f0f1f5;
-  --muted:    #8a8fa8;
-  --dim:      #4d5168;
+  /* Typography */
+  --text:     #111827;   /* near-black */
+  --muted:    #4B5563;   /* medium gray */
+  --dim:      #9CA3AF;   /* light gray */
 
-  --grad-sunset: linear-gradient(135deg, #ff6a2f 0%, #ff9d4d 50%, #ffcd6b 100%);
-  --grad-bg: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,106,47,0.12) 0%, transparent 70%),
-             radial-gradient(ellipse 60% 40% at 90% 80%,  rgba(56,191,176,0.06) 0%, transparent 60%),
-             #0a0c12;
+  /* Gradients */
+  --grad-sunset: linear-gradient(135deg, #E8431A 0%, #F05A28 50%, #F5A623 100%);
+  --grad-bg: #F8F7F4;
 
-  /* Shadows */
-  --shadow-sm:   0 2px 8px rgba(0,0,0,0.3);
-  --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
-  --shadow-glow: 0 0 28px rgba(255,106,47,0.18);
+  /* Shadows — lighter for light backgrounds */
+  --shadow-sm:   0 1px 4px rgba(0,0,0,0.08);
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-glow: 0 0 24px rgba(232,67,26,0.15);
 
   /* Border radius */
   --r-sm:  8px;
@@ -47,6 +48,7 @@
 }
 
 html { scroll-behavior: smooth; }
+
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
