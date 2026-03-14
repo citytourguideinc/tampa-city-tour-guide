@@ -32,7 +32,7 @@ export default function ResultCard({ item, onSave, saved }) {
       </div>
       <h3 className={styles.title}>{item.activity_name}</h3>
       <div className={styles.meta}>
-        {item.neighborhood && <span className={styles.metaItem}>📍 {item.neighborhood}</span>}
+        {(item.city || item.neighborhood) && <span className={styles.metaItem} title={item.neighborhood || ''}>📍 {item.city || item.neighborhood}</span>}
         {item.event_date && (
           <span className={styles.metaItem}>
             🗓 {new Date(item.event_date).toLocaleDateString('en-US', { month:'short', day:'numeric' })}
