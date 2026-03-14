@@ -1,84 +1,25 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import styles from './page.module.css';
 
 const ADMIN_PWD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
-
-const TABS = ['🏃 Activities', '🏪 Vendors', '✅ Setup'];
+const TABS = ['📡 Sources', '📄 Items', '🏃 Activities', '🏪 Vendors', '✅ Setup'];
 
 export default function AdminPage() {
-  const [authed,   setAuthed]   = useState(false);
-  const [pwd,      setPwd]      = useState('');
-  const [error,    setError]    = useState('');
-  const [tab,      setTab]      = useState(0);
-  const [acts,     setActs]     = useState([]);
-  const [vendors,  setVendors]  = useState([]);
-  const [loading,  setLoading]  = useState(false);
-  const [msg,      setMsg]      = useState('');
-  const [newAct,   setNewAct]   = useState({ activity_name:'', category:'', neighborhood:'', short_summary:'', booking_link:'', official_link:'', icon:'📍', source_name:'', city:'Tampa' });
+  const [authed,  setAuthed]  = useState(false);
+  const [pwd,     setPwd]     = useState('');
+  const [error,   setError]   = useState('');
 
   useEffect(() => {
     if (localStorage.getItem('ctg_admin')) setAuthed(true);
   }, []);
 
-  useEffect(() => {
-    if (authed && tab === 0) fetchActivities();
-    if (authed && tab === 1) fetchVendors();
-  }, [authed, tab]);
-
   function login() {
-    if (pwd === ADMIN_PWD) { localStorage.setItem('ctg_admin','1'); setAuthed(true); }
+    if (pwd === ADMIN_PWD) { localStorage.setItem('ctg_admin', '1'); setAuthed(true); }
     else setError('Incorrect password.');
   }
 
   function logout() { localStorage.removeItem('ctg_admin'); setAuthed(false); }
-
-  async function fetchActivities() {
-    setLoading(true);
-    const r = await fetch('/api/admin/activities');
-    const d = await r.json();
-    setActs(d.activities || []);
-    setLoading(false);
-  }
-
-  async function fetchVendors() {
-    setLoading(true);
-    const r = await fetch('/api/admin/vendors');
-    const d = await r.json();
-    setVendors(d.vendors || []);
-    setLoading(false);
-  }
-
-  async function toggleActive(id, current) {
-    await fetch('/api/admin/activities', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id, active_status: !current }) });
-    setActs(prev => prev.map(a => a.id === id ? { ...a, active_status: !current } : a));
-    flash(`Activity ${!current ? 'published' : 'unpublished'}.`);
-  }
-
-  async function toggleFeatured(id, current) {
-    await fetch('/api/admin/activities', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id, featured_status: !current }) });
-    setActs(prev => prev.map(a => a.id === id ? { ...a, featured_status: !current } : a));
-    flash(`Featured ${!current ? 'on' : 'off'}.`);
-  }
-
-  async function addActivity() {
-    if (!newAct.activity_name || !newAct.category) return flash('Name and category are required.', true);
-    const r = await fetch('/api/admin/activities', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(newAct) });
-    if (r.ok) { flash('Activity added!'); fetchActivities(); setNewAct({ activity_name:'', category:'', neighborhood:'', short_summary:'', booking_link:'', official_link:'', icon:'📍', source_name:'', city:'Tampa' }); }
-    else flash('Error adding activity.', true);
-  }
-
-  async function deleteActivity(id) {
-    if (!confirm('Delete this activity?')) return;
-    await fetch('/api/admin/activities', { method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id }) });
-    setActs(prev => prev.filter(a => a.id !== id));
-    flash('Deleted.');
-  }
-
-  function flash(text, isErr = false) {
-    setMsg({ text, isErr });
-    setTimeout(() => setMsg(''), 3000);
-  }
 
   if (!authed) return (
     <div className={styles.loginPage}>
@@ -94,19 +35,154 @@ export default function AdminPage() {
     </div>
   );
 
+  return <Dashboard onLogout={logout} />;
+}
+
+// ── Full dashboard ─────────────────────────────────────────────────────────
+function Dashboard({ onLogout }) {
+  const [tab,     setTab]     = useState(0);
+  const [acts,    setActs]    = useState([]);
+  const [vendors, setVendors] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [msg,     setMsg]     = useState('');
+  const [newAct,  setNewAct]  = useState({ activity_name:'', category:'', neighborhood:'', short_summary:'', booking_link:'', official_link:'', icon:'📍', source_name:'', city:'Tampa' });
+
+  // Trusted engine state
+  const [sources,     setSources]     = useState([]);
+  const [items,       setItems]       = useState([]);
+  const [totalItems,  setTotalItems]  = useState(0);
+  const [crawling,    setCrawling]    = useState(false);
+  const [crawlLog,    setCrawlLog]    = useState(null);
+  const [itemFilter,  setItemFilter]  = useState({ q:'', category:'', listing_type:'', page: 0 });
+  const [itemLoading, setItemLoading] = useState(false);
+
+  const adminHeaders = { 'x-admin-secret': ADMIN_PWD, 'Content-Type': 'application/json' };
+
+  function flash(text, isErr = false) {
+    setMsg({ text, isErr });
+    setTimeout(() => setMsg(''), 3500);
+  }
+
+  // ── Sources ──────────────────────────────────────────────────
+  const loadSources = useCallback(async () => {
+    try {
+      const res  = await fetch('/api/admin/sources', { headers: adminHeaders });
+      const data = await res.json();
+      setSources(data.sources || []);
+    } catch { flash('Failed to load sources', true); }
+  }, []);
+
+  const loadItems = useCallback(async (filter = itemFilter) => {
+    setItemLoading(true);
+    try {
+      const params = new URLSearchParams({ limit: 25, page: filter.page });
+      if (filter.q)            params.set('q', filter.q);
+      if (filter.category)     params.set('category', filter.category);
+      if (filter.listing_type) params.set('listing_type', filter.listing_type);
+      const res  = await fetch(`/api/admin/items?${params}`, { headers: adminHeaders });
+      const data = await res.json();
+      setItems(data.items || []);
+      setTotalItems(data.total || 0);
+    } catch { flash('Failed to load items', true); }
+    finally { setItemLoading(false); }
+  }, [itemFilter]);
+
+  async function triggerCrawl(sourceNames = null) {
+    setCrawling(true);
+    try {
+      const body = sourceNames ? JSON.stringify({ sourceNames }) : '{}';
+      const res  = await fetch('/api/crawl', { method: 'POST', headers: adminHeaders, body });
+      const data = await res.json();
+      setCrawlLog(data);
+      flash(`✅ Crawl done — ${data.report?.reduce((a,r) => a + r.itemsExtracted, 0) || 0} items extracted`);
+      loadSources();
+    } catch (err) { flash(`Crawl failed: ${err.message}`, true); }
+    finally { setCrawling(false); }
+  }
+
+  async function toggleSource(s) {
+    try {
+      await fetch('/api/admin/sources', { method:'PATCH', headers: adminHeaders, body: JSON.stringify({ id: s.id, active: !s.active }) });
+      setSources(prev => prev.map(x => x.id === s.id ? { ...x, active: !s.active } : x));
+      flash(`${s.source_name} ${s.active ? 'deactivated' : 'activated'}`);
+    } catch { flash('Toggle failed', true); }
+  }
+
+  async function updateItem(id, updates) {
+    try {
+      await fetch('/api/admin/items', { method: 'PATCH', headers: adminHeaders, body: JSON.stringify({ id, ...updates }) });
+      setItems(prev => prev.map(i => i.id === id ? { ...i, ...updates } : i));
+      flash('Item updated');
+    } catch { flash('Update failed', true); }
+  }
+
+  async function deleteItem(id) {
+    if (!confirm('Delete this item?')) return;
+    try {
+      await fetch('/api/admin/items', { method:'DELETE', headers: adminHeaders, body: JSON.stringify({ id }) });
+      setItems(prev => prev.filter(i => i.id !== id));
+      flash('Item deleted');
+    } catch { flash('Delete failed', true); }
+  }
+
+  // ── Legacy activities / vendors ───────────────────────────────
+  async function fetchActivities() {
+    setLoading(true);
+    const r = await fetch('/api/admin/activities');
+    const d = await r.json();
+    setActs(d.activities || []);
+    setLoading(false);
+  }
+  async function fetchVendors() {
+    setLoading(true);
+    const r = await fetch('/api/admin/vendors');
+    const d = await r.json();
+    setVendors(d.vendors || []);
+    setLoading(false);
+  }
+  async function toggleActive(id, current) {
+    await fetch('/api/admin/activities', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id, active_status: !current }) });
+    setActs(prev => prev.map(a => a.id === id ? { ...a, active_status: !current } : a));
+    flash(`Activity ${!current ? 'published' : 'unpublished'}.`);
+  }
+  async function toggleFeatured(id, current) {
+    await fetch('/api/admin/activities', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id, featured_status: !current }) });
+    setActs(prev => prev.map(a => a.id === id ? { ...a, featured_status: !current } : a));
+    flash(`Featured ${!current ? 'on' : 'off'}.`);
+  }
+  async function addActivity() {
+    if (!newAct.activity_name || !newAct.category) return flash('Name and category are required.', true);
+    const r = await fetch('/api/admin/activities', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(newAct) });
+    if (r.ok) { flash('Activity added!'); fetchActivities(); setNewAct({ activity_name:'', category:'', neighborhood:'', short_summary:'', booking_link:'', official_link:'', icon:'📍', source_name:'', city:'Tampa' }); }
+    else flash('Error adding activity.', true);
+  }
+  async function deleteActivity(id) {
+    if (!confirm('Delete this activity?')) return;
+    await fetch('/api/admin/activities', { method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id }) });
+    setActs(prev => prev.filter(a => a.id !== id));
+    flash('Deleted.');
+  }
+
+  useEffect(() => {
+    if (tab === 0) loadSources();
+    if (tab === 1) loadItems();
+    if (tab === 2) fetchActivities();
+    if (tab === 3) fetchVendors();
+  }, [tab]);
+
   return (
     <div className={styles.page}>
+      {/* Flash */}
+      {msg && <div className={`${styles.flash} ${msg.isErr ? styles.flashErr : ''}`}>{msg.text}</div>}
+
       {/* Nav */}
       <nav className={styles.nav}>
         <span className={styles.logo}>⚙️ City Tour Guide Admin</span>
         <div className={styles.navRight}>
           <a href="/" target="_blank" className={styles.navLink}>View Site ↗</a>
-          <button className={styles.navBtn} onClick={logout}>Log Out</button>
+          <button className={styles.navBtn} onClick={onLogout}>Log Out</button>
         </div>
       </nav>
-
-      {/* Flash message */}
-      {msg && <div className={`${styles.flash} ${msg.isErr ? styles.flashErr : ''}`}>{msg.text}</div>}
 
       {/* Tabs */}
       <div className={styles.tabs}>
@@ -117,8 +193,140 @@ export default function AdminPage() {
 
       <main className={styles.main}>
 
-        {/* ── Activities Tab ── */}
+        {/* ── Sources Tab ──────────────────────────────────────── */}
         {tab === 0 && (
+          <div>
+            <div className={styles.sourcesHeader}>
+              <h2 className={styles.sectionTitle}>Trusted Sources <span className={styles.badge}>{sources.length}</span></h2>
+              <button className={`${styles.btnPrimary} ${crawling ? styles.btnDisabled : ''}`}
+                onClick={() => triggerCrawl()} disabled={crawling}>
+                {crawling ? '⏳ Crawling…' : '🕷️ Crawl All Sources'}
+              </button>
+            </div>
+            {sources.length === 0 && (
+              <p className={styles.muted}>No sources registered yet. Run <code>scripts/setup-trusted-engine.sql</code> in Supabase, then trigger a crawl.</p>
+            )}
+            <div className={styles.sourcesGrid}>
+              {sources.map(s => (
+                <div key={s.id} className={`${styles.sourceCard} ${s.active ? '' : styles.sourceInactive}`}>
+                  <div className={styles.sourceTop}>
+                    <div className={styles.sourceName}>{s.source_name}</div>
+                    <span className={styles.sourceType}>{s.source_type}</span>
+                  </div>
+                  <div className={styles.sourceDomain}>🔗 {s.domain}</div>
+                  <div className={styles.sourceMeta}>
+                    <span>📄 {s.item_count || 0} items</span>
+                    <span>🔢 Depth {s.allowed_depth}</span>
+                    <span>🗂 {(s.subsources||[]).length} subsources</span>
+                  </div>
+                  {(s.subsources||[]).length > 0 && (
+                    <div className={styles.subsources}>
+                      {s.subsources.map((sub, i) => (
+                        <span key={i} className={styles.subTag}>{sub.subcategory || sub.category}</span>
+                      ))}
+                    </div>
+                  )}
+                  <div className={styles.sourceActions}>
+                    <button className={`${styles.toggleBtn} ${s.active ? styles.toggleActive : ''}`} onClick={() => toggleSource(s)}>
+                      {s.active ? '✅ Active' : '⏸ Inactive'}
+                    </button>
+                    <button className={styles.crawlBtn} onClick={() => triggerCrawl([s.source_name])} disabled={crawling || !s.active}>
+                      {crawling ? '⏳' : '🕷️'} Crawl
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {crawlLog && (
+              <div className={styles.crawlLog}>
+                <h3>Last Crawl — {crawlLog.crawledAt}</h3>
+                {(crawlLog.report||[]).map((r, i) => (
+                  <div key={i} className={styles.logCard}>
+                    <strong>{r.sourceName}</strong>
+                    <span>🌐 {r.pagesVisited} pages</span>
+                    <span>✅ {r.itemsExtracted} extracted</span>
+                    <span>⏭ {r.skipped} skipped</span>
+                    {r.errors?.length > 0 && <span className={styles.logErr}>⚠️ {r.errors.length} errors</span>}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Items Tab ────────────────────────────────────────── */}
+        {tab === 1 && (
+          <div>
+            <h2 className={styles.sectionTitle}>Crawled Items <span className={styles.badge}>{totalItems}</span></h2>
+            <div className={styles.itemFilters}>
+              <input placeholder="Search title…" value={itemFilter.q}
+                onChange={e => setItemFilter(f => ({...f, q: e.target.value, page: 0}))}
+                className={styles.input} style={{maxWidth:260}} />
+              <select value={itemFilter.category}
+                onChange={e => setItemFilter(f => ({...f, category: e.target.value, page: 0}))}
+                className={styles.input} style={{width:'auto'}}>
+                <option value="">All Categories</option>
+                {['Events','Tours & Activities','Food','Outdoors','Discovery'].map(c => <option key={c}>{c}</option>)}
+              </select>
+              <select value={itemFilter.listing_type}
+                onChange={e => setItemFilter(f => ({...f, listing_type: e.target.value, page: 0}))}
+                className={styles.input} style={{width:'auto'}}>
+                <option value="">All Types</option>
+                <option value="standard">Standard</option>
+                <option value="featured">⭐ Featured</option>
+                <option value="partner">💼 Partner</option>
+              </select>
+              <button className={styles.btnPrimary} onClick={() => loadItems(itemFilter)}>Search</button>
+            </div>
+
+            {itemLoading ? <p className={styles.muted}>Loading…</p> : (
+              <div className={styles.table}>
+                <div className={styles.thead}>
+                  <span>Title / Source</span><span>Category</span><span>Price / Date</span><span>Type</span><span>Actions</span>
+                </div>
+                {items.map(item => (
+                  <div key={item.id} className={styles.trow}>
+                    <span>
+                      <a href={item.url} target="_blank" rel="noopener noreferrer" className={styles.actName}>{item.title || '(no title)'}</a>
+                      <br /><span className={styles.muted} style={{fontSize:'0.75rem'}}>{item.source_name}</span>
+                    </span>
+                    <span><span className={styles.catBadge}>{item.category}</span></span>
+                    <span className={styles.muted}>
+                      {item.price || '—'}{item.event_date ? ` · ${item.event_date}` : ''}
+                    </span>
+                    <span>
+                      <select value={item.listing_type} onChange={e => updateItem(item.id, { listing_type: e.target.value })}
+                        className={styles.typeSelect}>
+                        <option value="standard">Standard</option>
+                        <option value="featured">⭐ Featured</option>
+                        <option value="partner">💼 Partner</option>
+                      </select>
+                    </span>
+                    <span className={styles.rowActions}>
+                      <button className={`${styles.actionBtn} ${item.is_monetized ? styles.actionActive : ''}`}
+                        onClick={() => updateItem(item.id, { is_monetized: !item.is_monetized })} title="Toggle Partner Link badge">💼</button>
+                      <button className={`${styles.actionBtn} ${styles.actionDel}`} onClick={() => deleteItem(item.id)} title="Delete">🗑</button>
+                    </span>
+                  </div>
+                ))}
+                {items.length === 0 && <p className={styles.muted} style={{padding:'20px 0'}}>No items yet. Trigger a crawl from the Sources tab.</p>}
+              </div>
+            )}
+
+            {totalItems > 25 && (
+              <div className={styles.pagination}>
+                <button disabled={itemFilter.page === 0}
+                  onClick={() => { const f={...itemFilter, page: itemFilter.page-1}; setItemFilter(f); loadItems(f); }}>← Prev</button>
+                <span>Page {itemFilter.page+1} of {Math.ceil(totalItems/25)}</span>
+                <button disabled={(itemFilter.page+1)*25 >= totalItems}
+                  onClick={() => { const f={...itemFilter, page: itemFilter.page+1}; setItemFilter(f); loadItems(f); }}>Next →</button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Activities Tab ────────────────────────────────────── */}
+        {tab === 2 && (
           <div>
             <h2 className={styles.sectionTitle}>Add New Activity</h2>
             <div className={styles.addForm}>
@@ -137,15 +345,10 @@ export default function AdminPage() {
               <textarea className={styles.textarea} placeholder="Short summary (1-2 sentences, neutral tone)" value={newAct.short_summary} onChange={e => setNewAct(p=>({...p,short_summary:e.target.value}))} />
               <button className={styles.btnAdd} onClick={addActivity}>+ Add Activity</button>
             </div>
-
-            <h2 className={styles.sectionTitle} style={{marginTop:32}}>
-              All Activities <span className={styles.badge}>{acts.length}</span>
-            </h2>
+            <h2 className={styles.sectionTitle} style={{marginTop:32}}>All Activities <span className={styles.badge}>{acts.length}</span></h2>
             {loading ? <p className={styles.muted}>Loading…</p> : (
               <div className={styles.table}>
-                <div className={styles.thead}>
-                  <span>Name</span><span>Category</span><span>Area</span><span>Source</span><span>Status</span><span>Actions</span>
-                </div>
+                <div className={styles.thead}><span>Name</span><span>Category</span><span>Area</span><span>Source</span><span>Status</span><span>Actions</span></div>
                 {acts.map(a => (
                   <div key={a.id} className={`${styles.trow} ${!a.active_status ? styles.trowDim : ''}`}>
                     <span className={styles.actName}>{a.icon} {a.activity_name}</span>
@@ -153,38 +356,30 @@ export default function AdminPage() {
                     <span className={styles.muted}>{a.neighborhood || '—'}</span>
                     <span className={styles.muted}>{a.source_name || '—'}</span>
                     <span>
-                      {a.active_status
-                        ? <span className={styles.statusOn}>● Live</span>
-                        : <span className={styles.statusOff}>○ Draft</span>}
+                      {a.active_status ? <span className={styles.statusOn}>● Live</span> : <span className={styles.statusOff}>○ Draft</span>}
                       {a.featured_status && <span className={styles.statusFeat}>⭐</span>}
                     </span>
                     <span className={styles.rowActions}>
-                      <button className={styles.actionBtn} onClick={() => toggleActive(a.id, a.active_status)} title="Toggle live/draft">
-                        {a.active_status ? '📤' : '✅'}
-                      </button>
-                      <button className={styles.actionBtn} onClick={() => toggleFeatured(a.id, a.featured_status)} title="Toggle featured">
-                        {a.featured_status ? '⭐' : '☆'}
-                      </button>
-                      <button className={`${styles.actionBtn} ${styles.actionDel}`} onClick={() => deleteActivity(a.id)} title="Delete">🗑</button>
+                      <button className={styles.actionBtn} onClick={() => toggleActive(a.id, a.active_status)}>{a.active_status ? '📤' : '✅'}</button>
+                      <button className={styles.actionBtn} onClick={() => toggleFeatured(a.id, a.featured_status)}>{a.featured_status ? '⭐' : '☆'}</button>
+                      <button className={`${styles.actionBtn} ${styles.actionDel}`} onClick={() => deleteActivity(a.id)}>🗑</button>
                     </span>
                   </div>
                 ))}
-                {acts.length === 0 && <p className={styles.muted} style={{padding:'20px 0'}}>No activities yet. Add Supabase env vars and run the seed script.</p>}
+                {acts.length === 0 && <p className={styles.muted} style={{padding:'20px 0'}}>No activities yet.</p>}
               </div>
             )}
           </div>
         )}
 
-        {/* ── Vendors Tab ── */}
-        {tab === 1 && (
+        {/* ── Vendors Tab ──────────────────────────────────────── */}
+        {tab === 3 && (
           <div>
             <h2 className={styles.sectionTitle}>Vendor Records <span className={styles.badge}>{vendors.length}</span></h2>
-            <p className={styles.muted} style={{marginBottom:16}}>Vendors added via the partner application form. Approve/upgrade to featured here.</p>
+            <p className={styles.muted} style={{marginBottom:16}}>Vendors from partner application form.</p>
             {loading ? <p className={styles.muted}>Loading…</p> : (
               <div className={styles.table}>
-                <div className={styles.thead}>
-                  <span>Business</span><span>Contact</span><span>Email</span><span>Claim</span><span>Tier</span>
-                </div>
+                <div className={styles.thead}><span>Business</span><span>Contact</span><span>Email</span><span>Claim</span><span>Tier</span></div>
                 {vendors.map(v => (
                   <div key={v.id} className={styles.trow}>
                     <span className={styles.actName}>{v.vendor_name}</span>
@@ -194,32 +389,29 @@ export default function AdminPage() {
                     <span><span className={`${styles.catBadge} ${v.paid_status === 'featured' ? styles.catBadgeGold : ''}`}>{v.paid_status}</span></span>
                   </div>
                 ))}
-                {vendors.length === 0 && <p className={styles.muted} style={{padding:'20px 0'}}>No vendors yet. They appear here when applications come in via /partner.</p>}
+                {vendors.length === 0 && <p className={styles.muted} style={{padding:'20px 0'}}>No vendors yet.</p>}
               </div>
             )}
           </div>
         )}
 
-        {/* ── Setup Checklist Tab ── */}
-        {tab === 2 && (
+        {/* ── Setup Tab ────────────────────────────────────────── */}
+        {tab === 4 && (
           <div>
             <h2 className={styles.sectionTitle}>Setup Checklist</h2>
             <div className={styles.checklist}>
               {[
-                { done: true,  label: 'Next.js V2 deployed to Vercel', detail:'tampa.citytourguide.app is live' },
-                { done: true,  label: 'Gemini AI search working', detail:'gemini-2.5-flash-lite via API' },
-                { done: true,  label: 'Leaflet map view wired', detail:'Toggle map button on main page' },
-                { done: true,  label: 'Seed script ready', detail:'scripts/seed-tampa.js — 29 activities' },
-                { done: false, label: 'Create Supabase project', detail:'supabase.com → New project (free)' },
-                { done: false, label: 'Run schema SQL', detail:'Paste supabase/schema.sql in SQL Editor' },
-                { done: false, label: 'Run seed script', detail:'node scripts/seed-tampa.js (add .env.local first)' },
-                { done: false, label: 'Add Supabase env vars to Vercel', detail:'NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY' },
-                { done: false, label: 'Add GA4 Measurement ID', detail:'Replace G-XXXXXXXXXX in app/layout.js' },
-                { done: false, label: 'GetYourGuide partner signup', detail:'partner.getyourguide.com — free, 8% commission' },
-                { done: false, label: 'Viator affiliate signup', detail:'partnerresources.viator.com — free, 8% commission' },
-                { done: false, label: 'Sign first featured vendor ($199/mo)', detail:'Direct outreach to local tour operators' },
-                { done: false, label: 'Set up GCP billing budget alert ($5)',  detail:'Prevent unexpected Gemini API charges' },
-                { done: false, label: 'Pitch first hotel / condo property', detail:'White-label licensing strategy' },
+                { done: true,  label: 'Next.js V2 deployed to Vercel', detail: 'tampa.citytourguide.app is live' },
+                { done: true,  label: 'Compliance refactor complete', detail: 'Disclosure bar, Partner Link badges, safe labels, legal footer' },
+                { done: true,  label: 'Legal pages live', detail: '/disclaimer · /privacy · /terms' },
+                { done: true,  label: '/resources page live', detail: 'Curated links with PDF download' },
+                { done: true,  label: 'Trusted source engine built', detail: 'Crawler + extractor + crawl API + this admin panel' },
+                { done: false, label: 'Run Supabase SQL for trusted engine', detail: 'scripts/setup-trusted-engine.sql in Supabase SQL Editor' },
+                { done: false, label: 'Set CRAWL_SECRET in Vercel env vars', detail: 'Protects POST /api/crawl endpoint' },
+                { done: false, label: 'Set ADMIN_SECRET in Vercel env vars', detail: 'Protects /api/admin/* endpoints' },
+                { done: false, label: 'Trigger first crawl', detail: 'POST /api/crawl — ingests Tampa Downtown Partnership' },
+                { done: false, label: 'Add GETYOURGUIDE_PARTNER_ID env var', detail: 'Get from partner.getyourguide.com' },
+                { done: false, label: 'Add VIATOR_AFFILIATE_ID env var', detail: 'Get from partnerresources.viator.com' },
               ].map((item, i) => (
                 <div key={i} className={styles.checkItem}>
                   <span className={styles.checkIcon}>{item.done ? '✅' : '⏳'}</span>
@@ -231,18 +423,19 @@ export default function AdminPage() {
                 </div>
               ))}
             </div>
-
-            <h2 className={styles.sectionTitle} style={{marginTop:32}}>Featured Vendor Slot</h2>
-            <p className={styles.muted} style={{marginBottom:12}}>Set these in <strong>Vercel → Settings → Environment Variables</strong> — no code changes needed.</p>
+            <h2 className={styles.sectionTitle} style={{marginTop:32}}>Required Env Vars</h2>
             <div className={styles.envTable}>
               {[
-                ['FEATURED_VENDOR_NAME', 'Business display name'],
-                ['FEATURED_VENDOR_URL', 'Booking/website URL'],
-                ['FEATURED_VENDOR_SUB', 'Category label (e.g. Tours & Activities)'],
-                ['FEATURED_VENDOR_ICON', 'Emoji icon (e.g. 🚤)'],
-                ['GETYOURGUIDE_PARTNER_ID', 'Your GYG partner ID'],
-                ['VIATOR_AFFILIATE_ID', 'Your Viator MCID'],
-                ['NEXT_PUBLIC_ADMIN_PASSWORD', 'Change from default (citytourguide2026)'],
+                ['NEXT_PUBLIC_SUPABASE_URL', 'Supabase project URL'],
+                ['NEXT_PUBLIC_SUPABASE_ANON_KEY', 'Supabase anon key'],
+                ['SUPABASE_SERVICE_ROLE_KEY', 'Required for crawl API writes'],
+                ['CRAWL_SECRET', 'Protect POST /api/crawl'],
+                ['ADMIN_SECRET', 'Protect /api/admin/* (or use CRAWL_SECRET)'],
+                ['NEXT_PUBLIC_ADMIN_PASSWORD', 'Admin panel UI password'],
+                ['FEATURED_VENDOR_NAME', 'Featured partner display name'],
+                ['FEATURED_VENDOR_URL', 'Featured partner booking URL'],
+                ['GETYOURGUIDE_PARTNER_ID', 'GYG affiliate partner ID'],
+                ['VIATOR_AFFILIATE_ID', 'Viator MCID affiliate ID'],
               ].map(([k, v]) => (
                 <div key={k} className={styles.envRow}>
                   <code className={styles.envKey}>{k}</code>
