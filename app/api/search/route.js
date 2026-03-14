@@ -18,17 +18,79 @@ function enhanceUrl(url, sourceName) {
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
-  const q         = searchParams.get('q')?.trim();
-  const city      = searchParams.get('city')      || 'Tampa';
-  const category  = searchParams.get('category');
-  const area      = searchParams.get('area');
-  const date      = searchParams.get('date');
-  const price_max = searchParams.get('price_max');
-  const tag       = searchParams.get('tag');
+  const q           = searchParams.get('q')?.trim();
+  const city        = searchParams.get('city')        || 'Tampa';
+  const category    = searchParams.get('category');
+  const area        = searchParams.get('area');
+  const date        = searchParams.get('date');
+  const price_max   = searchParams.get('price_max');
+  const tag         = searchParams.get('tag');
+  const source      = searchParams.get('source');      // 'trusted' = query only trusted_items
+  const source_type = searchParams.get('source_type'); // filter by sourceType
+  const audience    = searchParams.get('audience');    // filter by audience tag
 
   // Fallback if Supabase not configured — return empty with hint
   if (!supabase) {
     return NextResponse.json({ results: [], hint: 'Database not connected. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to Vercel env vars.' });
+  }
+
+  // ── Trusted-source search path ──────────────────────────────────
+  // Query ONLY trusted_items (no open web, no affiliate APIs)
+  if (source === 'trusted') {
+    try {
+      let query = supabase
+        .from('trusted_items')
+        .select('id,title,url,source_name,source_domain,source_type,category,subcategory,area,price,event_date,audience,summary,listing_type,is_external,is_monetized,city')
+        .eq('city', city)
+        .order('event_date', { ascending: true, nullsFirst: false })
+        .limit(30);
+
+      if (q)           query = query.textSearch('fts', q, { type: 'websearch', config: 'english' });
+      if (category)    query = query.eq('category', category);
+      if (area)        query = query.ilike('area', `%${area}%`);
+      if (source_type) query = query.eq('source_type', source_type);
+      if (audience)    query = query.contains('audience', [audience]);
+
+      // Price filter: 'free' = price = 'Free'; number = filter by price text
+      if (price_max === '0' || price_max === 'free') {
+        query = query.ilike('price', '%free%');
+      }
+
+      // Date filters
+      const today = new Date().toISOString().slice(0, 10);
+      if (date === 'today') {
+        query = query.eq('event_date', today);
+      } else if (date === 'weekend') {
+        const d = new Date();
+        const sat = new Date(d); sat.setDate(d.getDate() + ((6 - d.getDay() + 7) % 7));
+        const sun = new Date(sat); sun.setDate(sat.getDate() + 1);
+        query = query.gte('event_date', sat.toISOString().slice(0, 10))
+                     .lte('event_date', sun.toISOString().slice(0, 10));
+      } else if (date && date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        query = query.eq('event_date', date);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      // Normalise to common result shape
+      const results = (data || []).map(item => ({
+        ...item,
+        title:         item.title,
+        description:   item.summary,
+        destinationUrl: item.url,
+        ctaLabel:      item.is_external ? 'Visit Source ↗' : 'Learn More ↗',
+        listingType:   item.listing_type || 'standard',
+        isExternal:    true,
+        isMonetized:   false,
+        trustedSource: true,
+      }));
+
+      return NextResponse.json({ results, source: 'trusted_items', count: results.length });
+    } catch (err) {
+      console.error('Trusted search error:', err.message);
+      return NextResponse.json({ results: [], error: err.message }, { status: 500 });
+    }
   }
 
   try {

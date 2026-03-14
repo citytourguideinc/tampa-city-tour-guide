@@ -1,0 +1,45 @@
+[
+  {
+    "sourceName": "Tampa Downtown Partnership",
+    "mainUrl": "https://www.tampasdowntown.com/",
+    "domain": "tampasdowntown.com",
+    "sourceType": "official",
+    "allowedDepth": 2,
+    "allowedPaths": null,
+    "blockedPaths": [
+      "/login", "/membership", "/members", "/add-event",
+      "/grants", "/about-us/grants", "/wp-admin", "/wp-login",
+      "/cart", "/checkout", "/account", "/subscribe"
+    ],
+    "subsources": [
+      {
+        "url": "https://www.tampasdowntown.com/events/",
+        "category": "Events",
+        "subcategory": "Downtown Events",
+        "area": "Downtown"
+      },
+      {
+        "url": "https://www.tampasdowntown.com/events-category/free-events/",
+        "category": "Events",
+        "subcategory": "Free Events",
+        "area": "Downtown",
+        "priceHint": "Free"
+      },
+      {
+        "url": "https://www.tampasdowntown.com/community-events/",
+        "category": "Events",
+        "subcategory": "Community Events",
+        "area": "Downtown"
+      },
+      {
+        "url": "https://www.tampasdowntown.com/neighborhoods/",
+        "category": "Tours & Activities",
+        "subcategory": "Neighborhoods",
+        "area": "Downtown"
+      }
+    ],
+    "active": true,
+    "city": "Tampa",
+    "area": "Downtown"
+  }
+]
