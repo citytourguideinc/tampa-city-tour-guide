@@ -56,11 +56,11 @@ const ACTIVITIES = [
   { activity_name:'International Plaza', category:'Shopping', neighborhood:'Airport Area', icon:'🛍', official_link:'https://www.shopinternationalplaza.com/', short_summary:'Upscale indoor mall with luxury brands, restaurants, and Tampa\'s best shopping.', source_type:'curated', source_name:'Official', lat:27.9604, lng:-82.5149 },
   { activity_name:'Ybor Saturday Market', category:'Shopping', neighborhood:'Ybor City', icon:'🥦', official_link:'https://www.ybormarket.com/', short_summary:'Ybor City\'s beloved Saturday farmers market with fresh produce, arts, crafts, and food.', source_type:'curated', source_name:'Official', lat:27.9603, lng:-82.4354 },
   // ── Events Calendar ───────────────────────────────────────────
-  { activity_name:'Tampa Riverwalk Events', category:'Events Calendar', neighborhood:'Downtown', icon:'🌊', official_link:'https://thetampariverwalk.com/events/', short_summary:'Free outdoor concerts, markets, yoga, and community events along the 2.6-mile Riverwalk.', source_type:'curated', source_name:'Official', lat:27.9476, lng:-82.4620 },
+
   { activity_name:'That\'s So Tampa Events', category:'Events Calendar', neighborhood:'City-wide', icon:'📍', official_link:'https://thatssotampa.com/events/map/', short_summary:'Tampa\'s go-to local events map — music, food, art, markets, and nightlife all week.', source_type:'curated', source_name:'Local Media' },
   { activity_name:'Creative Loafing Tampa Events', category:'Events Calendar', neighborhood:'City-wide', icon:'📰', official_link:'https://cltampa.com/calendar/', short_summary:'Arts, culture, music, food, and nightlife from Tampa\'s best alternative weekly.', source_type:'curated', source_name:'Local Media' },
   { activity_name:'Visit Tampa Bay Events', category:'Events Calendar', neighborhood:'City-wide', icon:'🌴', official_link:'https://www.visittampabay.com/tampa-events/', short_summary:'Official Tampa Bay events calendar — festivals, concerts, sports, and cultural events.', source_type:'curated', source_name:'Official' },
-  { activity_name:'Straz Center Calendar', category:'Events Calendar', neighborhood:'Downtown', icon:'🎭', official_link:'https://www.strazcenter.org/calendar/', short_summary:'Full calendar of Broadway shows, concerts, opera, ballet, and live performances.', source_type:'curated', source_name:'Official', lat:27.9490, lng:-82.4596 },
+
   { activity_name:'Gasparilla Events', category:'Events Calendar', neighborhood:'Downtown', icon:'☠', official_link:'https://www.gasparillapiratefest.com/', short_summary:'Tampa\'s iconic pirate festival — parades, live music, and citywide festivities in January.', source_type:'curated', source_name:'Official' },
   { activity_name:'Tampa Bay Food & Wine Festival', category:'Events Calendar', neighborhood:'City-wide', icon:'🍷', official_link:'https://www.tampabaygazette.com/', short_summary:'Annual celebration of local chefs, restaurants, and vintners across Tampa Bay.', source_type:'curated', source_name:'Official' },
   // ── Tours & Activities ────────────────────────────────────────
@@ -81,29 +81,26 @@ const ACTIVITIES = [
   { activity_name:'Tampa Spa Day', category:'Wellness', neighborhood:'City-wide', icon:'💆', booking_link:'https://www.groupon.com/local/tampa/spas', short_summary:'Indulge in a spa day with massages, facials, and treatments at Tampa\'s top spas.', source_type:'partner', source_name:'Groupon' },
   // ── Volunteer ─────────────────────────────────────────────────
   { activity_name:'Keep Tampa Bay Beautiful', category:'Volunteer', neighborhood:'City-wide', icon:'🌿', official_link:'https://www.keeptampabaybeautiful.org/become-a-volunteer', short_summary:'Volunteer for beach cleanups, park restoration, and environmental conservation.', source_type:'curated', source_name:'Nonprofit' },
-  { activity_name:'The Florida Aquarium Volunteer', category:'Volunteer', neighborhood:'Channelside', icon:'🐠', official_link:'https://www.flaquarium.org/give/volunteer/', short_summary:'Volunteer at the Florida Aquarium — assist with marine education and animal care.', source_type:'curated', source_name:'Nonprofit', lat:27.9416, lng:-82.4499 },
-  { activity_name:'Straz Center Volunteer', category:'Volunteer', neighborhood:'Downtown', icon:'🎭', official_link:'https://www.strazcenter.org/about-us/volunteer/', short_summary:'Volunteer as an usher or event assistant at Tampa\'s premier performing arts center.', source_type:'curated', source_name:'Nonprofit', lat:27.9490, lng:-82.4596 },
-  { activity_name:'Tampa Bay History Center Volunteer', category:'Volunteer', neighborhood:'Channelside', icon:'🏛', official_link:'https://tampabayhistorycenter.org/volunteer/', short_summary:'Share your passion for history by volunteering at Tampa Bay\'s premier history museum.', source_type:'curated', source_name:'Nonprofit', lat:27.9435, lng:-82.4549 },
-  { activity_name:'Tampa Riverwalk Volunteer', category:'Volunteer', neighborhood:'Downtown', icon:'🌊', official_link:'https://thetampariverwalk.com/how-to-help/', short_summary:'Help beautify and maintain the beloved Tampa Riverwalk through volunteer events.', source_type:'curated', source_name:'Nonprofit', lat:27.9476, lng:-82.4620 },
+
 ];
 
 const TAGS = [
   { name:'family',    activities:['Curtis Hixon Waterfront Park','The Florida Aquarium','Tampa Bay History Center','CityPASS Tampa','Florida State Parks','ZooTampa at Lowry Park','Busch Gardens Tampa','Glazer Children\'s Museum'] },
-  { name:'free',      activities:['Curtis Hixon Waterfront Park','Tampa Riverwalk Events','Keep Tampa Bay Beautiful','Ballast Point Park','Tampa Riverwalk','Florida Resident Discounts'] },
-  { name:'outdoor',   activities:['Curtis Hixon Waterfront Park','Florida State Parks','Tampa Riverwalk Events','Tampa Bay Boat Tours','Keep Tampa Bay Beautiful','Clearwater Beach','St. Pete Beach','Caladesi Island State Park','Hillsborough River State Park','Ballast Point Park','Tampa Kayak & Paddleboard'] },
+  { name:'free',      activities:['Curtis Hixon Waterfront Park','Tampa Riverwalk','Keep Tampa Bay Beautiful','Ballast Point Park','Florida Resident Discounts'] },
+  { name:'outdoor',   activities:['Curtis Hixon Waterfront Park','Florida State Parks','Tampa Riverwalk','Tampa Bay Boat Tours','Keep Tampa Bay Beautiful','Clearwater Beach','St. Pete Beach','Caladesi Island State Park','Hillsborough River State Park','Ballast Point Park','Tampa Kayak & Paddleboard'] },
   { name:'nightlife', activities:['Ybor City Historic District','Armature Works','That\'s So Tampa Events','Creative Loafing Tampa Events','Ybor City Nightlife','SoHo District Bars','Seminole Heights Bar Scene','Heights Rooftop at Armature Works'] },
-  { name:'volunteer', activities:['Keep Tampa Bay Beautiful','The Florida Aquarium Volunteer','Straz Center Volunteer','Tampa Bay History Center Volunteer','Tampa Riverwalk Volunteer'] },
+  { name:'volunteer', activities:['Keep Tampa Bay Beautiful','The Florida Aquarium','Straz Center Performances','Tampa Bay History Center','Tampa Riverwalk'] },
   { name:'tours',     activities:['Tampa Golf Cart Tours','Tampa Bay Boat Tours','Tampa Kayak & Paddleboard','Ybor City Food Tour','Tampa Bay Sunset Cruise','Visit Tampa Bay Tours'] },
-  { name:'arts',      activities:['Tampa Museum of Art','Straz Center Performances','Creative Loafing Tampa Events','Ybor City Historic District','Henry B. Plant Museum','Straz Center Calendar'] },
+  { name:'arts',      activities:['Tampa Museum of Art','Straz Center Performances','Creative Loafing Tampa Events','Ybor City Historic District','Henry B. Plant Museum'] },
   { name:'deals',     activities:['Groupon Tampa Deals','CityPASS Tampa','Visit Tampa Bay Deals','Florida Resident Discounts','Tampa Spa Day'] },
-  { name:'waterfront',activities:['Curtis Hixon Waterfront Park','Armature Works','Tampa Bay Boat Tours','Tampa Riverwalk Events','Tampa Riverwalk','Ulele Restaurant','Ballast Point Park','Tampa Bay Sunset Cruise'] },
+  { name:'waterfront',activities:['Curtis Hixon Waterfront Park','Armature Works','Tampa Bay Boat Tours','Tampa Riverwalk','Ulele Restaurant','Ballast Point Park','Tampa Bay Sunset Cruise'] },
   { name:'history',   activities:['Tampa Bay History Center','Ybor City Historic District','Tampa Fire Fighters Museum','Henry B. Plant Museum','Columbia Restaurant Ybor City'] },
   { name:'food',      activities:['Columbia Restaurant Ybor City','Ulele Restaurant','Bern\'s Steakhouse','Oxford Exchange','Rooster & the Till','Ella\'s Americana Folk Art Cafe','Ybor Saturday Market','Ybor City Food Tour'] },
   { name:'sports',    activities:['Tampa Bay Lightning Games','Tampa Bay Buccaneers Games','Tampa Bay Rays Games','Tampa Bay Rowdies Soccer','Amalie Arena'] },
   { name:'beach',     activities:['Clearwater Beach','St. Pete Beach','Caladesi Island State Park','Ballast Point Park'] },
   { name:'wellness',  activities:['Tampa Yoga Studios','Float Tampa','Tampa Spa Day'] },
   { name:'shopping',  activities:['Hyde Park Village','International Plaza','Ybor Saturday Market'] },
-  { name:'events',    activities:['Armature Works','Gasparilla Events','Tampa Bay Food & Wine Festival','Tampa Riverwalk Events','Visit Tampa Bay Events','Straz Center Calendar','That\'s So Tampa Events'] },
+  { name:'events',    activities:['Armature Works','Gasparilla Events','Tampa Bay Food & Wine Festival','Tampa Riverwalk','Straz Center Performances','Visit Tampa Bay Events','That\'s So Tampa Events'] },
 ];
 
 const TOURS = [
