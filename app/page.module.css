@@ -1,137 +1,132 @@
 .page { min-height: 100vh; display: flex; flex-direction: column; background: #F8F7F4; }
 
-/* ── Header ──────────────────────────────────────────────────── */
-.header {
-  padding: 32px 0 28px;
-  text-align: center;
-  background: #FFFFFF;
-  border-bottom: 1px solid rgba(0,0,0,0.07);
+/* ── Sticky Navbar ───────────────────────────────────────────── */
+.navbar {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 100;
+  background: #FFFFFF;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
 }
-.header::before { display: none; }
-.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+.navInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 68px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+}
 
-.eyebrow {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--sunset1);
-  background: rgba(232,67,26,0.07);
-  border: 1px solid rgba(232,67,26,0.18);
-  padding: 4px 14px; border-radius: 99px;
-  margin-bottom: 18px;
-}
-.dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--sunset2);
-  animation: pulse-dot 2s ease-in-out infinite;
-}
-.h1 {
-  font-family: 'Outfit', sans-serif;
-  font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em;
-  background: var(--grad-sunset);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  margin-bottom: 10px; line-height: 1.1;
-}
-.sub {
-  color: #6B7280;
-  font-size: 1rem;
-  font-weight: 400;
-  margin-bottom: 28px;
-  text-align: center;
-  letter-spacing: 0.01em;
-}
-.subMuted { color: var(--dim); font-size: 0.82rem; margin-bottom: 24px; }
-.searchWrap { max-width: 620px; margin: 0 auto; }
-.searchWrapInline { flex: 1; max-width: 460px; }
-
-/* ── Brand row: CITY TOUR GUIDE + city selector ─── */
-.brandRow {
+/* LEFT — Logo */
+.logoLink {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 6px;
+  text-decoration: none;
+  justify-self: start;
 }
-.brandBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.logoImg {
+  height: 40px;
+  width: auto;
+  display: block;
 }
-.brandName {
-  font-family: 'Outfit', sans-serif;
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: #111827;
-  line-height: 1;
-  text-transform: uppercase;
-}
-.citySelector {
+
+/* CENTER — City picker pill */
+.cityPicker {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(13,116,144,0.08);
-  border: 1px solid rgba(13,116,144,0.2);
-  border-radius: 99px;
-  padding: 4px 10px 4px 8px;
-  width: fit-content;
+  background: rgba(0,102,204,0.06);
+  border: 1.5px solid rgba(0,102,204,0.2);
+  border-radius: 999px;
+  padding: 8px 14px 8px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  justify-self: center;
 }
-.cityPin { font-size: 0.8rem; }
-.citySelect {
+.cityPicker:hover {
+  background: rgba(0,102,204,0.1);
+  border-color: rgba(0,102,204,0.35);
+}
+.cityPickerPin { font-size: 0.9rem; line-height: 1; }
+.cityPickerSelect {
   appearance: none;
   -webkit-appearance: none;
   background: transparent;
   border: none;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #0D7490;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0066CC;
   cursor: pointer;
-  padding: 0 14px 0 0;
+  padding: 0 16px 0 4px;
   outline: none;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.cityPickerChevron {
+  font-size: 0.7rem;
+  color: #0066CC;
+  pointer-events: none;
+  margin-left: -14px;
+  flex-shrink: 0;
+}
+
+/* RIGHT — nav search (compact results mode) */
+.navSearch {
+  justify-self: end;
+  width: 100%;
+  max-width: 360px;
+}
+.navRightSpacer { justify-self: end; }
+
+/* ── Hero section (landing only) ─────────────────────────────── */
+.hero {
+  padding: 72px 0 60px;
+  text-align: center;
+  background: #FFFFFF;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.heroEyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #0D7490;
+  margin-bottom: 16px;
+}
+.heroTitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: #111827;
+  margin-bottom: 14px;
+}
+.heroSub {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  color: #6B7280;
+  font-weight: 400;
+  margin-bottom: 36px;
   letter-spacing: 0.01em;
 }
-.citySelect:focus { outline: none; }
-.cityChevron {
-  font-size: 0.65rem;
-  color: #0D7490;
-  pointer-events: none;
-  margin-left: -13px;
+.heroSearch {
+  max-width: 620px;
+  margin: 0 auto;
 }
 
-/* Landing vs compact header states */
-.headerLanding { padding: 32px 0 28px; }
-.headerCompact {
-  padding: 14px 0;
-  background: #FFFFFF;
-  border-bottom: 1px solid rgba(0,0,0,0.07);
-}
-.headerCompact .brandName { font-size: 1.1rem; letter-spacing: 0.06em; }
-.headerCompact .citySelector { padding: 2px 8px 2px 6px; }
-.headerCompact .citySelect { font-size: 0.75rem; }
+/* Shared container */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
 
-.h1 {
-  font-family: 'Outfit', sans-serif;
-  font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em;
-  background: var(--grad-sunset);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  margin-bottom: 10px; line-height: 1.1;
-}
-.h1Compact {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: #111827;
-  background: none;
-  -webkit-text-fill-color: unset;
-  margin: 0;
-  display: inline-block;
-}
+
 
 /* Landing discovery state */
+
 .landing { padding: 8px 0 40px; }
 .landingLabel {
   font-size: 0.75rem;

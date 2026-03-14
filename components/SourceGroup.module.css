@@ -20,7 +20,7 @@
   padding: 11px 14px 10px 16px;
   border-bottom: 1px solid rgba(0,0,0,0.07);
   background: #F2F1EE;
-  border-left: 4px solid var(--sunset1, #E8431A);
+  border-left: 4px solid #0066CC;
 }
 .sourceName {
   font-size: 0.85rem;
@@ -37,9 +37,9 @@
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 99px;
-  background: rgba(232,67,26,0.08);
-  border: 1px solid rgba(232,67,26,0.2);
-  color: var(--sunset1, #E8431A);
+  background: rgba(0,102,204,0.07);
+  border: 1px solid rgba(0,102,204,0.18);
+  color: #0066CC;
   white-space: nowrap;
   flex-shrink: 0;
 }

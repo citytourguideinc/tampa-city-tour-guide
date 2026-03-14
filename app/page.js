@@ -124,55 +124,67 @@ export default function Home() {
   return (
     <div className={styles.page}>
 
-      {/* ── Header ──────────────────────────────────────────────── */}
-      <header className={`${styles.header} ${!hasSearched ? styles.headerLanding : styles.headerCompact}`}>
-        <div className={styles.container}>
+      {/* ── Sticky 3-col Navbar ──────────────────────────────────── */}
+      <header className={styles.navbar}>
+        <div className={styles.navInner}>
 
-          {/* Brand row */}
-          <div className={styles.brandRow}>
-            <div className={styles.brandBlock}>
-              <span className={styles.brandName}>CITY TOUR GUIDE</span>
-              {/* City selector */}
-              <div className={styles.citySelector}>
-                <span className={styles.cityPin}>📍</span>
-                <select
-                  className={styles.citySelect}
-                  value="tampa"
-                  onChange={e => {
-                    if (e.target.value !== 'tampa') {
-                      alert('More cities coming soon! Tampa is live now.');
-                      e.target.value = 'tampa';
-                    }
-                  }}
-                  aria-label="Select city"
-                >
-                  <option value="tampa">Tampa, FL</option>
-                  <option value="stpete" disabled>St. Pete, FL — Coming Soon</option>
-                  <option value="orlando" disabled>Orlando, FL — Coming Soon</option>
-                  <option value="miami" disabled>Miami, FL — Coming Soon</option>
-                </select>
-                <span className={styles.cityChevron}>▾</span>
-              </div>
-            </div>
+          {/* LEFT — Logo + Brand */}
+          <a href="/" className={styles.logoLink} aria-label="City Tour Guide home">
+            <img src="/logo.svg" alt="City Tour Guide" className={styles.logoImg} />
+          </a>
 
-            {hasSearched && (
-              <div className={styles.searchWrapInline}>
-                <SearchBar onSearch={handleSearch} loading={loading} />
-              </div>
-            )}
+          {/* CENTER — City / Region Picker */}
+          <div className={styles.cityPicker}>
+            <span className={styles.cityPickerPin}>📍</span>
+            <select
+              className={styles.cityPickerSelect}
+              defaultValue="nationwide"
+              onChange={e => {
+                if (e.target.value === 'tampa') {
+                  // Tampa is live — could filter by city in future
+                } else if (e.target.value !== 'nationwide') {
+                  alert('More cities coming soon!');
+                  e.target.value = 'nationwide';
+                }
+              }}
+              aria-label="Select city or region"
+            >
+              <option value="nationwide">Nationwide</option>
+              <option value="tampa">Tampa, FL ✓ Live</option>
+              <option value="stpete" disabled>St. Pete, FL — Coming Soon</option>
+              <option value="orlando" disabled>Orlando, FL — Coming Soon</option>
+              <option value="miami" disabled>Miami, FL — Coming Soon</option>
+              <option value="nyc" disabled>New York, NY — Coming Soon</option>
+              <option value="la" disabled>Los Angeles, CA — Coming Soon</option>
+            </select>
+            <span className={styles.cityPickerChevron}>▾</span>
           </div>
 
-          {/* Landing subtitle + search */}
-          {!hasSearched && (
-            <>
-              <p className={styles.sub}>Events, activities &amp; things to do — updated daily</p>
-              <div className={styles.searchWrap}>
-                <SearchBar onSearch={handleSearch} loading={loading} />
-              </div>
-            </>
+          {/* RIGHT — Inline search (results mode only) */}
+          {hasSearched && (
+            <div className={styles.navSearch}>
+              <SearchBar onSearch={handleSearch} loading={loading} />
+            </div>
           )}
+          {!hasSearched && <div className={styles.navRightSpacer} />}
+
         </div>
       </header>
+
+      {/* ── Landing Hero (shown only before search) ─────────────── */}
+      {!hasSearched && (
+        <section className={styles.hero}>
+          <div className={styles.container}>
+            <p className={styles.heroEyebrow}>🌴 Your City. Your Guide.</p>
+            <h1 className={styles.heroTitle}>Discover What's Happening</h1>
+            <p className={styles.heroSub}>Events, activities &amp; things to do — updated daily</p>
+            <div className={styles.heroSearch}>
+              <SearchBar onSearch={handleSearch} loading={loading} />
+            </div>
+          </div>
+        </section>
+      )}
+
 
       {/* ── Main ────────────────────────────────────────────────── */}
       <main className={styles.main}>
