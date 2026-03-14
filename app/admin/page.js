@@ -53,7 +53,7 @@ function Dashboard({ onLogout }) {
   const [totalItems,  setTotalItems]  = useState(0);
   const [crawling,    setCrawling]    = useState(false);
   const [crawlLog,    setCrawlLog]    = useState(null);
-  const [itemFilter,  setItemFilter]  = useState({ q:'', category:'', listing_type:'', page: 0 });
+  const [itemFilter,  setItemFilter]  = useState({ q:'', category:'', listing_type:'', status:'pending', page: 0 });
   const [itemLoading, setItemLoading] = useState(false);
 
   const adminHeaders = { 'x-admin-secret': ADMIN_PWD, 'Content-Type': 'application/json' };
@@ -79,6 +79,7 @@ function Dashboard({ onLogout }) {
       if (filter.q)            params.set('q', filter.q);
       if (filter.category)     params.set('category', filter.category);
       if (filter.listing_type) params.set('listing_type', filter.listing_type);
+      params.set('status', filter.status || 'pending');
       const res  = await fetch(`/api/admin/items?${params}`, { headers: adminHeaders });
       const data = await res.json();
       setItems(data.items || []);
@@ -94,8 +95,14 @@ function Dashboard({ onLogout }) {
       const res  = await fetch('/api/crawl', { method: 'POST', headers: adminHeaders, body });
       const data = await res.json();
       setCrawlLog(data);
-      flash(`✅ Crawl done — ${data.report?.reduce((a,r) => a + r.itemsExtracted, 0) || 0} items extracted`);
+      const extracted = data.summary?.totalItemsExtracted || data.report?.reduce((a,r) => a + r.itemsExtracted, 0) || 0;
+      flash(`✅ Crawl done — ${extracted} items extracted (status: pending review)`);
       loadSources();
+      // Auto-switch to Items tab showing pending review queue
+      setTab(1);
+      const newFilter = { q:'', category:'', listing_type:'', status:'pending', page: 0 };
+      setItemFilter(newFilter);
+      loadItems(newFilter);
     } catch (err) { flash(`Crawl failed: ${err.message}`, true); }
     finally { setCrawling(false); }
   }
@@ -219,6 +226,20 @@ function Dashboard({ onLogout }) {
                     <span>🔢 Depth {s.allowed_depth}</span>
                     <span>🗂 {(s.subsources||[]).length} subsources</span>
                   </div>
+                  {/* Health report */}
+                  {s.last_crawl_at && (
+                    <div className={styles.healthBar}>
+                      <span title="Last crawl date">
+                        {new Date(s.last_crawl_at) < new Date(Date.now()-7*86400000)
+                          ? <span className={styles.healthStale}>⚠️ Stale</span>
+                          : <span className={styles.healthOk}>✅</span>}
+                        {' '}{new Date(s.last_crawl_at).toLocaleDateString()}
+                      </span>
+                      <span>🌐 {s.last_crawl_pages || 0} pages</span>
+                      <span>📥 {s.last_crawl_items || 0} extracted</span>
+                      {(s.last_crawl_errors||0) > 0 && <span className={styles.logErr}>⚠️ {s.last_crawl_errors} err</span>}
+                    </div>
+                  )}
                   {(s.subsources||[]).length > 0 && (
                     <div className={styles.subsources}>
                       {s.subsources.map((sub, i) => (
@@ -257,7 +278,24 @@ function Dashboard({ onLogout }) {
         {/* ── Items Tab ────────────────────────────────────────── */}
         {tab === 1 && (
           <div>
-            <h2 className={styles.sectionTitle}>Crawled Items <span className={styles.badge}>{totalItems}</span></h2>
+            {/* Status filter tabs */}
+            <div className={styles.statusTabs}>
+              {[['pending','⏳ Pending Review'],['approved','✅ Approved'],['hidden','🙈 Hidden'],['all','📋 All']].map(([val, label]) => (
+                <button key={val}
+                  className={`${styles.statusTab} ${itemFilter.status===val ? styles.statusTabActive : ''}`}
+                  onClick={() => { const f={...itemFilter, status:val, page:0}; setItemFilter(f); loadItems(f); }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <h2 className={styles.sectionTitle}>Crawled Items <span className={styles.badge}>{totalItems}</span>
+              <span className={styles.statusHint}>
+                {itemFilter.status==='pending'&&' — Needs review'}
+                {itemFilter.status==='approved'&&' — Live in search'}
+                {itemFilter.status==='hidden'&&' — Hidden from search'}
+              </span>
+            </h2>
             <div className={styles.itemFilters}>
               <input placeholder="Search title…" value={itemFilter.q}
                 onChange={e => setItemFilter(f => ({...f, q: e.target.value, page: 0}))}
@@ -303,13 +341,35 @@ function Dashboard({ onLogout }) {
                       </select>
                     </span>
                     <span className={styles.rowActions}>
+                      {item.status !== 'approved' && (
+                        <button className={`${styles.actionBtn} ${styles.approveBtn}`}
+                          onClick={() => updateItem(item.id, { status:'approved' })} title="Approve — live in search">✅</button>
+                      )}
+                      {item.status !== 'hidden' && (
+                        <button className={`${styles.actionBtn} ${styles.hideBtn}`}
+                          onClick={() => updateItem(item.id, { status:'hidden' })} title="Hide from search">🙈</button>
+                      )}
+                      {item.status !== 'pending' && (
+                        <button className={styles.actionBtn}
+                          onClick={() => updateItem(item.id, { status:'pending' })} title="Return to pending">⏳</button>
+                      )}
+                      <select value={item.listing_type} onChange={e => updateItem(item.id, { listing_type: e.target.value })}
+                        className={styles.typeSelect}>
+                        <option value="standard">Std</option>
+                        <option value="featured">⭐</option>
+                        <option value="partner">💼</option>
+                      </select>
                       <button className={`${styles.actionBtn} ${item.is_monetized ? styles.actionActive : ''}`}
-                        onClick={() => updateItem(item.id, { is_monetized: !item.is_monetized })} title="Toggle Partner Link badge">💼</button>
-                      <button className={`${styles.actionBtn} ${styles.actionDel}`} onClick={() => deleteItem(item.id)} title="Delete">🗑</button>
+                        onClick={() => updateItem(item.id, { is_monetized: !item.is_monetized })} title="Toggle Partner badge">💼</button>
+                      <button className={`${styles.actionBtn} ${styles.actionDel}`} onClick={() => deleteItem(item.id)} title="Delete">✕</button>
                     </span>
                   </div>
                 ))}
-                {items.length === 0 && <p className={styles.muted} style={{padding:'20px 0'}}>No items yet. Trigger a crawl from the Sources tab.</p>}
+                {items.length === 0 && (
+                  <p className={styles.muted} style={{padding:'20px 0'}}>
+                    {itemFilter.status === 'pending' ? 'No items pending review. Trigger a crawl from the Sources tab.' : 'No items match this filter.'}
+                  </p>
+                )}
               </div>
             )}
 

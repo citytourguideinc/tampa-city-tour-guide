@@ -26,15 +26,18 @@ export async function GET(request) {
   const page         = parseInt(searchParams.get('page') || '0');
   const limit        = parseInt(searchParams.get('limit') || '25');
 
+  const status_filter = searchParams.get('status') || 'pending'; // default to review queue
+
   let query = admin
     .from('trusted_items')
-    .select('id,title,url,source_name,category,subcategory,area,price,event_date,summary,listing_type,is_monetized,crawled_at', { count: 'exact' })
+    .select('id,title,url,source_name,category,subcategory,area,price,event_date,summary,listing_type,status,is_monetized,crawled_at,reviewed_at', { count: 'exact' })
     .order('crawled_at', { ascending: false })
     .range(page * limit, page * limit + limit - 1);
 
   if (source_id)    query = query.eq('source_id', source_id);
   if (category)     query = query.eq('category', category);
   if (listing_type) query = query.eq('listing_type', listing_type);
+  if (status_filter !== 'all') query = query.eq('status', status_filter);
   if (q)            query = query.ilike('title', `%${q}%`);
 
   const { data, error, count } = await query;
@@ -48,7 +51,7 @@ export async function PATCH(request) {
   const admin = getAdminClient();
   if (!admin) return NextResponse.json({ error: 'DB not configured' }, { status: 503 });
 
-  const { id, listing_type, is_monetized, title, summary, category } = await request.json();
+  const { id, listing_type, is_monetized, title, summary, category, status } = await request.json();
   if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
 
   const updates = {};
@@ -57,6 +60,10 @@ export async function PATCH(request) {
   if (title !== undefined)        updates.title = title;
   if (summary !== undefined)      updates.summary = summary;
   if (category !== undefined)     updates.category = category;
+  if (status !== undefined) {
+    updates.status = status;                           // approved | hidden | pending
+    updates.reviewed_at = new Date().toISOString();   // auto-stamp review time
+  }
 
   const { data, error } = await admin
     .from('trusted_items')
