@@ -1,6 +1,10 @@
-// app/api/search/route.js — Filter-based Supabase search
+// app/api/search/route.js — Filter-based Supabase search + federated API layer
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabase, getAdminClient } from '@/lib/supabase';
+import { searchGYG }    from '@/lib/adapters/getyourguide';
+import { searchViator } from '@/lib/adapters/viator';
+
+const CACHE_TTL = 3600; // 1 hour in seconds
 
 // Affiliate URL enhancer (same env-var approach from V1)
 function enhanceUrl(url, sourceName) {
@@ -28,6 +32,59 @@ export async function GET(request) {
   }
 
   try {
+    // ── Federated search for text queries (GYG + Viator + Supabase + cache) ──
+    if (q) {
+      const cacheKey = `search:${city}:${q.toLowerCase().trim()}`;
+
+      // Check 1-hour cache first
+      const { data: cached } = await supabase
+        .from('search_cache').select('results,expires_at').eq('query_key', cacheKey).single();
+      if (cached && new Date(cached.expires_at) > new Date()) {
+        return NextResponse.json({ results: cached.results, source: 'cache' });
+      }
+
+      // Fan out in parallel
+      const [gygRes, viatorRes, sbRes] = await Promise.allSettled([
+        searchGYG(q, city),
+        searchViator(q, city),
+        supabase.from('activities').select('*,tours(price_min,price_max),events(event_date,start_time)')
+          .eq('city', city).eq('active_status', true)
+          .textSearch('fts', q, { type: 'websearch', config: 'english' })
+          .order('featured_status', { ascending: false }).limit(20),
+      ]);
+
+      const gyg     = gygRes.status     === 'fulfilled' ? gygRes.value     : [];
+      const viator  = viatorRes.status  === 'fulfilled' ? viatorRes.value  : [];
+      const sbData  = sbRes.status      === 'fulfilled' ? (sbRes.value.data || []) : [];
+      const curated = sbData.map(r => ({ ...r, price_min: r.tours?.[0]?.price_min, price_max: r.tours?.[0]?.price_max, event_date: r.events?.[0]?.event_date, start_time: r.events?.[0]?.start_time }));
+
+      // Merge + deduplicate
+      const seen = new Set();
+      const merged = [...curated, ...gyg, ...viator].filter(item => {
+        const key = item.activity_name?.toLowerCase().replace(/\s+/g, '').slice(0, 30);
+        if (seen.has(key)) return false;
+        seen.add(key); return true;
+      });
+
+      // Sort: featured → affiliate → curated
+      merged.sort((a, b) => {
+        if (a.featured_status && !b.featured_status) return -1;
+        if (!a.featured_status && b.featured_status) return 1;
+        if (a.source_type === 'affiliate' && b.source_type !== 'affiliate') return -1;
+        if (a.source_type !== 'affiliate' && b.source_type === 'affiliate') return 1;
+        return 0;
+      });
+
+      // Cache result
+      const admin = getAdminClient();
+      if (admin) {
+        const expiresAt = new Date(Date.now() + CACHE_TTL * 1000).toISOString();
+        await admin.from('search_cache').upsert({ query_key: cacheKey, results: merged, expires_at: expiresAt });
+      }
+      return NextResponse.json({ results: merged, source: 'federated', counts: { curated: curated.length, gyg: gyg.length, viator: viator.length } });
+    }
+
+    // ── Filter-only path (no text query) — direct Supabase ──
     let query = supabase
       .from('activities')
       .select(`
