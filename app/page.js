@@ -1,9 +1,12 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import SearchBar   from '@/components/SearchBar';
 import FilterBar   from '@/components/FilterBar';
 import ResultCard  from '@/components/ResultCard';
 import styles      from './page.module.css';
+
+const MapView = dynamic(() => import('@/components/MapView'), { ssr: false, loading: () => <div style={{height:480,background:'var(--surface)',borderRadius:'var(--r-lg)',display:'flex',alignItems:'center',justifyContent:'center',color:'var(--muted)'}}>🗺 Loading map…</div> });
 
 // ── Fallback seed for when Supabase isn't yet connected ──────────
 const SEED = [
@@ -157,15 +160,18 @@ export default function Home() {
                 </p>
               )}
 
+              {/* Map view */}
+              {mapMode && <MapView results={results} />}
+
               {/* Loading */}
-              {loading && (
+              {!mapMode && loading && (
                 <div className={styles.loadingGrid}>
                   {[1,2,3,4,5,6].map(i => <div key={i} className={styles.skeleton} />)}
                 </div>
               )}
 
               {/* Results grid */}
-              {!loading && results.length > 0 && (
+              {!mapMode && !loading && results.length > 0 && (
                 <div className={styles.grid}>
                   {results.map(item => (
                     <ResultCard
@@ -179,7 +185,7 @@ export default function Home() {
               )}
 
               {/* Empty state */}
-              {!loading && results.length === 0 && (
+              {!mapMode && !loading && results.length === 0 && (
                 <div className={styles.empty}>
                   <span className={styles.emptyIcon}>🔍</span>
                   <p>No results found. Try a different search or clear your filters.</p>
