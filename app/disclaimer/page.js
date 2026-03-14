@@ -53,7 +53,7 @@ export default function DisclaimerPage() {
 
           <div className="legalSection">
             <h2>Contact</h2>
-            <p>Questions about this disclaimer? Email us at <a href="mailto:info@citytourguide.app">info@citytourguide.app</a>.</p>
+            <p>Questions about this disclaimer? Email us at <a href="mailto:info@citytourguideinc.com">info@citytourguideinc.com</a>.</p>
           </div>
         </div>
 

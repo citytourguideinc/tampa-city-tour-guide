@@ -61,12 +61,12 @@ export default function PrivacyPage() {
 
           <div className="legalSection">
             <h2>Your Rights</h2>
-            <p>You have the right to request access to, correction of, or deletion of any personal information we hold. Contact us at <a href="mailto:info@citytourguide.app">info@citytourguide.app</a>.</p>
+            <p>You have the right to request access to, correction of, or deletion of any personal information we hold. Contact us at <a href="mailto:info@citytourguideinc.com">info@citytourguideinc.com</a>.</p>
           </div>
 
           <div className="legalSection">
             <h2>Contact</h2>
-            <p>City Tour Guide, Inc. · <a href="mailto:info@citytourguide.app">info@citytourguide.app</a></p>
+            <p>City Tour Guide, Inc. · <a href="mailto:info@citytourguideinc.com">info@citytourguideinc.com</a></p>
           </div>
         </div>
 

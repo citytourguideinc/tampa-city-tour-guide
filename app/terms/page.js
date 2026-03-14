@@ -68,7 +68,7 @@ export default function TermsPage() {
 
           <div className="legalSection">
             <h2>Contact</h2>
-            <p>City Tour Guide, Inc. · <a href="mailto:info@citytourguide.app">info@citytourguide.app</a></p>
+            <p>City Tour Guide, Inc. · <a href="mailto:info@citytourguideinc.com">info@citytourguideinc.com</a></p>
           </div>
         </div>
 
