@@ -1,17 +1,16 @@
-.page { min-height: 100vh; display: flex; flex-direction: column; }
+.page { min-height: 100vh; display: flex; flex-direction: column; background: #F8F7F4; }
 
 /* ── Header ──────────────────────────────────────────────────── */
 .header {
-  padding: 56px 0 40px;
+  padding: 32px 0 28px;
   text-align: center;
-  position: relative;
+  background: #FFFFFF;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
-.header::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse 80% 90% at 50% 0%, rgba(232,67,26,0.07) 0%, transparent 70%);
-  pointer-events: none;
-}
+.header::before { display: none; }
 .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
 
 .eyebrow {
@@ -35,9 +34,16 @@
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   margin-bottom: 10px; line-height: 1.1;
 }
-.sub { color: var(--muted); font-size: 1rem; margin-bottom: 24px; text-align: center; }
+.sub {
+  color: #6B7280;
+  font-size: 1rem;
+  font-weight: 400;
+  margin-bottom: 28px;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
 .subMuted { color: var(--dim); font-size: 0.82rem; margin-bottom: 24px; }
-.searchWrap { max-width: 680px; margin: 0 auto; }
+.searchWrap { max-width: 620px; margin: 0 auto; }
 .searchWrapInline { flex: 1; max-width: 460px; }
 
 /* ── Brand row: CITY TOUR GUIDE + city selector ─── */
@@ -46,64 +52,82 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 .brandBlock {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 .brandName {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 800;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   color: #111827;
   line-height: 1;
+  text-transform: uppercase;
 }
 .citySelector {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  position: relative;
+  gap: 5px;
+  background: rgba(13,116,144,0.08);
+  border: 1px solid rgba(13,116,144,0.2);
+  border-radius: 99px;
+  padding: 4px 10px 4px 8px;
+  width: fit-content;
 }
-.cityPin { font-size: 0.9rem; }
+.cityPin { font-size: 0.8rem; }
 .citySelect {
   appearance: none;
   -webkit-appearance: none;
   background: transparent;
   border: none;
   font-family: 'Inter', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: var(--teal, #0D7490);
+  color: #0D7490;
   cursor: pointer;
-  padding: 0 16px 0 0;
+  padding: 0 14px 0 0;
   outline: none;
+  letter-spacing: 0.01em;
 }
-.citySelect:focus { text-decoration: underline; }
+.citySelect:focus { outline: none; }
 .cityChevron {
-  font-size: 0.7rem;
-  color: var(--teal, #0D7490);
+  font-size: 0.65rem;
+  color: #0D7490;
   pointer-events: none;
-  margin-left: -14px;
+  margin-left: -13px;
 }
 
 /* Landing vs compact header states */
-.headerLanding { padding: 56px 0 40px; }
-.headerCompact { padding: 20px 0 16px; text-align: left; }
-.headerCompact .eyebrow { display: none; }
-.headerCompact .sub     { display: none; }
-.headerCompact .subMuted { display: none; }
+.headerLanding { padding: 32px 0 28px; }
+.headerCompact {
+  padding: 14px 0;
+  background: #FFFFFF;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+.headerCompact .brandName { font-size: 1.1rem; letter-spacing: 0.06em; }
+.headerCompact .citySelector { padding: 2px 8px 2px 6px; }
+.headerCompact .citySelect { font-size: 0.75rem; }
 
-.h1Compact {
+.h1 {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em;
   background: var(--grad-sunset);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  margin-bottom: 10px;
+  margin-bottom: 10px; line-height: 1.1;
+}
+.h1Compact {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #111827;
+  background: none;
+  -webkit-text-fill-color: unset;
+  margin: 0;
   display: inline-block;
 }
 
