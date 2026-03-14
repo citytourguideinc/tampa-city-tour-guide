@@ -1,6 +1,5 @@
 /* components/SourceGroup.module.css — Compact source card with event list */
 
-/* ── Outer card ─────────────────────────────────────── */
 .card {
   background: var(--surface, #151515);
   border: 1px solid rgba(255,255,255,0.07);
@@ -10,7 +9,7 @@
 }
 .card:hover { border-color: rgba(255,255,255,0.12); }
 
-/* ── Source header ──────────────────────────────────── */
+/* Source header */
 .header {
   display: flex;
   align-items: center;
@@ -39,13 +38,19 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
+/* News/Discovery group header badge — blue instead of orange */
+.newsBadge {
+  background: rgba(96,165,250,0.1) !important;
+  border-color: rgba(96,165,250,0.25) !important;
+  color: #60a5fa !important;
+}
 .count {
   font-size: 0.65rem;
   color: var(--dim, #555);
   flex-shrink: 0;
 }
 
-/* ── Event rows ─────────────────────────────────────── */
+/* Event rows */
 .eventList { display: flex; flex-direction: column; }
 
 .eventRow {
@@ -62,7 +67,6 @@
 .eventRow:last-child { border-bottom: none; }
 .eventRow:hover { background: rgba(255,255,255,0.035); }
 
-/* Event title */
 .eventTitle {
   flex: 1;
   font-size: 0.83rem;
@@ -74,34 +78,20 @@
   min-width: 0;
 }
 
-/* Short description */
-.eventDesc {
-  font-size: 0.72rem;
-  color: var(--muted, #888);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;
-  flex-shrink: 1;
-}
-
-/* Meta chips row */
+/* Meta chips */
 .meta {
   display: flex;
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
 }
-.chip {
-  font-size: 0.65rem;
-  color: var(--dim, #666);
-  white-space: nowrap;
-}
-.chipDate { color: #a78bfa; }
+.chip      { font-size: 0.65rem; white-space: nowrap; }
+.chipDate  { color: #a78bfa; }
 .chipPrice { color: #4ade80; }
-.chipArea { color: var(--dim, #555); }
+.chipArea  { color: var(--dim, #555); }
+.chipNews  { color: #60a5fa; font-style: italic; }
 
-/* Arrow icon */
+/* Arrow */
 .arrow {
   font-size: 0.7rem;
   color: var(--dim, #555);
@@ -110,7 +100,7 @@
 }
 .eventRow:hover .arrow { color: var(--sunset2, #ff813f); }
 
-/* Show-more toggle */
+/* Show more */
 .showMore {
   width: 100%;
   padding: 8px;
@@ -126,7 +116,7 @@
 }
 .showMore:hover { background: rgba(255,255,255,0.03); color: var(--muted, #aaa); }
 
-/* Attribution line */
+/* Attribution */
 .attribution {
   padding: 5px 14px;
   font-size: 0.62rem;
@@ -142,6 +132,5 @@
 .attribution a:hover { color: var(--muted, #aaa); }
 
 @media (max-width: 600px) {
-  .eventDesc { display: none; }
-  .chipArea  { display: none; }
+  .chipArea { display: none; }
 }

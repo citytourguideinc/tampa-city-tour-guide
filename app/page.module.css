@@ -39,11 +39,72 @@
 .subMuted { color: var(--dim); font-size: 0.82rem; margin-bottom: 24px; }
 .searchWrap { max-width: 680px; margin: 0 auto; }
 
-/* ── Main ────────────────────────────────────────────────────── */
+/* Landing vs compact header states */
+.headerLanding { padding: 56px 0 40px; }
+.headerCompact { padding: 20px 0 16px; text-align: left; }
+.headerCompact .eyebrow { display: none; }
+.headerCompact .sub     { display: none; }
+.headerCompact .subMuted { display: none; }
+
+.h1Compact {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background: var(--grad-sunset);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+/* Landing discovery state */
+.landing { padding: 8px 0 40px; }
+.landingLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.promptGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 36px;
+}
+.promptChip {
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 99px;
+  font-family: inherit;
+  font-size: 0.83rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.promptChip:hover {
+  background: rgba(255,106,47,0.1);
+  border-color: rgba(255,106,47,0.25);
+  color: var(--sunset2);
+}
+.landingFeatured { margin-top: 8px; margin-bottom: 28px; }
+.landingCredit {
+  font-size: 0.7rem;
+  color: var(--dim);
+  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+/* ── Main ─────────────────────────────────────────── */
 .main { flex: 1; padding: 0 0 80px; }
 
 /* ── Disclosure bar — below hero ───────────────────────────── */
 .disclosureBar {
+
   display: flex;
   align-items: flex-start;
   gap: 0.6rem;
