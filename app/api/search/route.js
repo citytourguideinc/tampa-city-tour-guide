@@ -107,13 +107,10 @@ export async function GET(request) {
     if (category) query = query.eq('category', category);
     if (area)     query = query.eq('neighborhood', area);
 
-    // Price filter — join with tours table
-    if (price_max !== null && price_max !== '') {
+    // Price filter (for paid tiers like Under $25/$50/$100)
+    if (price_max !== null && price_max !== '' && Number(price_max) > 0) {
       query = query.lte('tours.price_min', Number(price_max));
     }
-
-    // Free filter
-    if (price_max === '0') query = query.eq('tours.price_min', 0);
 
     // Date filter via events join
     if (date === 'weekend') {

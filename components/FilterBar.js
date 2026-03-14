@@ -7,15 +7,28 @@ const QUICK_CHIPS = [
   { label: 'This Weekend', icon: '📅', filter: { date: 'weekend' } },
   { label: 'Nightlife',    icon: '🌙', filter: { category: 'Nightlife' } },
   { label: 'Family',       icon: '👨‍👩‍👧', filter: { tag: 'family' } },
-  { label: 'Free',         icon: '🎁', filter: { price_max: 0 } },
+  { label: 'Free',         icon: '🎁', filter: { tag: 'free' } },
   { label: 'Tours',        icon: '🗺',  filter: { category: 'Tours & Activities' } },
   { label: 'Deals',        icon: '💰', filter: { category: 'Deals & Discounts' } },
   { label: 'Volunteer',    icon: '🤝', filter: { category: 'Volunteer' } },
-  { label: 'Museums',      icon: '🎨', filter: { category: 'Museums / Culture' } },
+  { label: 'Beaches',      icon: '🏖', filter: { tag: 'beach' } },
+  { label: 'Sports',       icon: '🏆', filter: { category: 'Sports & Entertainment' } },
 ];
 
-const AREAS = ['Downtown', 'Ybor City', 'Hyde Park', 'Channelside', 'South Tampa', 'Westshore', 'University Area'];
-const CATEGORIES = ['Things To Do', 'Events Calendar', 'Tours & Activities', 'Deals & Discounts', 'Museums / Culture', 'Nightlife', 'Volunteer'];
+const AREAS = ['Downtown', 'Ybor City', 'Hyde Park', 'Channelside', 'South Tampa', 'Heights', 'Seminole Heights', 'St. Petersburg', 'Clearwater', 'North Tampa', 'City-wide'];
+const CATEGORIES = [
+  'Things To Do',
+  'Beaches & Outdoors',
+  'Restaurants & Dining',
+  'Nightlife',
+  'Sports & Entertainment',
+  'Shopping',
+  'Events Calendar',
+  'Tours & Activities',
+  'Deals & Discounts',
+  'Wellness',
+  'Volunteer',
+];
 const PRICES = [
   { label: 'Any price', value: '' },
   { label: 'Free only', value: 0 },
