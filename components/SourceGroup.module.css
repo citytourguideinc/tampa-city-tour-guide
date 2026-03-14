@@ -1,0 +1,147 @@
+/* components/SourceGroup.module.css — Compact source card with event list */
+
+/* ── Outer card ─────────────────────────────────────── */
+.card {
+  background: var(--surface, #151515);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.card:hover { border-color: rgba(255,255,255,0.12); }
+
+/* ── Source header ──────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.02);
+}
+.sourceName {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text, #eee);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.categoryBadge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: rgba(255,106,47,0.12);
+  border: 1px solid rgba(255,106,47,0.22);
+  color: var(--sunset2, #ff813f);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.count {
+  font-size: 0.65rem;
+  color: var(--dim, #555);
+  flex-shrink: 0;
+}
+
+/* ── Event rows ─────────────────────────────────────── */
+.eventList { display: flex; flex-direction: column; }
+
+.eventRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.1s;
+  cursor: pointer;
+}
+.eventRow:last-child { border-bottom: none; }
+.eventRow:hover { background: rgba(255,255,255,0.035); }
+
+/* Event title */
+.eventTitle {
+  flex: 1;
+  font-size: 0.83rem;
+  color: var(--text, #eee);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Short description */
+.eventDesc {
+  font-size: 0.72rem;
+  color: var(--muted, #888);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  flex-shrink: 1;
+}
+
+/* Meta chips row */
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.chip {
+  font-size: 0.65rem;
+  color: var(--dim, #666);
+  white-space: nowrap;
+}
+.chipDate { color: #a78bfa; }
+.chipPrice { color: #4ade80; }
+.chipArea { color: var(--dim, #555); }
+
+/* Arrow icon */
+.arrow {
+  font-size: 0.7rem;
+  color: var(--dim, #555);
+  flex-shrink: 0;
+  transition: color 0.1s;
+}
+.eventRow:hover .arrow { color: var(--sunset2, #ff813f); }
+
+/* Show-more toggle */
+.showMore {
+  width: 100%;
+  padding: 8px;
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  color: var(--dim, #666);
+  font-family: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+  text-align: center;
+}
+.showMore:hover { background: rgba(255,255,255,0.03); color: var(--muted, #aaa); }
+
+/* Attribution line */
+.attribution {
+  padding: 5px 14px;
+  font-size: 0.62rem;
+  color: var(--dim, #555);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.01);
+}
+.attribution a {
+  color: var(--dim, #555);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.attribution a:hover { color: var(--muted, #aaa); }
+
+@media (max-width: 600px) {
+  .eventDesc { display: none; }
+  .chipArea  { display: none; }
+}

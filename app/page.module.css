@@ -285,6 +285,60 @@
   font-size: 0.75rem;
 }
 
+/* Clear filter inline link */
+.clearLink {
+  background: none;
+  border: none;
+  color: var(--sunset2);
+  font-family: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0 0 0 4px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── Source group grid ───────────────────────────────── */
+.groupGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 800px) {
+  .groupGrid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Loading skeleton for group cards */
+.skeletonCard {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.skeletonHeader {
+  height: 22px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 6px;
+  animation: shimmer 1.4s ease-in-out infinite;
+  width: 55%;
+}
+
+/* Compliance note */
+.complianceNote {
+  margin-top: 28px;
+  padding: 14px;
+  font-size: 0.68rem;
+  color: var(--dim);
+  line-height: 1.6;
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.01);
+}
+
+
 /* ── Featured section (paid cards) ──────────────────── */
 .featuredSection {
   margin-bottom: 24px;

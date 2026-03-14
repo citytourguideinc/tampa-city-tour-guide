@@ -1,32 +1,19 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import SearchBar  from '@/components/SearchBar';
-import ResultCard from '@/components/ResultCard';
-import ResultRow  from '@/components/ResultRow';
-import styles     from './page.module.css';
+import SearchBar   from '@/components/SearchBar';
+import ResultCard  from '@/components/ResultCard';
+import SourceGroup from '@/components/SourceGroup';
+import styles      from './page.module.css';
 
 export default function Home() {
-  const [query,    setQuery]    = useState('');
-  const [results,  setResults]  = useState([]);
-  const [loading,  setLoading]  = useState(true);
-  const [meta,     setMeta]     = useState({ categories: [], areas: [], minDate: null, maxDate: null });
-  const [saved,    setSaved]    = useState([]);
+  const [query,      setQuery]      = useState('');
+  const [results,    setResults]    = useState([]);
+  const [loading,    setLoading]    = useState(true);
+  const [meta,       setMeta]       = useState({ categories: [], areas: [] });
+  const [category,   setCategory]   = useState('');
+  const [dateFilter, setDateFilter] = useState('');
 
-  // Active filters
-  const [category,  setCategory]  = useState('');
-  const [dateFilter, setDateFilter] = useState(''); // 'today' | 'weekend' | YYYY-MM-DD | ''
-
-  // Load saved from localStorage
-  useEffect(() => {
-    try { setSaved(JSON.parse(localStorage.getItem('ctg_saved') || '[]')); } catch {}
-  }, []);
-
-  // Persist saved
-  useEffect(() => {
-    localStorage.setItem('ctg_saved', JSON.stringify(saved));
-  }, [saved]);
-
-  // Load meta (categories/dates) once
+  // Load meta (categories) once on mount
   useEffect(() => {
     fetch('/api/search/meta')
       .then(r => r.json())
@@ -34,14 +21,13 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
-  // Fetch results whenever query/filters change
-  const fetchResults = useCallback(async (q = query, cat = category, date = dateFilter) => {
+  const fetchResults = useCallback(async (q = '', cat = '', date = '') => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ limit: '80' });
-      if (q)    params.set('q', q);
+      const params = new URLSearchParams({ limit: '200' });
+      if (q)    params.set('q',        q);
       if (cat)  params.set('category', cat);
-      if (date) params.set('date', date);
+      if (date) params.set('date',     date);
       const res  = await fetch(`/api/search?${params}`);
       const data = await res.json();
       setResults(data.results || []);
@@ -50,12 +36,12 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }, [query, category, dateFilter]);
+  }, []);
 
   // Initial load
-  useEffect(() => { fetchResults('', '', ''); }, []);
+  useEffect(() => { fetchResults(); }, []);
 
-  // Refetch on filter changes
+  // Re-fetch when filters change
   useEffect(() => { fetchResults(query, category, dateFilter); }, [category, dateFilter]);
 
   function handleSearch(q) {
@@ -63,73 +49,54 @@ export default function Home() {
     fetchResults(q, category, dateFilter);
   }
 
-  function toggleSave(item) {
-    setSaved(prev => {
-      const exists = prev.some(s => s.id === item.id);
-      return exists ? prev.filter(s => s.id !== item.id) : [...prev, item];
-    });
+  function clearAll() {
+    setQuery(''); setCategory(''); setDateFilter('');
+    fetchResults('', '', '');
   }
-  const isSaved = useCallback((id) => saved.some(s => s.id === id), [saved]);
 
-  // Split: featured/partner go to cards section, standard goes to list
-  const featuredItems  = results.filter(r => r.listing_type === 'featured' || r.listing_type === 'partner');
-  const standardItems  = results.filter(r => !r.listing_type || r.listing_type === 'standard');
+  // ── Split featured/partner (top cards) from standard results ───
+  const featuredItems = results.filter(r => r.listing_type === 'featured' || r.listing_type === 'partner');
+  const standardItems = results.filter(r => !r.listing_type || r.listing_type === 'standard');
 
-  // Group standard items by date for the CL-style display
-  const groupedByDate = {};
+  // ── Group standard items by source ────────────────────────────
+  const sourceGroups = {};
   for (const item of standardItems) {
-    const key = item.event_date || '__no_date';
-    if (!groupedByDate[key]) groupedByDate[key] = [];
-    groupedByDate[key].push(item);
+    const key = item.source_name || 'Other';
+    if (!sourceGroups[key]) sourceGroups[key] = { items: [], domain: item.source_domain, category: item.category };
+    sourceGroups[key].items.push(item);
   }
-  const dateGroups = Object.entries(groupedByDate).sort(([a], [b]) => {
-    if (a === '__no_date') return 1;
-    if (b === '__no_date') return -1;
-    return a.localeCompare(b);
-  });
-
-  function formatGroupDate(dateKey) {
-    if (dateKey === '__no_date') return 'Ongoing / No Date';
-    const d = new Date(dateKey + 'T00:00:00');
-    const today = new Date(); today.setHours(0,0,0,0);
-    const diff = Math.round((d - today) / 86400000);
-    if (diff === 0) return `Today — ${d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' })}`;
-    if (diff === 1) return `Tomorrow — ${d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' })}`;
-    return d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
-  }
+  const groupEntries = Object.entries(sourceGroups)
+    .sort(([, a], [, b]) => b.items.length - a.items.length); // most items first
 
   const today = new Date().toISOString().slice(0, 10);
-  const weekendDate = (() => {
-    const d = new Date();
-    const sat = new Date(d);
-    sat.setDate(d.getDate() + ((6 - d.getDay() + 7) % 7));
-    return sat.toISOString().slice(0, 10);
-  })();
 
   return (
     <div className={styles.page}>
-      {/* ── Header ──────────────────────────────────────────────────── */}
+
+      {/* ── Header ──────────────────────────────────────────────── */}
       <header className={styles.header}>
         <div className={styles.container}>
           <div className={styles.eyebrow}>
             <span className={styles.dot} /> Curated City Discovery · Tampa Bay
           </div>
           <h1 className={styles.h1}>Tampa City Tour Guide</h1>
-          <p className={styles.sub}>Events, activities, and things to do in Downtown Tampa</p>
-          <p className={styles.subMuted}>Sourced from Tampa Downtown Partnership · Updated daily</p>
+          <p className={styles.sub}>Events, activities &amp; things to do in Downtown Tampa</p>
+          <p className={styles.subMuted}>
+            Sourced from verified local partners · Updated daily · All links go to original sources
+          </p>
           <div className={styles.searchWrap}>
             <SearchBar onSearch={handleSearch} loading={loading} />
           </div>
         </div>
       </header>
 
-      {/* ── Main ────────────────────────────────────────────────────── */}
+      {/* ── Main ────────────────────────────────────────────────── */}
       <main className={styles.main}>
         <div className={styles.container}>
 
-          {/* ── Filters ─────────────────────────────────────────────── */}
+          {/* ── Filters ─────────────────────────────────────────── */}
           <div className={styles.filterRow}>
-            {/* Category pills */}
+            {/* Category pills — only show categories that exist in DB */}
             <div className={styles.filterPills}>
               <button
                 className={`${styles.pill} ${!category ? styles.pillActive : ''}`}
@@ -147,7 +114,7 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Date quick-filters */}
+            {/* Date quick filters */}
             <div className={styles.dateFilters}>
               <button className={`${styles.datePill} ${!dateFilter ? styles.datePillActive : ''}`}
                 onClick={() => setDateFilter('')}>Any date</button>
@@ -155,90 +122,86 @@ export default function Home() {
                 onClick={() => setDateFilter(dateFilter === 'today' ? '' : 'today')}>Today</button>
               <button className={`${styles.datePill} ${dateFilter === 'weekend' ? styles.datePillActive : ''}`}
                 onClick={() => setDateFilter(dateFilter === 'weekend' ? '' : 'weekend')}>This Weekend</button>
-              {/* Date picker  */}
               <input
                 type="date"
                 className={styles.datePicker}
                 value={dateFilter && dateFilter !== 'today' && dateFilter !== 'weekend' ? dateFilter : ''}
                 min={today}
-                onChange={e => setDateFilter(e.target.value || '')}
                 title="Pick a specific date"
+                onChange={e => setDateFilter(e.target.value || '')}
               />
             </div>
           </div>
 
-          {/* ── Result count ────────────────────────────────────────── */}
+          {/* ── Result count ─────────────────────────────────────── */}
           {!loading && (
             <p className={styles.resultCount}>
-              {query
-                ? `Results for "${query}"`
-                : category
-                  ? category
-                  : 'All listings'}
-              {' · '}<strong>{results.length}</strong> found
-              {' · '}<span className={styles.sourceTag}>Tampa Downtown Partnership</span>
+              {query ? `Results for "${query}"` : category ? category : 'All listings'}
+              {' · '}<strong>{results.length}</strong> listing{results.length !== 1 ? 's' : ''}
+              {groupEntries.length > 0 && ` from ${groupEntries.length} source${groupEntries.length !== 1 ? 's' : ''}`}
+              {(query || category || dateFilter) && (
+                <button className={styles.clearLink} onClick={clearAll}>· clear</button>
+              )}
             </p>
           )}
 
-          {/* ── Featured / Partner cards (paid tier) ────────────────── */}
+          {/* ── Featured / Partner cards (paid tier) ─────────────── */}
           {featuredItems.length > 0 && (
             <section className={styles.featuredSection}>
               <div className={styles.featuredLabel}>⭐ Featured Listings</div>
               <div className={styles.grid}>
                 {featuredItems.map(item => (
-                  <ResultCard
-                    key={item.id}
-                    item={item}
-                    saved={isSaved(item.id)}
-                    onSave={toggleSave}
-                  />
+                  <ResultCard key={item.id} item={item} />
                 ))}
               </div>
             </section>
           )}
 
-          {/* ── Craigslist-style list ────────────────────────────────── */}
+          {/* ── Source-grouped compact cards ──────────────────────── */}
           {loading ? (
             <div className={styles.loadingList}>
-              {[...Array(12)].map((_, i) => (
-                <div key={i} className={styles.skeletonRow} style={{ width: `${70 + (i % 3) * 10}%` }} />
-              ))}
-            </div>
-          ) : standardItems.length > 0 ? (
-            <section className={styles.listSection}>
-              {dateGroups.map(([dateKey, items]) => (
-                <div key={dateKey}>
-                  <div className={styles.dateGroupHeader}>
-                    {formatGroupDate(dateKey)}
-                    <span className={styles.groupCount}>{items.length}</span>
-                  </div>
-                  {items.map(item => (
-                    <ResultRow key={item.id} item={item} />
-                  ))}
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className={styles.skeletonCard}>
+                  <div className={styles.skeletonHeader} />
+                  <div className={styles.skeletonRow} style={{ width: '80%' }} />
+                  <div className={styles.skeletonRow} style={{ width: '65%' }} />
+                  <div className={styles.skeletonRow} style={{ width: '72%' }} />
                 </div>
               ))}
-            </section>
+            </div>
+          ) : groupEntries.length > 0 ? (
+            <div className={styles.groupGrid}>
+              {groupEntries.map(([sourceName, { items, domain, category: cat }]) => (
+                <SourceGroup
+                  key={sourceName}
+                  sourceName={sourceName}
+                  domain={domain}
+                  category={cat}
+                  items={items}
+                />
+              ))}
+            </div>
           ) : !loading && results.length === 0 && (
             <div className={styles.empty}>
               <span className={styles.emptyIcon}>🔍</span>
               <p>{query ? `No results found for "${query}"` : 'No listings match your filters.'}</p>
-              <button className={styles.clearBtn} onClick={() => { setCategory(''); setDateFilter(''); setQuery(''); fetchResults('', '', ''); }}>
-                Clear filters
-              </button>
+              <button className={styles.clearBtn} onClick={clearAll}>Clear filters</button>
             </div>
           )}
 
-          {/* ── Partner disclosure ───────────────────────────────────── */}
-          {featuredItems.some(r => r.is_monetized) && (
-            <p className={styles.partnerNote}>
-              💼 Featured listings marked "Partner Link" may generate commissions for City Tour Guide at no extra cost to you.
+          {/* ── Compliance disclosure ─────────────────────────────── */}
+          {!loading && results.length > 0 && (
+            <p className={styles.complianceNote}>
+              City Tour Guide aggregates publicly available information from verified local sources for discovery purposes.
+              All listings link directly to original third-party websites. City Tour Guide is not affiliated with, endorsed by,
+              or responsible for content on linked sites.{featuredItems.some(r => r.is_monetized) ? ' Some featured listings are paid placements and may generate commissions.' : ''}
             </p>
           )}
 
         </div>
       </main>
 
-      {/* ── Footer ──────────────────────────────────────────────────── */}
+      {/* ── Footer ──────────────────────────────────────────────── */}
       <footer className={styles.footer}>
         <div className={styles.container}>
           <p className={styles.footerLinks}>
@@ -250,7 +213,7 @@ export default function Home() {
             {' · '}<a href="/terms">Terms</a>
           </p>
           <p className={styles.footerDisclaimer}>
-            Listings sourced from Tampa Downtown Partnership. External links lead to third-party websites.
+            Aggregated listings for discovery only. External links lead to third-party sites. Not affiliated with listed sources.
           </p>
         </div>
       </footer>
