@@ -127,20 +127,50 @@ export default function Home() {
       {/* ── Header ──────────────────────────────────────────────── */}
       <header className={`${styles.header} ${!hasSearched ? styles.headerLanding : styles.headerCompact}`}>
         <div className={styles.container}>
-          {!hasSearched && (
-            <div className={styles.eyebrow}>
-              <span className={styles.dot} /> Curated City Discovery · Tampa Bay
+
+          {/* Brand row */}
+          <div className={styles.brandRow}>
+            <div className={styles.brandBlock}>
+              <span className={styles.brandName}>CITY TOUR GUIDE</span>
+              {/* City selector */}
+              <div className={styles.citySelector}>
+                <span className={styles.cityPin}>📍</span>
+                <select
+                  className={styles.citySelect}
+                  value="tampa"
+                  onChange={e => {
+                    if (e.target.value !== 'tampa') {
+                      alert('More cities coming soon! Tampa is live now.');
+                      e.target.value = 'tampa';
+                    }
+                  }}
+                  aria-label="Select city"
+                >
+                  <option value="tampa">Tampa, FL</option>
+                  <option value="stpete" disabled>St. Pete, FL — Coming Soon</option>
+                  <option value="orlando" disabled>Orlando, FL — Coming Soon</option>
+                  <option value="miami" disabled>Miami, FL — Coming Soon</option>
+                </select>
+                <span className={styles.cityChevron}>▾</span>
+              </div>
             </div>
-          )}
-          <h1 className={!hasSearched ? styles.h1 : styles.h1Compact}>
-            Tampa City Tour Guide
-          </h1>
-          {!hasSearched && (
-            <p className={styles.sub}>Events, activities &amp; things to do in Downtown Tampa</p>
-          )}
-          <div className={styles.searchWrap}>
-            <SearchBar onSearch={handleSearch} loading={loading} />
+
+            {hasSearched && (
+              <div className={styles.searchWrapInline}>
+                <SearchBar onSearch={handleSearch} loading={loading} />
+              </div>
+            )}
           </div>
+
+          {/* Landing subtitle + search */}
+          {!hasSearched && (
+            <>
+              <p className={styles.sub}>Events, activities &amp; things to do — updated daily</p>
+              <div className={styles.searchWrap}>
+                <SearchBar onSearch={handleSearch} loading={loading} />
+              </div>
+            </>
+          )}
         </div>
       </header>
 
@@ -280,14 +310,14 @@ export default function Home() {
         <div className={styles.container}>
           <p className={styles.footerLinks}>
             © 2026 <span className={styles.brand}>City Tour Guide, Inc.</span>
-            {' · '}<a href="/partner.html">Become a Partner</a>
-            {' · '}<a href="/resources">📚 Resources</a>
+            {' · '}<a href="/partner">Become a Partner</a>
             {' · '}<a href="/disclaimer">Disclaimer</a>
             {' · '}<a href="/privacy">Privacy</a>
             {' · '}<a href="/terms">Terms</a>
+            {' · '}<a href="mailto:info@citytourguideinc.com">Contact</a>
           </p>
           <p className={styles.footerDisclaimer}>
-            Discovery only. External links lead to third-party sites. Not affiliated with listed sources.
+            Discovery only · External links lead to third-party sites · Not affiliated with listed sources
           </p>
         </div>
       </footer>

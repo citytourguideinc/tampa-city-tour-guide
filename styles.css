@@ -7,23 +7,23 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:         #0d0f14;
-  --bg2:        #13161e;
-  --bg3:        #1a1e28;
-  --surface:    #1e2330;
-  --surface2:   #252b3b;
-  --border:     rgba(255,255,255,0.07);
-  --text:       #f0f2f8;
-  --text-muted: #8892a4;
-  --accent1:    #f97316;   /* Tampa sunset orange */
-  --accent2:    #fb923c;
-  --accent3:    #38bdf8;   /* Tampa Bay blue */
-  --accent4:    #0ea5e9;
-  --green:      #4ade80;
+  --bg:         #F8F7F4;
+  --bg2:        #F2F1EE;
+  --bg3:        #ECEAE6;
+  --surface:    #FFFFFF;
+  --surface2:   #F9F8F6;
+  --border:     rgba(0,0,0,0.08);
+  --text:       #111827;
+  --text-muted: #4B5563;
+  --accent1:    #E8431A;   /* coral primary */
+  --accent2:    #F05A28;
+  --accent3:    #0D7490;   /* Tampa Bay teal */
+  --accent4:    #0891A8;
+  --green:      #059669;
   --radius:     14px;
   --radius-sm:  8px;
-  --shadow:     0 4px 24px rgba(0,0,0,0.45);
-  --shadow-card:0 2px 12px rgba(0,0,0,0.35);
+  --shadow:     0 2px 12px rgba(0,0,0,0.08);
+  --shadow-card:0 1px 4px rgba(0,0,0,0.07);
   --trans:      0.22s cubic-bezier(.4,0,.2,1);
 }
 

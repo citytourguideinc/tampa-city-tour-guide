@@ -35,9 +35,59 @@
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   margin-bottom: 10px; line-height: 1.1;
 }
-.sub { color: var(--muted); font-size: 1rem; margin-bottom: 10px; }
+.sub { color: var(--muted); font-size: 1rem; margin-bottom: 24px; text-align: center; }
 .subMuted { color: var(--dim); font-size: 0.82rem; margin-bottom: 24px; }
 .searchWrap { max-width: 680px; margin: 0 auto; }
+.searchWrapInline { flex: 1; max-width: 460px; }
+
+/* ── Brand row: CITY TOUR GUIDE + city selector ─── */
+.brandRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+.brandBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.brandName {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #111827;
+  line-height: 1;
+}
+.citySelector {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+.cityPin { font-size: 0.9rem; }
+.citySelect {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--teal, #0D7490);
+  cursor: pointer;
+  padding: 0 16px 0 0;
+  outline: none;
+}
+.citySelect:focus { text-decoration: underline; }
+.cityChevron {
+  font-size: 0.7rem;
+  color: var(--teal, #0D7490);
+  pointer-events: none;
+  margin-left: -14px;
+}
 
 /* Landing vs compact header states */
 .headerLanding { padding: 56px 0 40px; }
@@ -74,29 +124,32 @@
   margin-bottom: 36px;
 }
 .promptChip {
-  padding: 8px 16px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
+  padding: 8px 18px;
+  background: #FFFFFF;
+  border: 1px solid rgba(0,0,0,0.1);
   border-radius: 99px;
-  font-family: inherit;
-  font-size: 0.83rem;
-  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
   white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 .promptChip:hover {
-  background: rgba(255,106,47,0.1);
-  border-color: rgba(255,106,47,0.25);
-  color: var(--sunset2);
+  background: #FDF6F2;
+  border-color: rgba(232,67,26,0.3);
+  color: var(--sunset1, #E8431A);
+  box-shadow: 0 2px 8px rgba(232,67,26,0.1);
 }
 .landingFeatured { margin-top: 8px; margin-bottom: 28px; }
 .landingCredit {
-  font-size: 0.7rem;
-  color: var(--dim);
+  font-size: 0.72rem;
+  color: #9CA3AF;
   text-align: center;
-  padding-top: 24px;
-  border-top: 1px solid rgba(255,255,255,0.04);
+  padding-top: 28px;
+  border-top: 1px solid rgba(0,0,0,0.06);
 }
 
 /* ── Main ─────────────────────────────────────────── */
