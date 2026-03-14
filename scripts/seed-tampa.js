@@ -76,9 +76,8 @@ async function seed() {
   // 1. Insert activities
   const { data: inserted, error: actErr } = await supabase
     .from('activities')
-    .upsert(
-      ACTIVITIES.map(a => ({ ...a, city:'Tampa', active_status:true })),
-      { onConflict: 'activity_name,city' }
+    .insert(
+      ACTIVITIES.map(a => ({ ...a, city:'Tampa', active_status:true }))
     )
     .select('id, activity_name');
 

@@ -40,6 +40,21 @@ export default function Home() {
     localStorage.setItem('ctg_saved', JSON.stringify(saved));
   }, [saved]);
 
+  // Initial load — fetch all activities from Supabase on mount
+  useEffect(() => {
+    async function initialLoad() {
+      setLoading(true);
+      try {
+        const res  = await fetch('/api/search');
+        const data = await res.json();
+        if (data.results?.length) setResults(data.results);
+        // else keep SEED as fallback
+      } catch { /* keep SEED */ }
+      finally { setLoading(false); }
+    }
+    initialLoad();
+  }, []);
+
   // Filter-bar changes → re-fetch
   useEffect(() => {
     const hasFilter = Object.values(filters).some(v => v !== undefined && v !== '');
