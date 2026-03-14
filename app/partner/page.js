@@ -67,7 +67,7 @@ export default function PartnerPage() {
           <h2 className={styles.h2}>Your card looks like this</h2>
           <div className={styles.previewWrap}>
             <div className={styles.previewCard}>
-              <div className={styles.sponsoredBadge}>⭐ Sponsored</div>
+              <div className={styles.sponsoredBadge}>💼 Partner Link</div>
               <div className={styles.previewTop}>
                 <span className={styles.previewIcon}>🚤</span>
                 <span className={styles.previewCat}>Tours & Activities</span>
@@ -80,12 +80,12 @@ export default function PartnerPage() {
               </div>
               <p className={styles.previewDesc}>Award-winning boat tours and kayak rentals on Tampa Bay — unforgettable experiences year-round.</p>
               <div className={styles.previewCTA}>
-                <button className={styles.previewBtn}>Book Now ↗</button>
+                <button className={styles.previewBtn}>Go to Booking Site ↗</button>
                 <span className={styles.previewHeart}>🤍</span>
               </div>
             </div>
             <div className={styles.previewNote}>
-              <p>✅ Featured gold border and ⭐ Sponsored badge</p>
+              <p>✅ Featured teal border and 💼 Partner Link badge</p>
               <p>✅ Appears first before all organic results</p>
               <p>✅ AI mentions you by name in conversational replies</p>
               <p>✅ Links directly to your booking page</p>
@@ -123,7 +123,7 @@ export default function PartnerPage() {
             <ul className={styles.pricingList}>
               <li>✅ #1 position in all search results</li>
               <li>✅ AI recommends your business by name</li>
-              <li>✅ ⭐ Sponsored badge + gold card highlight</li>
+              <li>✅ 💼 Partner Link badge + highlighted card</li>
               <li>✅ Direct booking link on every card</li>
               <li>✅ Monthly click analytics report</li>
               <li>✅ One featured slot per city (exclusive)</li>

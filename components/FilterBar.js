@@ -4,36 +4,41 @@ import { useState } from 'react';
 import styles from './FilterBar.module.css';
 
 const QUICK_CHIPS = [
-  { label: 'This Weekend', icon: '📅', filter: { date: 'weekend' } },
-  { label: 'Nightlife',    icon: '🌙', filter: { category: 'Nightlife' } },
-  { label: 'Family',       icon: '👨‍👩‍👧', filter: { tag: 'family' } },
-  { label: 'Free',         icon: '🎁', filter: { tag: 'free' } },
-  { label: 'Tours',        icon: '🗺',  filter: { category: 'Tours & Activities' } },
-  { label: 'Deals',        icon: '💰', filter: { category: 'Deals & Discounts' } },
-  { label: 'Volunteer',    icon: '🤝', filter: { category: 'Volunteer' } },
-  { label: 'Beaches',      icon: '🏖', filter: { tag: 'beach' } },
-  { label: 'Sports',       icon: '🏆', filter: { category: 'Sports & Entertainment' } },
+  { label: 'Tours',      icon: '🗺',  filter: { category: 'Tours & Activities' } },
+  { label: 'Events',     icon: '📅', filter: { category: 'Events' } },
+  { label: 'Food',       icon: '🍽', filter: { category: 'Food' } },
+  { label: 'Free',       icon: '🎁', filter: { tag: 'free' } },
+  { label: 'Deals',      icon: '💰', filter: { category: 'Deals & Discounts' } },
+  { label: 'Outdoors',   icon: '🌿', filter: { category: 'Outdoors' } },
+  { label: 'Volunteer',  icon: '🤝', filter: { category: 'Volunteer' } },
+  { label: 'Nightlife',  icon: '🌙', filter: { category: 'Nightlife' } },
+  { label: 'Family',     icon: '👨‍👩‍👧', filter: { tag: 'family' } },
 ];
 
-const AREAS = ['Downtown', 'Ybor City', 'Hyde Park', 'Channelside', 'South Tampa', 'Heights', 'Seminole Heights', 'St. Petersburg', 'Clearwater', 'North Tampa', 'City-wide'];
-const CATEGORIES = [
-  'Things To Do',
-  'Beaches & Outdoors',
-  'Restaurants & Dining',
-  'Nightlife',
-  'Sports & Entertainment',
-  'Shopping',
-  'Events Calendar',
-  'Tours & Activities',
-  'Deals & Discounts',
-  'Wellness',
-  'Volunteer',
+const AREAS = [
+  'Downtown', 'Ybor City', 'Hyde Park', 'Channelside',
+  'South Tampa', 'Heights', 'Seminole Heights',
+  'St. Petersburg', 'Clearwater', 'North Tampa', 'City-wide',
 ];
+
+const CATEGORIES = [
+  'Tours & Activities',
+  'Events',
+  'Food',
+  'Outdoors',
+  'Deals & Discounts',
+  'Volunteer',
+  'Shopping',
+  'Wellness',
+  'Nightlife',
+  'Family',
+];
+
 const PRICES = [
-  { label: 'Any price', value: '' },
-  { label: 'Free only', value: 0 },
-  { label: 'Under $25', value: 25 },
-  { label: 'Under $50', value: 50 },
+  { label: 'Any price',  value: '' },
+  { label: 'Free only',  value: 0 },
+  { label: 'Under $25',  value: 25 },
+  { label: 'Under $50',  value: 50 },
   { label: 'Under $100', value: 100 },
 ];
 
@@ -83,7 +88,7 @@ export default function FilterBar({ filters, onChange }) {
           value={filters.date || ''}
           onChange={e => handleSelect('date', e.target.value)}
           aria-label="Date"
-          style={{ colorScheme:'dark' }}
+          style={{ colorScheme: 'dark' }}
         />
 
         <select

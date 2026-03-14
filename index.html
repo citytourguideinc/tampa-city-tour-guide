@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tampa City Tour Guide — your curated hub for events, activities, parks, museums, and community happenings in Tampa, FL." />
+  <title>Tampa City Tour Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon">🌴</span>
+        <div class="brand-text">
+          <h1>Tampa City Tour Guide</h1>
+          <span class="brand-sub">Your curated guide to Tampa, FL</span>
+        </div>
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search resources..." aria-label="Search resources" />
+        <button class="clear-btn" id="clearSearch" aria-label="Clear search">✕</button>
+      </div>
+    </div>
+    <!-- Category Nav -->
+    <nav class="cat-nav" aria-label="Main categories">
+      <button class="cat-btn active" data-cat="all">All</button>
+      <button class="cat-btn" data-cat="things-to-do">Things To Do</button>
+      <button class="cat-btn" data-cat="events-calendar">Events Calendar</button>
+      <button class="cat-btn" data-cat="deals">Deals &amp; Discounts</button>
+      <button class="cat-btn" data-cat="digital-guides">Digital Guides</button>
+      <button class="cat-btn" data-cat="city-projects">City Projects</button>
+      <button class="cat-btn" data-cat="volunteer">Volunteer</button>
+    </nav>
+  </header>
+
+  <!-- HERO BANNER -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Welcome to Tampa</p>
+      <h2 class="hero-title">Discover the City<br/>Beautiful</h2>
+      <p class="hero-tagline">Handpicked resources for events, parks, culture &amp; more — all in one place.</p>
+    </div>
+    <div class="hero-overlay"></div>
+  </section>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer-bar">
+    <span>ℹ️</span>
+    <p>This guide links to external resources. Clicking a link will open the external site in a new tab.</p>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main id="mainContent">
+
+    <!-- THINGS TO DO -->
+    <section class="top-section" data-cat="things-to-do">
+      <div class="section-header">
+        <span class="section-emoji">🎯</span>
+        <h2 class="section-title">Things To Do</h2>
+      </div>
+
+      <!-- City Parks -->
+      <div class="sub-group" data-subcat="city-parks">
+        <h3 class="sub-title">🌳 City Parks</h3>
+        <div class="link-grid">
+          <a class="resource-card" href="https://www.tampa.gov/parks-and-recreation/featured-parks/curtis-hixon" target="_blank" rel="noopener noreferrer" data-name="Curtis Hixon Waterfront Park" data-cat="things-to-do">
+            <span class="card-name">Curtis Hixon Waterfront Park</span>
+            <span class="card-tag">City Park</span>
+            <span class="card-arrow">↗</span>
+          </a>
+          <a class="resource-card" href="https://www.floridastateparks.org/experiences-amenities" target="_blank" rel="noopener noreferrer" data-name="Florida State Parks" data-cat="things-to-do">
+            <span class="card-name">Florida State Parks</span>
+            <span class="card-tag">State Parks</span>
+            <span class="card-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- City Resources -->
+      <div class="sub-group" data-subcat="city-resources">
+        <h3 class="sub-title">🏛️ City Resources</h3>
+        <div class="link-grid">
+          <a class="resource-card" href="https://www.tampa.gov/info/things-to-do" target="_blank" rel="noopener noreferrer" data-name="Tampa.gov" data-cat="things-to-do">
+            <span class="card-name">Tampa.gov</span>
+            <span class="card-tag">Official City</span>
+            <span class="card-arrow">↗</span>
+          </a>
+          <a class="resource-card" href="https://www.tampasdowntown.com/community-events/" target="_blank" rel="noopener noreferrer" data-name="Tampa Downtown Partnership" data-cat="things-to-do">
+            <span class="card-name">Tampa Downtown Partnership</span>
+            <span class="card-tag">Downtown</span>
+            <span class="card-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Entertainment & Sports -->
+      <div class="sub-group" data-subcat="entertainment">
+        <h3 class="sub-title">🎭 Entertainment &amp; Sports</h3>
+        <div class="link-grid">
+          <a class="resource-card" href="https://www.benchmarkintlarena.com/events" target="_blank" rel="noopener noreferrer" data-name="Benchmark International Arena" data-cat="things-to-do">
+            <span class="card-name">Benchmark International Arena</span>
+            <span class="card-tag">Arena Events</span>
+            <span class="card-arrow">↗</span>
+          </a>
+          <a class="resource-card" href="https://www.tampa.gov/tcc/area-attractions" target="_blank" rel="noopener noreferrer" data-name="Tampa Convention Center" data-cat="things-to-do">
+            <span class="card-name">Tampa Convention Center</span>
+            <span class="card-tag">Conventions</span>
+            <span class="card-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Museums / Culture -->
+      <div class="sub-group" data-subcat="museums">
+        <h3 class="sub-title">🏺 Museums &amp; Culture</h3>
+        <div class="link-grid">
+          <a class="resource-card" href="https://www.ybormuseum.org/events-programs" target="_blank" rel="noopener noreferrer" data-name="Ybor Museum" data-cat="things-to-do">
+            <span class="card-name">Ybor Museum</span>
+            <span class="card-tag">History</span>
+            <span class="card-arrow">↗</span>
+          </a>
+          <a class="resource-card" href="https://tampabayhistorycenter.org/events/" target="_blank" rel="noopener noreferrer" data-name="Tampa Bay History Center" data-cat="things-to-do">
+            <span class="card-name">Tampa Bay History Center</span>
+            <span class="card-tag">History</span>
+            <span class="card-arrow">↗</span>
+          </a>
+          <a class="resource-card" href="https://www.tampafirefightersmuseum.org/" target="_blank" rel="noopener noreferrer" data-name="Tampa Fire Fighters Museum" data-cat="things-to-do">
+            <span class="card-name">Tampa Fire Fighters Museum</span>
+            <span class="card-tag">Museum</span>
+            <span class="card-arrow">↗</span>
+          </a>
+          <a class="resource-card" href="https://tampamuseum.org/" target="_blank" rel="noopener noreferrer" data-name="Tampa Museum of Art" data-cat="things-to-do">
+            <span class="card-name">Tampa Museum of Art</span>
+            <span class="card-tag">Art</span>
+            <span class="card-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Tourism & Activities -->
+      <div class="sub-group" data-subcat="tourism">
+        <h3 class="sub-title">✈️ Tourism &amp; Activities</h3>
+        <div class="link-grid">
+          <a class="resource-card" href="https://www.getyourguide.com/tampa-l1187/" target="_blank" rel="noopener noreferrer" data-name="Get Your Guide" data-cat="things-to-do">
+            <span class="card-name">Get Your Guide</span>
+            <span class="card-tag">Tours</span>
+            <span class="card-arrow">↗</span>
+          </a>
+          <a class="resource-card" href="https://www.localcityguides.com/en/tampa/activities/all-activities" target="_blank" rel="noopener noreferrer" data-name="Local City Guides" data-cat="things-to-do">
+            <span class="card-name">Local City Guides</span>
+            <span class="card-tag">Activities</span>
+            <span class="card-arrow">↗</span>
+          </a>
+          <a class="resource-card" href="https://www.tripadvisor.com/Attractions-g34678-Activities-Tampa_Florida.html" target="_blank" rel="noopener noreferrer" data-name="TripAdvisor" data-cat="things-to-do">
+            <span class="card-name">TripAdvisor</span>
+            <span class="card-tag">Attractions</span>
+            <span class="card-arrow">↗</span>
+          </a>
+          <a class="resource-card" href="https://www.viator.com/Tampa-tourism/d666-r47106901905-s954938836" target="_blank" rel="noopener noreferrer" data-name="Viator" data-cat="things-to-do">
+            <span class="card-name">Viator</span>
+            <span class="card-tag">Tours &amp; Trips</span>
+            <span class="card-arrow">↗</span>
+          </a>
+          <a class="resource-card" href="https://www.visitflorida.com/places-to-go/central-west/tampa/" target="_blank" rel="noopener noreferrer" data-name="Visit Florida" data-cat="things-to-do">
+            <span class="card-name">Visit Florida</span>
+            <span class="card-tag">State Tourism</span>
+            <span class="card-arrow">↗</span>
+          </a>
+          <a class="resource-card" href="https://www.visittampabay.com/things-to-do/tours/" target="_blank" rel="noopener noreferrer" data-name="Visit Tampa Bay" data-cat="things-to-do">
+            <span class="card-name">Visit Tampa Bay</span>
+            <span class="card-tag">Official Tourism</span>
+            <span class="card-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Community -->
+      <div class="sub-group" data-subcat="community">
+        <h3 class="sub-title">🤝 Community</h3>
+        <div class="link-grid">
+          <a class="resource-card" href="https://www.meetup.com/find/?location=us--fl--Tampa" target="_blank" rel="noopener noreferrer" data-name="Meetup" data-cat="things-to-do">
+            <span class="card-name">Meetup</span>
+            <span class="card-tag">Local Groups</span>
+            <span class="card-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Media Platforms -->
+      <div class="sub-group" data-subcat="media">
+        <h3 class="sub-title">📰 Media Platforms</h3>
+        <div class="link-grid">
+          <a class="resource-card" href="https://tampa-bay.events/" target="_blank" rel="noopener noreferrer" data-name="Tampa Entertainment Guide" data-cat="things-to-do">
+            <span class="card-name">Tampa Entertainment Guide</span>
+            <span class="card-tag">Events Media</span>
+            <span class="card-arrow">↗</span>
+          </a>
+          <a class="resource-card" href="https://83degreesmedia.com/place/tampa/" target="_blank" rel="noopener noreferrer" data-name="83 Degrees" data-cat="things-to-do">
+            <span class="card-name">83 Degrees</span>
+            <span class="card-tag">Local Media</span>
+            <span class="card-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- EVENTS CALENDAR -->
+    <section class="top-section" data-cat="events-calendar">
+      <div class="section-header">
+        <span class="section-emoji">📅</span>
+        <h2 class="section-title">Events Calendar</h2>
+      </div>
+      <div class="link-grid">
+        <a class="resource-card" href="https://www.tampasdowntown.com/community-events/" target="_blank" rel="noopener noreferrer" data-name="Tampa Downtown Events" data-cat="events-calendar">
+          <span class="card-name">Tampa Downtown Events</span>
+          <span class="card-tag">Downtown</span>
+          <span class="card-arrow">↗</span>
+        </a>
+        <a class="resource-card" href="https://tampa-bay.events/" target="_blank" rel="noopener noreferrer" data-name="Tampa Bay Events" data-cat="events-calendar">
+          <span class="card-name">Tampa Bay Events</span>
+          <span class="card-tag">Events Listings</span>
+          <span class="card-arrow">↗</span>
+        </a>
+        <a class="resource-card" href="https://tampabayhistorycenter.org/events/" target="_blank" rel="noopener noreferrer" data-name="Tampa Bay History Center Events" data-cat="events-calendar">
+          <span class="card-name">Tampa Bay History Center Events</span>
+          <span class="card-tag">Cultural Events</span>
+          <span class="card-arrow">↗</span>
+        </a>
+        <a class="resource-card" href="https://www.ybormuseum.org/events-programs" target="_blank" rel="noopener noreferrer" data-name="Ybor Museum Events" data-cat="events-calendar">
+          <span class="card-name">Ybor Museum Events</span>
+          <span class="card-tag">Museum Programs</span>
+          <span class="card-arrow">↗</span>
+        </a>
+        <a class="resource-card" href="https://www.benchmarkintlarena.com/events" target="_blank" rel="noopener noreferrer" data-name="Benchmark International Arena Events" data-cat="events-calendar">
+          <span class="card-name">Benchmark International Arena</span>
+          <span class="card-tag">Live Events</span>
+          <span class="card-arrow">↗</span>
+        </a>
+        <a class="resource-card" href="https://www.meetup.com/find/?location=us--fl--Tampa" target="_blank" rel="noopener noreferrer" data-name="Meetup Tampa Events" data-cat="events-calendar">
+          <span class="card-name">Meetup — Tampa</span>
+          <span class="card-tag">Community Events</span>
+          <span class="card-arrow">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- DEALS & DISCOUNTS -->
+    <section class="top-section" data-cat="deals">
+      <div class="section-header">
+        <span class="section-emoji">🏷️</span>
+        <h2 class="section-title">Deals &amp; Discounts</h2>
+      </div>
+      <div class="link-grid">
+        <a class="resource-card" href="https://www.getyourguide.com/tampa-l1187/" target="_blank" rel="noopener noreferrer" data-name="Get Your Guide Deals" data-cat="deals">
+          <span class="card-name">Get Your Guide</span>
+          <span class="card-tag">Tour Deals</span>
+          <span class="card-arrow">↗</span>
+        </a>
+        <a class="resource-card" href="https://www.viator.com/Tampa-tourism/d666-r47106901905-s954938836" target="_blank" rel="noopener noreferrer" data-name="Viator Deals" data-cat="deals">
+          <span class="card-name">Viator</span>
+          <span class="card-tag">Activity Deals</span>
+          <span class="card-arrow">↗</span>
+        </a>
+        <a class="resource-card" href="https://www.tripadvisor.com/Attractions-g34678-Activities-Tampa_Florida.html" target="_blank" rel="noopener noreferrer" data-name="TripAdvisor Deals" data-cat="deals">
+          <span class="card-name">TripAdvisor</span>
+          <span class="card-tag">Best Value</span>
+          <span class="card-arrow">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- DIGITAL GUIDES -->
+    <section class="top-section" data-cat="digital-guides">
+      <div class="section-header">
+        <span class="section-emoji">📱</span>
+        <h2 class="section-title">Digital Guides</h2>
+      </div>
+      <div class="link-grid">
+        <a class="resource-card" href="https://www.visittampabay.com/things-to-do/tours/" target="_blank" rel="noopener noreferrer" data-name="Visit Tampa Bay Guide" data-cat="digital-guides">
+          <span class="card-name">Visit Tampa Bay</span>
+          <span class="card-tag">Official Guide</span>
+          <span class="card-arrow">↗</span>
+        </a>
+        <a class="resource-card" href="https://www.visitflorida.com/places-to-go/central-west/tampa/" target="_blank" rel="noopener noreferrer" data-name="Visit Florida Guide" data-cat="digital-guides">
+          <span class="card-name">Visit Florida — Tampa</span>
+          <span class="card-tag">State Guide</span>
+          <span class="card-arrow">↗</span>
+        </a>
+        <a class="resource-card" href="https://www.localcityguides.com/en/tampa/activities/all-activities" target="_blank" rel="noopener noreferrer" data-name="Local City Guides" data-cat="digital-guides">
+          <span class="card-name">Local City Guides</span>
+          <span class="card-tag">City Guide</span>
+          <span class="card-arrow">↗</span>
+        </a>
+        <a class="resource-card" href="https://83degreesmedia.com/place/tampa/" target="_blank" rel="noopener noreferrer" data-name="83 Degrees Tampa" data-cat="digital-guides">
+          <span class="card-name">83 Degrees</span>
+          <span class="card-tag">Local Journalism</span>
+          <span class="card-arrow">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- CITY PROJECTS -->
+    <section class="top-section" data-cat="city-projects">
+      <div class="section-header">
+        <span class="section-emoji">🏗️</span>
+        <h2 class="section-title">City Projects &amp; Developments</h2>
+      </div>
+      <div class="link-grid">
+        <a class="resource-card" href="https://www.tampa.gov/info/things-to-do" target="_blank" rel="noopener noreferrer" data-name="Tampa.gov City Info" data-cat="city-projects">
+          <span class="card-name">Tampa.gov</span>
+          <span class="card-tag">City Official</span>
+          <span class="card-arrow">↗</span>
+        </a>
+        <a class="resource-card" href="https://www.tampasdowntown.com/community-events/" target="_blank" rel="noopener noreferrer" data-name="Tampa Downtown Partnership" data-cat="city-projects">
+          <span class="card-name">Tampa Downtown Partnership</span>
+          <span class="card-tag">Development</span>
+          <span class="card-arrow">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- VOLUNTEER -->
+    <section class="top-section" data-cat="volunteer">
+      <div class="section-header">
+        <span class="section-emoji">🙌</span>
+        <h2 class="section-title">Volunteer Opportunities</h2>
+      </div>
+      <div class="link-grid">
+        <a class="resource-card" href="https://www.meetup.com/find/?location=us--fl--Tampa" target="_blank" rel="noopener noreferrer" data-name="Meetup Volunteer Tampa" data-cat="volunteer">
+          <span class="card-name">Meetup — Tampa</span>
+          <span class="card-tag">Community Groups</span>
+          <span class="card-arrow">↗</span>
+        </a>
+        <a class="resource-card" href="https://www.tampa.gov/info/things-to-do" target="_blank" rel="noopener noreferrer" data-name="Tampa.gov Volunteer" data-cat="volunteer">
+          <span class="card-name">Tampa.gov</span>
+          <span class="card-tag">City Programs</span>
+          <span class="card-arrow">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <span class="empty-icon">🔍</span>
+      <p>No results found for your search.</p>
+      <button id="resetSearch">Clear Search</button>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="brand-icon">🌴</span>
+      <p>Tampa City Tour Guide &mdash; Curated resources for Tampa, FL</p>
+      <p class="footer-disclaimer">All links open external sites. No affiliation with linked organizations.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

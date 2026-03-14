@@ -151,12 +151,19 @@ export async function GET(request) {
       results = [
         {
           id: 'featured',
+          title:         featuredName,
           activity_name: featuredName,
+          destinationUrl: featuredUrl,
           booking_link:  featuredUrl,
-          category:      process.env.FEATURED_VENDOR_SUB || 'Featured Partner',
+          category:      process.env.FEATURED_VENDOR_SUB || 'Tours & Activities',
           icon:          process.env.FEATURED_VENDOR_ICON || '⭐',
+          listingType:   'partner',
+          isMonetized:   true,
+          isExternal:    true,
+          ctaLabel:      'Go to Booking Site ↗',
           featured_status: true,
-          source_name:   'Sponsored',
+          source_name:   'Partner Link',
+          description:   process.env.FEATURED_VENDOR_DESC || 'A featured Tampa Bay partner listing.',
         },
         ...results,
       ];

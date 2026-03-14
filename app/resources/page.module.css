@@ -1,0 +1,242 @@
+/* ── /resources — Page Module CSS ──────────────────────────────── */
+
+/* Page wrapper */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ──────────────────────────────────────────────────────── */
+.header {
+  padding: 2.5rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+  background: radial-gradient(ellipse 80% 50% at 50% -5%,
+    rgba(255,106,47,0.1) 0%, transparent 70%),
+    var(--bg);
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color var(--t);
+}
+.backLink:hover { color: var(--sunset2); }
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sunset2);
+  margin-bottom: 0.6rem;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sunset1);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 0.6rem;
+}
+
+.sub {
+  font-size: 0.95rem;
+  color: var(--muted);
+  max-width: 560px;
+  line-height: 1.65;
+  margin-bottom: 0.75rem;
+}
+
+.disclaimer {
+  font-size: 0.78rem;
+  color: var(--dim);
+  padding: 0.5rem 0.85rem;
+  background: rgba(56,191,176,0.05);
+  border: 1px solid rgba(56,191,176,0.12);
+  border-radius: var(--r-sm);
+  display: inline-block;
+}
+
+/* ── Main ─────────────────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  padding: 2.5rem 0 5rem;
+}
+
+/* ── Section ──────────────────────────────────────────────────────── */
+.section {
+  margin-bottom: 3.5rem;
+  animation: fadeUp 0.35s ease both;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sectionEmoji {
+  font-size: 1.4rem;
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+}
+
+/* ── Subgroup ─────────────────────────────────────────────────────── */
+.subgroup {
+  margin-bottom: 1.75rem;
+}
+
+.subgroupTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 0.75rem;
+  padding-left: 0.15rem;
+}
+
+/* ── Grid ─────────────────────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.65rem;
+}
+
+/* ── Resource Card ────────────────────────────────────────────────── */
+.card {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.8rem 0.95rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  text-decoration: none;
+  color: var(--text);
+  position: relative;
+  overflow: hidden;
+  transition: background var(--t), border-color var(--t),
+              transform var(--t), box-shadow var(--t);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--grad-sunset);
+  opacity: 0;
+  transition: opacity var(--t);
+}
+
+.card:hover {
+  background: var(--card-hover);
+  border-color: rgba(255,106,47,0.28);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,106,47,0.1);
+}
+
+.card:hover::before { opacity: 1; }
+
+.cardName {
+  flex: 1;
+  font-size: 0.88rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--t);
+}
+
+.card:hover .cardName { color: #fff; }
+
+.cardTag {
+  font-size: 0.62rem !important;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.cardArrow {
+  font-size: 0.95rem;
+  color: var(--dim);
+  flex-shrink: 0;
+  transition: color var(--t), transform var(--t);
+}
+
+.card:hover .cardArrow {
+  color: var(--sunset2);
+  transform: translate(2px, -2px);
+}
+
+/* ── Sticky Download Bar ─────────────────────────────────────────── */
+.stickyBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(10,12,18,0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ── Footer ──────────────────────────────────────────────────────── */
+.footer {
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.footer a {
+  color: var(--sunset2);
+  text-decoration: none;
+}
+.footer a:hover { text-decoration: underline; }
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .grid { grid-template-columns: 1fr; }
+  .h1   { font-size: 1.8rem; }
+}

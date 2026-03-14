@@ -8,16 +8,83 @@ import styles      from './page.module.css';
 
 const MapView = dynamic(() => import('@/components/MapView'), { ssr: false, loading: () => <div style={{height:480,background:'var(--surface)',borderRadius:'var(--r-lg)',display:'flex',alignItems:'center',justifyContent:'center',color:'var(--muted)'}}>🗺 Loading map…</div> });
 
-// ── Fallback seed for when Supabase isn't yet connected ──────────
+// ── Fallback seed — new schema ───────────────────────────────────
+// listingType: 'standard' | 'partner' | 'featured'
+// isMonetized: true = show Partner Link badge + disclosure applies
 const SEED = [
-  { id:'s1', activity_name:'Visit Tampa Bay', category:'Tourism & Activities', neighborhood:'Waterfront', icon:'🌴', official_link:'https://www.visittampabay.com', short_summary:'Official Tampa Bay visitor guide — tours, events, deals and more.' },
-  { id:'s2', activity_name:'Curtis Hixon Waterfront Park', category:'City Parks', neighborhood:'Downtown', icon:'🌿', official_link:'https://www.tampa.gov/parks-and-recreation/featured-parks/curtis-hixon', short_summary:'Scenic waterfront park with events, festivals, and great views of the Hillsborough River.' },
-  { id:'s3', activity_name:'Tampa Golf Cart Tours', category:'Tours & Activities', neighborhood:'Ybor City', icon:'🚗', booking_link:'https://www.getyourguide.com/tampa-l1187/', short_summary:'Explore Tampa and Ybor City on a fun guided golf cart tour — a local favourite.' },
-  { id:'s4', activity_name:'Groupon Tampa Deals', category:'Deals & Discounts', neighborhood:'City-wide', icon:'💰', booking_link:'https://www.groupon.com/local/tampa/sightseeing-and-tours', short_summary:'Save big on Tampa Bay tours, restaurants, and activities.' },
-  { id:'s5', activity_name:'Straz Center Performances', category:'Arts & Culture', neighborhood:'Downtown', icon:'🎭', official_link:'https://www.strazcenter.org/calendar/', short_summary:'World-class Broadway shows, concerts, and performing arts.' },
-  { id:'s6', activity_name:'The Florida Aquarium', category:'Attractions', neighborhood:'Channelside', icon:'🐠', booking_link:'https://www.flaquarium.org', short_summary:'Tampa\'s premier aquarium with marine life, dive shows, and volunteer opportunities.' },
-  { id:'s7', activity_name:'Armature Works', category:'Food & Nightlife', neighborhood:'Heights', icon:'🍽', official_link:'https://www.armatureworks.com', short_summary:'Stunning waterfront food hall with craft cocktails, events, and city views.' },
-  { id:'s8', activity_name:'Ybor City Historic District', category:'History & Culture', neighborhood:'Ybor City', icon:'🏛', official_link:'https://www.ybormuseum.org', short_summary:'Tampa\'s iconic cigar-rolling district — history, nightlife, and Cuban cuisine.' },
+  {
+    id:'s1', title:'Visit Tampa Bay',
+    category:'Tours & Activities', subcategory:'Tourism', area:'Waterfront',
+    icon:'🌴', listingType:'featured', sourceType:'directory', isMonetized:false, isExternal:true,
+    destinationUrl:'https://www.visittampabay.com/things-to-do/tours/',
+    ctaLabel:'Visit Site ↗',
+    description:'Tampa Bay\'s regional tourism directory — browse tours, events, dining, and local picks across the bay area.',
+    tags:['tourism','events','guides'],
+  },
+  {
+    id:'s2', title:'Curtis Hixon Waterfront Park',
+    category:'Outdoors', subcategory:'City Parks', area:'Downtown',
+    icon:'🌿', listingType:'standard', sourceType:'public', isMonetized:false, isExternal:true,
+    destinationUrl:'https://www.tampa.gov/parks-and-recreation/featured-parks/curtis-hixon',
+    ctaLabel:'View Source ↗',
+    description:'A riverside park in the heart of Downtown Tampa — open space, walking paths, and a regular host of festivals and community events.',
+    tags:['park','free','outdoors','family'],
+  },
+  {
+    id:'s3', title:'Guided Tours via Get Your Guide',
+    category:'Tours & Activities', subcategory:'Guided Tours', area:'City-wide',
+    icon:'🚗', listingType:'partner', sourceType:'marketplace', isMonetized:true, isExternal:true,
+    destinationUrl:'https://www.getyourguide.com/tampa-l1187/',
+    ctaLabel:'Go to Booking Site ↗',
+    priceRange:'$25–$120',
+    description:'Browse curated Tampa tours — walking tours, golf cart rides, boat trips, and more — listed on Get Your Guide.',
+    tags:['tours','paid','partner'],
+  },
+  {
+    id:'s4', title:'Tampa Deals & Discounts',
+    category:'Deals & Discounts', subcategory:'Deals', area:'City-wide',
+    icon:'💰', listingType:'partner', sourceType:'marketplace', isMonetized:true, isExternal:true,
+    destinationUrl:'https://www.tripadvisor.com/Attractions-g34678-Activities-Tampa_Florida.html',
+    ctaLabel:'See Deals ↗',
+    description:'Discover discounted Tampa Bay activities, dining, and attractions listed across major travel and review platforms.',
+    tags:['deals','discounts','partner'],
+  },
+  {
+    id:'s5', title:'Straz Center for the Performing Arts',
+    category:'Events', subcategory:'Arts & Culture', area:'Downtown',
+    icon:'🎭', listingType:'standard', sourceType:'venue', isMonetized:false, isExternal:true,
+    destinationUrl:'https://www.strazcenter.org/calendar/',
+    ctaLabel:'Learn More ↗',
+    description:'One of the largest performing arts centers in the southeastern US — Broadway productions, concerts, and community performances.',
+    tags:['events','arts','culture'],
+  },
+  {
+    id:'s6', title:'The Florida Aquarium',
+    category:'Tours & Activities', subcategory:'Attractions', area:'Channelside',
+    icon:'🐠', listingType:'featured', sourceType:'attraction', isMonetized:false, isExternal:true,
+    destinationUrl:'https://www.flaquarium.org',
+    ctaLabel:'Visit Site ↗',
+    description:'A hands-on marine experience with native Florida wildlife, dive shows, and family-friendly exhibits along Tampa\'s waterfront.',
+    tags:['family','attractions','outdoors'],
+  },
+  {
+    id:'s7', title:'Armature Works',
+    category:'Food', subcategory:'Food Halls', area:'Heights',
+    icon:'🍽', listingType:'standard', sourceType:'venue', isMonetized:false, isExternal:true,
+    destinationUrl:'https://www.armatureworks.com',
+    ctaLabel:'Visit Site ↗',
+    description:'A converted historic building turned vibrant food hall and event space with riverside views, local vendors, and weekend markets.',
+    tags:['food','nightlife','events'],
+  },
+  {
+    id:'s8', title:'Ybor City Historic District',
+    category:'Events', subcategory:'History & Culture', area:'Ybor City',
+    icon:'🏛', listingType:'standard', sourceType:'public', isMonetized:false, isExternal:true,
+    destinationUrl:'https://www.ybormuseum.org/events-programs',
+    ctaLabel:'Learn More ↗',
+    description:'Tampa\'s National Historic Landmark neighborhood — rich in Cuban and cigar-making heritage, street-level culture, and weekend nightlife.',
+    tags:['history','culture','nightlife'],
+  },
 ];
 
 export default function Home() {
@@ -122,15 +189,22 @@ export default function Home() {
       <header className={styles.header}>
         <div className={styles.container}>
           <div className={styles.eyebrow}>
-            <span className={styles.dot} /> AI-Powered · Tampa Bay
+            <span className={styles.dot} /> Curated City Discovery · Tampa Bay
           </div>
           <h1 className={styles.h1}>Tampa City Tour Guide</h1>
-          <p className={styles.sub}>Discover the best tours, events, deals, and things to do in Tampa Bay</p>
+          <p className={styles.sub}>Discover tours, events, attractions, deals, and local favorites across Tampa Bay</p>
+          <p className={styles.subMuted}>Curated city discovery with direct links to original sources</p>
           <div className={styles.searchWrap}>
             <SearchBar onSearch={handleSearch} loading={loading} />
           </div>
         </div>
       </header>
+
+      {/* ── Disclosure bar ──────────────────────────────────────── */}
+      <div className={styles.disclosureBar}>
+        <span className={styles.disclosureIcon}>ℹ️</span>
+        <p>Some links on this page may be partner links. City Tour Guide may earn a commission if you book or purchase through them, at no extra cost to you.</p>
+      </div>
 
       {/* ── Main ───────────────────────────────────────────────── */}
       <main className={styles.main}>
@@ -168,6 +242,10 @@ export default function Home() {
           {/* Results section */}
           <div className={styles.content}>
             <div className={styles.resultsArea}>
+              {/* Third-party note */}
+              <p className={styles.thirdPartyNote}>
+                Listings link to third-party websites for more details and booking.
+              </p>
               {/* Count */}
               {!loading && results.length > 0 && (
                 <p className={styles.resultCount}>
@@ -199,6 +277,13 @@ export default function Home() {
                 </div>
               )}
 
+              {/* Partner disclosure repeat — near cards */}
+              {!loading && results.some(r => r.isMonetized) && (
+                <p className={styles.partnerNote}>
+                  💼 Cards marked &ldquo;Partner Link&rdquo; may generate commissions for City Tour Guide at no extra cost to you.
+                </p>
+              )}
+
               {/* Empty state */}
               {!mapMode && !loading && results.length === 0 && (
                 <div className={styles.empty}>
@@ -223,13 +308,14 @@ export default function Home() {
                       <div key={item.id} className={styles.savedItem}>
                         <span>{item.icon || '📍'}</span>
                         <div className={styles.savedItemBody}>
-                          <div className={styles.savedItemName}>{item.activity_name}</div>
+                          <div className={styles.savedItemName}>{item.title || item.activity_name}</div>
                           <div className={styles.savedItemCat}>{item.category}</div>
                         </div>
                         <a
-                          href={item.booking_link || item.official_link || '#'}
+                          href={item.destinationUrl || item.booking_link || item.official_link || '#'}
                           target="_blank" rel="noopener noreferrer"
                           className={styles.savedItemLink}
+                          aria-label="Visit site — opens in a new tab"
                         >↗</a>
                         <button className={styles.savedItemRemove} onClick={() => toggleSave(item)}>✕</button>
                       </div>
@@ -245,9 +331,17 @@ export default function Home() {
       {/* ── Footer ─────────────────────────────────────────────── */}
       <footer className={styles.footer}>
         <div className={styles.container}>
-          <p>
-            © 2026 <span className={styles.brand}>City Tour Guide, Inc.</span> ·{' '}
-            <a href="/partner.html">Become a Partner</a>
+          <p className={styles.footerLinks}>
+            © 2026 <span className={styles.brand}>City Tour Guide, Inc.</span>
+            {' · '}<a href="/partner.html">Become a Partner</a>
+            {' · '}<a href="/resources">📚 Resources</a>
+            {' · '}<a href="/disclaimer">Disclaimer</a>
+            {' · '}<a href="/privacy">Privacy</a>
+            {' · '}<a href="/terms">Terms</a>
+          </p>
+          <p className={styles.footerDisclaimer}>
+            Listings are curated for discovery purposes. External links lead to third-party websites.
+            Some links may generate commissions for City Tour Guide at no extra cost to users.
           </p>
         </div>
       </footer>
