@@ -149,19 +149,16 @@ export default function Home() {
             <span className={styles.cityPickerPin}>📍</span>
             <select
               className={styles.cityPickerSelect}
-              defaultValue="nationwide"
+              defaultValue="tampa"
               onChange={e => {
-                if (e.target.value === 'tampa') {
-                  // Tampa is live — could filter by city in future
-                } else if (e.target.value !== 'nationwide') {
+                if (e.target.value !== 'tampa') {
                   alert('More cities coming soon!');
-                  e.target.value = 'nationwide';
+                  e.target.value = 'tampa';
                 }
               }}
               aria-label="Select city or region"
             >
-              <option value="nationwide">Nationwide</option>
-              <option value="tampa">Tampa, FL ✓ Live</option>
+              <option value="tampa">Tampa, FL</option>
               <option value="stpete" disabled>St. Pete, FL — Coming Soon</option>
               <option value="orlando" disabled>Orlando, FL — Coming Soon</option>
               <option value="miami" disabled>Miami, FL — Coming Soon</option>
