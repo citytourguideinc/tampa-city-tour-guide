@@ -1,0 +1,89 @@
+/* signup.module.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+.page { font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; min-height: 100vh; }
+
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 64px; background: #fff; border-bottom: 1px solid #E2E8F0;
+}
+.navLogo { text-decoration: none; }
+.navBack { font-size: 0.875rem; color: #64748B; text-decoration: none; font-weight: 500; }
+.navBack:hover { color: #2563EB; }
+
+.formWrap { max-width: 640px; margin: 48px auto; padding: 0 20px 80px; }
+
+.formHeader { text-align: center; margin-bottom: 36px; }
+.foundingTag {
+  display: inline-block; padding: 7px 18px; border-radius: 999px;
+  background: linear-gradient(135deg,rgba(251,191,36,0.12),rgba(251,191,36,0.06));
+  border: 1px solid rgba(251,191,36,0.35); color: #D97706;
+  font-size: 0.82rem; font-weight: 600; margin-bottom: 16px;
+}
+.formTitle { font-size: 2rem; font-weight: 800; color: #0F172A; margin-bottom: 8px; letter-spacing: -0.03em; }
+.formSub { color: #64748B; font-size: 0.95rem; }
+
+.form { background: #fff; border: 1px solid #E2E8F0; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 20px; }
+
+.fieldset { border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.legend { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748B; padding: 0 6px; }
+
+.tierOption {
+  display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px;
+  border: 1.5px solid #E2E8F0; border-radius: 12px; cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.tierOption input { margin-top: 3px; accent-color: #2563EB; }
+.tierOption strong { display: block; font-size: 0.92rem; color: #1E293B; margin-bottom: 2px; }
+.tierOption span { font-size: 0.8rem; color: #94A3B8; }
+.tierOptionActive { border-color: #2563EB; background: #EFF6FF; }
+
+.fieldRow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 0.82rem; font-weight: 600; color: #374151; }
+.field input, .field select, .field textarea {
+  padding: 11px 14px; border: 1.5px solid #E2E8F0; border-radius: 10px;
+  font-family: 'Inter', system-ui, sans-serif; font-size: 0.92rem; color: #1E293B;
+  background: #F8FAFC; transition: border-color 0.15s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: #2563EB; background: #fff;
+}
+
+.checkboxField {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.88rem; color: #374151; cursor: pointer;
+  padding: 12px 14px; border: 1.5px solid #E2E8F0; border-radius: 10px;
+}
+.checkboxField input { accent-color: #2563EB; width: 16px; height: 16px; }
+
+.error { color: #EF4444; font-size: 0.85rem; padding: 10px 14px; background: #FEF2F2; border-radius: 8px; }
+
+.submitBtn {
+  width: 100%; padding: 14px; border: none; border-radius: 12px;
+  background: linear-gradient(135deg,#2563EB,#7C3AED);
+  color: #fff; font-family: 'Inter',system-ui,sans-serif;
+  font-size: 1rem; font-weight: 700; cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.submitBtn:hover:not(:disabled) { transform: translateY(-1px); opacity: 0.93; }
+.submitBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.submitNote { font-size: 0.78rem; color: #94A3B8; text-align: center; line-height: 1.5; }
+.submitNote a { color: #2563EB; }
+
+/* Success */
+.successBox { max-width: 480px; margin: 120px auto; text-align: center; padding: 40px 24px; }
+.successIcon { font-size: 3.5rem; margin-bottom: 20px; }
+.successBox h1 { font-size: 2rem; font-weight: 800; color: #0F172A; margin-bottom: 12px; }
+.successBox p { color: #64748B; font-size: 1rem; line-height: 1.6; }
+.successNote { font-size: 0.85rem; color: #22C55E; margin-top: 8px; }
+.backBtn {
+  display: inline-block; margin-top: 28px; padding: 12px 28px; border-radius: 999px;
+  background: #0F172A; color: #fff; text-decoration: none; font-weight: 600; font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .fieldRow { grid-template-columns: 1fr; }
+  .form { padding: 20px; }
+}

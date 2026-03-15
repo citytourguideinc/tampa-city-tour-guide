@@ -1,0 +1,13 @@
+/* terms.module.css */
+.page { font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; min-height: 100vh; }
+.nav { padding: 16px 24px; border-bottom: 1px solid #E2E8F0; background: #fff; }
+.back { font-size: 0.875rem; color: #2563EB; text-decoration: none; font-weight: 500; }
+.back:hover { text-decoration: underline; }
+.content { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+.content h1 { font-size: 2rem; font-weight: 800; color: #0F172A; margin-bottom: 6px; }
+.updated { font-size: 0.82rem; color: #94A3B8; margin-bottom: 40px; }
+.content h2 { font-size: 1.05rem; font-weight: 700; color: #0F172A; margin: 32px 0 10px; }
+.content p { color: #475569; line-height: 1.7; font-size: 0.93rem; margin-bottom: 12px; }
+.content ul { color: #475569; line-height: 1.7; font-size: 0.93rem; padding-left: 20px; }
+.content li { margin-bottom: 8px; }
+.content a { color: #2563EB; }
