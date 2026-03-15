@@ -1,8 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function AdminLogin() {
+function LoginForm() {
   const [password, setPassword] = useState('');
   const [error, setError]       = useState('');
   const [loading, setLoading]   = useState(false);
@@ -29,6 +29,40 @@ export default function AdminLogin() {
   }
 
   return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        placeholder="Enter admin password"
+        autoFocus
+        required
+        style={{
+          width: '100%', padding: '12px 14px', fontSize: '0.95rem',
+          border: `1.5px solid ${error ? '#E8431A' : 'rgba(0,0,0,0.15)'}`,
+          borderRadius: 10, outline: 'none', fontFamily: 'inherit',
+          boxSizing: 'border-box', marginBottom: 12,
+        }}
+      />
+      {error && <p style={{ color: '#E8431A', fontSize: '0.8rem', marginBottom: 10 }}>{error}</p>}
+      <button
+        type="submit"
+        disabled={loading || !password}
+        style={{
+          width: '100%', padding: '12px', background: '#111827', color: '#fff',
+          border: 'none', borderRadius: 10, fontSize: '0.95rem', fontWeight: 600,
+          cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit',
+          opacity: loading || !password ? 0.5 : 1,
+        }}
+      >
+        {loading ? 'Checking…' : 'Sign In'}
+      </button>
+    </form>
+  );
+}
+
+export default function AdminLogin() {
+  return (
     <div style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
       background: '#F8F7F4', fontFamily: 'Inter, system-ui, sans-serif',
@@ -43,37 +77,9 @@ export default function AdminLogin() {
             Admin Access
           </p>
         </div>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            placeholder="Enter admin password"
-            autoFocus
-            required
-            style={{
-              width: '100%', padding: '12px 14px', fontSize: '0.95rem',
-              border: `1.5px solid ${error ? '#E8431A' : 'rgba(0,0,0,0.15)'}`,
-              borderRadius: 10, outline: 'none', fontFamily: 'inherit',
-              boxSizing: 'border-box', marginBottom: 12,
-            }}
-          />
-          {error && (
-            <p style={{ color: '#E8431A', fontSize: '0.8rem', marginBottom: 10 }}>{error}</p>
-          )}
-          <button
-            type="submit"
-            disabled={loading || !password}
-            style={{
-              width: '100%', padding: '12px', background: '#111827', color: '#fff',
-              border: 'none', borderRadius: 10, fontSize: '0.95rem', fontWeight: 600,
-              cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit',
-              opacity: loading || !password ? 0.5 : 1,
-            }}
-          >
-            {loading ? 'Checking…' : 'Sign In'}
-          </button>
-        </form>
+        <Suspense fallback={<div style={{ height: 120 }} />}>
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   );
