@@ -170,53 +170,55 @@
 }
 .heroSearch {
   max-width: 620px;
-  margin: 0 auto 28px;
+  margin: 0 auto 20px;
   position: relative;
   z-index: 1;
 }
 
-/* App download badges */
+/* App download badges — Premium store-button style */
 .appBadges {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
-  margin-bottom: 36px;
+  margin: 18px 0 32px;
   position: relative;
   z-index: 1;
 }
 .appBadge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 9px 18px;
-  border-radius: 10px;
+  gap: 10px;
+  padding: 11px 22px;
+  border-radius: 14px;
   text-decoration: none;
   font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 0.82rem;
-  transition: transform 0.15s, opacity 0.15s;
-  letter-spacing: -0.01em;
+  font-weight: 500;
+  font-size: 0.88rem;
+  line-height: 1.2;
+  transition: transform 0.18s, box-shadow 0.18s;
+  cursor: pointer;
+  min-height: 52px;
 }
-.appBadge:hover { transform: translateY(-2px); opacity: 0.92; }
+.appBadge:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.appBadge strong { font-size: 1rem; font-weight: 700; display: block; }
 .appBadgeAndroid {
-  background: rgba(255,255,255,0.12);
+  background: #1a1a2e;
   color: #FFFFFF;
-  border: 1.5px solid rgba(255,255,255,0.3);
+  border: 1.5px solid rgba(255,255,255,0.2);
 }
 .appBadgeWeb {
-  background: rgba(255,255,255,0.1);
+  background: linear-gradient(135deg,#0f3460,#16213e);
   color: #FFFFFF;
-  border: 1.5px solid rgba(255,255,255,0.25);
+  border: 1.5px solid rgba(255,255,255,0.18);
 }
 .appBadgeIos {
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.6);
-  border: 1.5px solid rgba(255,255,255,0.14);
-  font-style: italic;
+  background: #1a1a2e;
+  color: rgba(255,255,255,0.55);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  cursor: default;
 }
-.appBadgeIcon { font-size: 1.1rem; line-height: 1; }
 
 /* Stats strip */
 .heroStats {

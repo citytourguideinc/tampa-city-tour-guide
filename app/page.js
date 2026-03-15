@@ -206,20 +206,35 @@ export default function Home() {
             <>
               <FilterDropdowns onFilter={applyFilter} />
               <div className={styles.appBadges}>
+                {/* Google Play */}
                 <a href="https://play.google.com/store/apps/details?id=com.mytoursapp.android.app7801"
                    target="_blank" rel="noopener noreferrer"
                    className={`${styles.appBadge} ${styles.appBadgeAndroid}`} aria-label="Get it on Google Play">
-                  <span className={styles.appBadgeIcon}>▶</span>
-                  <span><span style={{fontSize:'0.65rem',display:'block',opacity:0.6}}>GET IT ON</span>Google Play</span>
+                  <svg width="20" height="22" viewBox="0 0 24 27" fill="none" aria-hidden="true">
+                    <path d="M1.5 0.5L13.5 13.5L1.5 26.5C0.7 26.1 0 25.1 0 23.9V3.1C0 1.9 0.7 0.9 1.5 0.5Z" fill="#EA4335"/>
+                    <path d="M20 9L13.5 13.5L20 18L23.3 16.1C24.2 15.6 24.2 14.4 23.3 13.9L20 9Z" fill="#FBBC04"/>
+                    <path d="M1.5 0.5L13.5 13.5L20 9L4.5 0.1C3.5 -0.4 2.3 -0.1 1.5 0.5Z" fill="#4285F4"/>
+                    <path d="M1.5 26.5L13.5 13.5L20 18L4.5 26.9C3.5 27.4 2.3 27.1 1.5 26.5Z" fill="#34A853"/>
+                  </svg>
+                  <span><span style={{fontSize:'0.6rem',display:'block',opacity:0.65,letterSpacing:'0.04em'}}>GET IT ON</span><strong>Google Play</strong></span>
                 </a>
+
+                {/* Web App */}
                 <a href="https://citytourguide.stqry.app/" target="_blank" rel="noopener noreferrer"
                    className={`${styles.appBadge} ${styles.appBadgeWeb}`} aria-label="Open Web App">
-                  <span className={styles.appBadgeIcon}>🌐</span>
-                  <span><span style={{fontSize:'0.65rem',display:'block',opacity:0.6}}>OPEN</span>Web App</span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4" ry="10"/>
+                    <path d="M2 12h20"/>
+                  </svg>
+                  <span><span style={{fontSize:'0.6rem',display:'block',opacity:0.65,letterSpacing:'0.04em'}}>OPEN</span><strong>Web App</strong></span>
                 </a>
-                <span className={`${styles.appBadge} ${styles.appBadgeIos}`} title="Coming soon to iOS">
-                  <span className={styles.appBadgeIcon} style={{fontFamily:'serif',fontStyle:'italic',fontWeight:700,fontSize:'1.1rem'}}></span>
-                  <span><span style={{fontSize:'0.65rem',display:'block'}}>COMING SOON</span>App Store</span>
+
+                {/* App Store — Coming Soon */}
+                <span className={`${styles.appBadge} ${styles.appBadgeIos}`} title="Coming soon to iOS App Store">
+                  <svg width="18" height="22" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true">
+                    <path d="M814 700c-3 130-100 210-150 230-80 30-150-20-200-20s-110 25-195 25C180 935 0 760 0 555c0-180 115-270 225-275 85-5 165 55 215 55s130-65 225-55c38 2 145 15 215 120-190 115-160 330 35 300zm-280-460c-5-90 75-175 165-185 15 110-95 200-165 185z"/>
+                  </svg>
+                  <span><span style={{fontSize:'0.6rem',display:'block',letterSpacing:'0.04em'}}>COMING SOON</span><strong>App Store</strong></span>
                 </span>
               </div>
             </>
