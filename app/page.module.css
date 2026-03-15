@@ -85,41 +85,137 @@
 
 /* ── Hero section (landing only) ─────────────────────────────── */
 .hero {
-  padding: 72px 0 60px;
+  padding: 64px 0 52px;
   text-align: center;
-  background: #FFFFFF;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  background: linear-gradient(160deg, #0D1117 0%, #0f2044 50%, #0D1117 100%);
+  border-bottom: none;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 60% 50%, rgba(0,102,204,0.18) 0%, transparent 70%);
+  pointer-events: none;
 }
 .heroEyebrow {
   font-family: 'Inter', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #0D7490;
-  margin-bottom: 16px;
+  color: #60A5FA;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
 }
 .heroTitle {
   font-family: 'Outfit', sans-serif;
-  font-size: clamp(2.8rem, 6vw, 4.5rem);
+  font-size: clamp(2.6rem, 6vw, 4.2rem);
   font-weight: 900;
   line-height: 1.05;
-  letter-spacing: -0.035em;
-  color: #111827;
-  margin-bottom: 16px;
+  letter-spacing: -0.03em;
+  color: #FFFFFF;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
 }
 .heroSub {
   font-family: 'Inter', sans-serif;
-  font-size: 1.15rem;
-  color: #4B5563;
-  font-weight: 500;
-  margin-bottom: 40px;
-  letter-spacing: 0.005em;
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.65);
+  font-weight: 400;
+  margin-bottom: 32px;
+  letter-spacing: 0.01em;
+  position: relative;
+  z-index: 1;
 }
 .heroSearch {
   max-width: 620px;
-  margin: 0 auto;
+  margin: 0 auto 28px;
+  position: relative;
+  z-index: 1;
 }
+
+/* App download badges */
+.appBadges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+  position: relative;
+  z-index: 1;
+}
+.appBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  transition: transform 0.15s, opacity 0.15s;
+  letter-spacing: -0.01em;
+}
+.appBadge:hover { transform: translateY(-2px); opacity: 0.92; }
+.appBadgeAndroid {
+  background: #FFFFFF;
+  color: #111827;
+  border: none;
+}
+.appBadgeWeb {
+  background: rgba(255,255,255,0.1);
+  color: #FFFFFF;
+  border: 1.5px solid rgba(255,255,255,0.25);
+}
+.appBadgeIos {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.6);
+  border: 1.5px solid rgba(255,255,255,0.14);
+  font-style: italic;
+}
+.appBadgeIcon { font-size: 1.1rem; line-height: 1; }
+
+/* Stats strip */
+.heroStats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 24px;
+  position: relative;
+  z-index: 1;
+}
+.heroStat {
+  flex: 1;
+  max-width: 160px;
+  text-align: center;
+  padding: 0 20px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.heroStat:last-child { border-right: none; }
+.heroStatNum {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.heroStatLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+}
+
 
 /* Shared container */
 .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
