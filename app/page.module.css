@@ -164,9 +164,9 @@
 }
 .appBadge:hover { transform: translateY(-2px); opacity: 0.92; }
 .appBadgeAndroid {
-  background: #FFFFFF;
-  color: #111827;
-  border: none;
+  background: rgba(255,255,255,0.12);
+  color: #FFFFFF;
+  border: 1.5px solid rgba(255,255,255,0.3);
 }
 .appBadgeWeb {
   background: rgba(255,255,255,0.1);
@@ -245,8 +245,8 @@
   align-items: center;
   gap: 6px;
   padding: 22px 12px 18px;
-  background: #FFFFFF;
-  border: 1.5px solid rgba(0,0,0,0.07);
+  background: #EFF4FF;
+  border: 1.5px solid rgba(0,102,204,0.12);
   border-radius: 16px;
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
@@ -704,8 +704,8 @@
 
 /* Tablet */
 @media (max-width: 768px) {
-  .navInner { grid-template-columns: auto 1fr auto; height: 64px; padding: 0 16px; gap: 12px; }
-  .logoImg { height: 46px; }
+  .navInner { grid-template-columns: auto 1fr auto; height: 72px; padding: 0 16px; gap: 12px; }
+  .logoImg { height: 68px; }
   .navSearch { max-width: 260px; }
   .hero { padding: 48px 0 36px; }
   .groupGrid { grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -714,8 +714,8 @@
 /* Mobile phones */
 @media (max-width: 600px) {
   /* Navbar — logo left, city picker right only */
-  .navInner { grid-template-columns: auto 1fr; height: 58px; padding: 0 14px; gap: 8px; }
-  .logoImg { height: 38px; }
+  .navInner { grid-template-columns: auto 1fr; height: 64px; padding: 0 14px; gap: 8px; }
+  .logoImg { height: 54px; }
   .navSearch { display: none; }
   .navRightSpacer { display: none; }
   .cityPicker { padding: 6px 10px; justify-self: end; }
@@ -731,18 +731,12 @@
   /* Container */
   .container { padding: 0 12px; }
 
-  /* Prompt chips — horizontal scroll */
-  .promptGrid {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    margin: 0 -12px;
-    padding: 0 12px 4px;
-    gap: 8px;
-  }
-  .promptGrid::-webkit-scrollbar { display: none; }
-  .promptChip { flex-shrink: 0; font-size: 0.82rem; padding: 8px 14px; }
+  /* Prompt cards — 2 column grid on mobile */
+  .promptGrid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .promptCard { padding: 16px 10px 12px; }
+  .promptCardIcon { font-size: 1.6rem; }
+  .promptCardLabel { font-size: 0.78rem; }
+  .promptCardSub { display: none; }
 
   /* Filter pills — horizontal scroll */
   .filterPills, .dateFilters {

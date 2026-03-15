@@ -204,7 +204,7 @@ export default function Home() {
                 <span><span style={{fontSize:'0.65rem',display:'block',opacity:0.6}}>OPEN</span>Web App</span>
               </a>
               <span className={`${styles.appBadge} ${styles.appBadgeIos}`} title="Coming soon to iOS">
-                <span className={styles.appBadgeIcon}>🍎</span>
+                <span className={styles.appBadgeIcon} style={{fontFamily:'serif',fontStyle:'italic',fontWeight:700,fontSize:'1.1rem'}}></span>
                 <span><span style={{fontSize:'0.65rem',display:'block'}}>COMING SOON</span>App Store</span>
               </span>
             </div>
