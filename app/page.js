@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import SearchBar    from '@/components/SearchBar';
 import ResultCard   from '@/components/ResultCard';
 import SourceGroup  from '@/components/SourceGroup';
-import ViatorWidget from '@/components/ViatorWidget';
+import SkeletonCard from '@/components/SkeletonCard';
 import styles       from './page.module.css';
 
 // Search suggestion prompts shown on first load
@@ -160,10 +160,9 @@ export default function Home() {
             <span className={styles.cityPickerChevron}>▾</span>
           </div>
 
-          {/* RIGHT — Inline search (results mode only) */}
           {hasSearched && (
             <div className={styles.navSearch}>
-              <SearchBar onSearch={handleSearch} loading={loading} />
+              <SearchBar onSearch={handleSearch} loading={loading} initValue={query} />
             </div>
           )}
           {!hasSearched && <div className={styles.navRightSpacer} />}
@@ -222,20 +221,20 @@ export default function Home() {
 
               {/* Source credit */}
               <p className={styles.landingCredit}>
-                Listings sourced from verified Tampa Bay partners · All links go to original sources
+                Listings sourced from verified Tampa Bay partners. All links go to original sources.
               </p>
-
-              {/* Viator — bookable tours */}
-              <div className={styles.viatorSection}>
-                <p className={styles.landingLabel}>🎟 Book a Tour on Viator</p>
-                <ViatorWidget />
-              </div>
             </div>
           )}
 
           {/* ══ RESULTS STATE ═══════════════════════════════════════ */}
           {hasSearched && (
             <>
+              {/* Skeleton loading */}
+              {loading && (
+                <div className={styles.groupGrid}>
+                  {[1,2,3,4,5,6].map(i => <SkeletonCard key={i} />)}
+                </div>
+              )}
               {/* Filters */}
               <div className={styles.filterRow}>
                 <div className={styles.filterPills}>

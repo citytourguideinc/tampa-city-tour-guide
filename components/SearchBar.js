@@ -3,11 +3,16 @@
 import { useState, useEffect, useRef } from 'react';
 import styles from './SearchBar.module.css';
 
-export default function SearchBar({ onSearch, loading }) {
-  const [value, setValue] = useState('');
+export default function SearchBar({ onSearch, loading, initValue = '' }) {
+  const [value, setValue] = useState(initValue);
   const debounceRef = useRef(null);
   const inputRef = useRef(null);
-  const isMounted = useRef(false); // skip debounce on initial mount
+  const isMounted = useRef(false);
+
+  // When initValue changes (nav bar mounts with current query), sync it
+  useEffect(() => {
+    if (initValue) setValue(initValue);
+  }, [initValue]);
 
   // Debounced search-as-you-type — skip first render
   useEffect(() => {
@@ -50,26 +55,12 @@ export default function SearchBar({ onSearch, loading }) {
         aria-label="Search City Tour Guide"
       />
       {value && !loading && (
-        <button
-          type="button"
-          className={styles.clearBtn}
-          onClick={clear}
-          aria-label="Clear search"
-        >
-          ✕
-        </button>
+        <button type="button" className={styles.clearBtn} onClick={clear} aria-label="Clear search">✕</button>
       )}
       {loading ? (
         <span className={styles.spinner} aria-label="Searching…" />
       ) : (
-        <button
-          type="submit"
-          className={styles.btn}
-          disabled={!value.trim()}
-          aria-label="Search"
-        >
-          ↗
-        </button>
+        <button type="submit" className={styles.btn} disabled={!value.trim()} aria-label="Search">↗</button>
       )}
     </form>
   );
