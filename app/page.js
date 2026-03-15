@@ -8,14 +8,14 @@ import styles       from './page.module.css';
 
 // Search suggestion prompts shown on first load
 const PROMPTS = [
-  { icon: '🎟', label: 'Events',       sub: 'This Weekend',     q: '',            date: 'weekend' },
-  { icon: '🆓', label: 'Free Things',  sub: 'No Cost Activities', q: 'free',         date: '' },
-  { icon: '🎵', label: 'Live Music',   sub: 'Bars & Venues',     q: 'music',        date: '' },
-  { icon: '🧘', label: 'Wellness',     sub: 'Yoga & Fitness',    q: 'yoga fitness', date: '' },
-  { icon: '🎨', label: 'Arts & Culture', sub: 'Galleries & Shows', q: '',         date: '', category: 'Arts & Culture' },
-  { icon: '🍽', label: 'Food & Dining', sub: 'Restaurants',     q: 'food dining',  date: '' },
-  { icon: '🌿', label: 'Outdoors',     sub: 'Parks & Nature',   q: 'park outdoor', date: '' },
-  { icon: '👨‍👩‍👧', label: 'Family', sub: 'Kid-Friendly Fun', q: 'family kids', date: '' },
+  { icon: '🎟', label: 'Events',         sub: 'This Weekend',      q: '',            date: 'weekend', grad: 'linear-gradient(135deg,#FF6B35,#F7C59F)' },
+  { icon: '🆓', label: 'Free Things',    sub: 'No Cost Activities', q: 'free',        date: '',        grad: 'linear-gradient(135deg,#11998e,#38ef7d)' },
+  { icon: '🎵', label: 'Live Music',     sub: 'Bars & Venues',     q: 'music',       date: '',        grad: 'linear-gradient(135deg,#7b4397,#dc2430)' },
+  { icon: '🧘', label: 'Wellness',       sub: 'Yoga & Fitness',    q: 'yoga fitness',date: '',        grad: 'linear-gradient(135deg,#1CB5E0,#000851)' },
+  { icon: '🎨', label: 'Arts & Culture', sub: 'Galleries & Shows', q: '',            date: '',        category: 'Arts & Culture', grad: 'linear-gradient(135deg,#f093fb,#f5576c)' },
+  { icon: '🍽', label: 'Food & Dining',  sub: 'Restaurants',       q: 'food dining', date: '',       grad: 'linear-gradient(135deg,#FA8231,#f7b731)' },
+  { icon: '🌿', label: 'Outdoors',       sub: 'Parks & Nature',    q: 'park outdoor',date: '',       grad: 'linear-gradient(135deg,#134E5E,#71B280)' },
+  { icon: '👨‍👩‍👧', label: 'Family', sub: 'Kid-Friendly Fun',  q: 'family kids', date: '', grad: 'linear-gradient(135deg,#4481eb,#04befe)' },
 ];
 
 export default function Home() {
@@ -221,18 +221,19 @@ export default function Home() {
           {!hasSearched && (
             <div className={styles.landing}>
 
-              {/* Premium category icon cards */}
+              {/* Premium category icon cards — vibrant gradients */}
               <p className={styles.landingLabel}>Explore by Category</p>
               <div className={styles.promptGrid}>
                 {PROMPTS.map(p => (
                   <button
                     key={p.label}
                     className={styles.promptCard}
+                    style={{ background: p.grad }}
                     onClick={() => applyPrompt(p)}
                   >
                     <span className={styles.promptCardIcon}>{p.icon}</span>
-                    <span className={styles.promptCardLabel}>{p.label}</span>
-                    <span className={styles.promptCardSub}>{p.sub}</span>
+                    <span className={styles.promptCardLabel} style={{ color: '#fff' }}>{p.label}</span>
+                    <span className={styles.promptCardSub} style={{ color: 'rgba(255,255,255,0.75)' }}>{p.sub}</span>
                   </button>
                 ))}
               </div>

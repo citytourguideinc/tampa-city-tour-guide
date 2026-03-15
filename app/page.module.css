@@ -13,7 +13,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 28px;
-  height: 100px;
+  height: 110px;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -28,7 +28,7 @@
   justify-self: start;
 }
 .logoImg {
-  height: 90px;
+  height: 100px;
   width: auto;
   display: block;
   object-fit: contain;
@@ -245,18 +245,16 @@
   align-items: center;
   gap: 6px;
   padding: 22px 12px 18px;
-  background: #EFF4FF;
-  border: 1.5px solid rgba(0,102,204,0.12);
+  border: none;
   border-radius: 16px;
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
   text-align: center;
 }
 .promptCard:hover {
-  border-color: #0066CC;
-  box-shadow: 0 8px 24px rgba(0,102,204,0.12);
-  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+  transform: translateY(-4px) scale(1.03);
 }
 .promptCardIcon {
   font-size: 2rem;
@@ -704,8 +702,8 @@
 
 /* Tablet */
 @media (max-width: 768px) {
-  .navInner { grid-template-columns: auto 1fr auto; height: 72px; padding: 0 16px; gap: 12px; }
-  .logoImg { height: 68px; }
+  .navInner { grid-template-columns: auto 1fr auto; height: 84px; padding: 0 16px; gap: 12px; }
+  .logoImg { height: 76px; }
   .navSearch { max-width: 260px; }
   .hero { padding: 48px 0 36px; }
   .groupGrid { grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -714,8 +712,8 @@
 /* Mobile phones */
 @media (max-width: 600px) {
   /* Navbar — logo left, city picker right only */
-  .navInner { grid-template-columns: auto 1fr; height: 64px; padding: 0 14px; gap: 8px; }
-  .logoImg { height: 54px; }
+  .navInner { grid-template-columns: auto 1fr; height: 72px; padding: 0 14px; gap: 8px; }
+  .logoImg { height: 60px; }
   .navSearch { display: none; }
   .navRightSpacer { display: none; }
   .cityPicker { padding: 6px 10px; justify-self: end; }
