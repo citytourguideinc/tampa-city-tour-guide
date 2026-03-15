@@ -201,9 +201,28 @@ export default function Home() {
             )}
           </div>
 
-          {/* Filter Dropdowns — only on landing */}
+          {/* Filter Dropdowns + App Badges — only on landing */}
           {!hasSearched && (
-            <FilterDropdowns onFilter={applyFilter} />
+            <>
+              <FilterDropdowns onFilter={applyFilter} />
+              <div className={styles.appBadges}>
+                <a href="https://play.google.com/store/apps/details?id=com.mytoursapp.android.app7801"
+                   target="_blank" rel="noopener noreferrer"
+                   className={`${styles.appBadge} ${styles.appBadgeAndroid}`} aria-label="Get it on Google Play">
+                  <span className={styles.appBadgeIcon}>▶</span>
+                  <span><span style={{fontSize:'0.65rem',display:'block',opacity:0.6}}>GET IT ON</span>Google Play</span>
+                </a>
+                <a href="https://citytourguide.stqry.app/" target="_blank" rel="noopener noreferrer"
+                   className={`${styles.appBadge} ${styles.appBadgeWeb}`} aria-label="Open Web App">
+                  <span className={styles.appBadgeIcon}>🌐</span>
+                  <span><span style={{fontSize:'0.65rem',display:'block',opacity:0.6}}>OPEN</span>Web App</span>
+                </a>
+                <span className={`${styles.appBadge} ${styles.appBadgeIos}`} title="Coming soon to iOS">
+                  <span className={styles.appBadgeIcon} style={{fontFamily:'serif',fontStyle:'italic',fontWeight:700,fontSize:'1.1rem'}}></span>
+                  <span><span style={{fontSize:'0.65rem',display:'block'}}>COMING SOON</span>App Store</span>
+                </span>
+              </div>
+            </>
           )}
         </div>
       </section>
