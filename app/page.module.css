@@ -171,6 +171,11 @@
   padding-top: 28px;
   border-top: 1px solid rgba(0,0,0,0.06);
 }
+.viatorSection {
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
 
 /* ── Main ─────────────────────────────────────────── */
 .main { flex: 1; padding: 0 0 80px; }

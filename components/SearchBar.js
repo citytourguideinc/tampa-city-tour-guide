@@ -7,9 +7,14 @@ export default function SearchBar({ onSearch, loading }) {
   const [value, setValue] = useState('');
   const debounceRef = useRef(null);
   const inputRef = useRef(null);
+  const isMounted = useRef(false); // skip debounce on initial mount
 
-  // Debounced search-as-you-type
+  // Debounced search-as-you-type — skip first render
   useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      return;
+    }
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       onSearch(value.trim());
@@ -25,6 +30,7 @@ export default function SearchBar({ onSearch, loading }) {
 
   function clear() {
     setValue('');
+    if (debounceRef.current) clearTimeout(debounceRef.current);
     onSearch('');
     inputRef.current?.focus();
   }

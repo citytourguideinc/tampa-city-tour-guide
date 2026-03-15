@@ -1,9 +1,10 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import SearchBar   from '@/components/SearchBar';
-import ResultCard  from '@/components/ResultCard';
-import SourceGroup from '@/components/SourceGroup';
-import styles      from './page.module.css';
+import SearchBar    from '@/components/SearchBar';
+import ResultCard   from '@/components/ResultCard';
+import SourceGroup  from '@/components/SourceGroup';
+import ViatorWidget from '@/components/ViatorWidget';
+import styles       from './page.module.css';
 
 // Search suggestion prompts shown on first load
 const PROMPTS = [
@@ -223,6 +224,12 @@ export default function Home() {
               <p className={styles.landingCredit}>
                 Listings sourced from verified Tampa Bay partners · All links go to original sources
               </p>
+
+              {/* Viator — bookable tours */}
+              <div className={styles.viatorSection}>
+                <p className={styles.landingLabel}>🎟 Book a Tour on Viator</p>
+                <ViatorWidget />
+              </div>
             </div>
           )}
 
