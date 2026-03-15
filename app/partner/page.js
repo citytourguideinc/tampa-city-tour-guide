@@ -194,7 +194,8 @@ export default function PartnerPage() {
       {/* Pricing */}
       <section className={`${styles.section} ${styles.pricingSection}`}>
         <div className={styles.container}>
-          <h2 className={styles.sectionTitle}>Simple, Transparent Pricing</h2>
+          <div className={styles.partnerTypeLabel}>🏢 For Organizations, Venues & Event Calendars</div>
+          <h2 className={styles.sectionTitle}>Listing Partner Pricing</h2>
           <p className={styles.sectionSub}>Month-to-month. Cancel anytime. All paid tiers free through {FOUNDING_DEADLINE}.</p>
           <div className={styles.tierGrid}>
             {TIERS.map(tier => (
@@ -232,6 +233,43 @@ export default function PartnerPage() {
                 )}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Experience Partner Section ──────────────────────────── */}
+      <section className={`${styles.section} ${styles.experienceSection}`}>
+        <div className={styles.container}>
+          <div className={styles.partnerTypeLabel}>🎟 For Tour Operators, Event Producers & Vendors</div>
+          <h2 className={styles.sectionTitle} style={{color:'#fff'}}>Experience Partner</h2>
+          <p className={styles.sectionSub} style={{color:'rgba(255,255,255,0.65)'}}>
+            Promote your tours, experiences, and events directly to travelers actively searching Tampa Bay.
+            Get in early — we&apos;re making this <strong style={{color:'#FCD34D'}}>completely free until August 1, 2026</strong>.
+          </p>
+
+          <div className={styles.expCardGrid}>
+            <div className={styles.expCard}>
+              <div className={styles.expCardIcon}>🆓</div>
+              <h3>Free Until August 1, 2026</h3>
+              <p>List and promote your tours, events, or experiences with zero commission and zero fees. We&apos;re in early access mode — you get full exposure at no cost while we build our audience together.</p>
+            </div>
+            <div className={`${styles.expCard} ${styles.expCardAccent}`}>
+              <div className={styles.expCardIcon}>🔒</div>
+              <h3>Guaranteed Lowest Rates</h3>
+              <p>When paid plans launch after August, Founding Experience Partners are guaranteed the lowest available commission rate — locked in for life. You&apos;ll never pay more than what we charge new partners.</p>
+            </div>
+            <div className={styles.expCard}>
+              <div className={styles.expCardIcon}>📈</div>
+              <h3>Your Terms, Our Reach</h3>
+              <p>We&apos;re evaluating monthly flat-fee, per-booking commission, or hybrid models. As a Founding Experience Partner, you&apos;ll have input on which model works best for your business.</p>
+            </div>
+          </div>
+
+          <div className={styles.expCta}>
+            <a href="mailto:info@citytourguideinc.com?subject=Experience Partner Inquiry" className={styles.expCtaBtn}>
+              Inquire — Get Early Access →
+            </a>
+            <p className={styles.expCtaNote}>We&apos;ll respond within 24 hours · No commitment required</p>
           </div>
         </div>
       </section>
