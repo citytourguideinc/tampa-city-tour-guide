@@ -69,12 +69,12 @@
   pointer-events: none;
 }
 
-/* Loading spinner */
-.spinner {
-  font-size: 1.1rem;
-  flex-shrink: 0;
-  animation: spin 1s linear infinite;
-  width: 44px;
-  text-align: center;
-}
+/* Mobile */
 @keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 600px) {
+  .wrap { padding: 7px 7px 7px 16px; gap: 8px; }
+  .input { font-size: 0.94rem; }
+  .btn { width: 40px; height: 40px; font-size: 1rem; }
+}
+

@@ -138,4 +138,14 @@
 
 @media (max-width: 600px) {
   .chipArea { display: none; }
+  .header { padding: 10px 12px 9px 14px; }
+  .sourceName { font-size: 0.8rem; }
+  .eventRow { padding: 8px 12px; }
+  .eventTitle { font-size: 0.8rem; }
+}
+
+@media (max-width: 480px) {
+  .header { border-left-width: 3px; }
+  .categoryBadge { display: none; }
+  .attribution { font-size: 0.58rem; }
 }
