@@ -115,18 +115,18 @@ export default function Home() {
   const featured  = hasSearched ? results.filter(r => r.listing_type === 'featured' || r.listing_type === 'partner') : [];
   const standard  = hasSearched ? results.filter(r => !r.listing_type || r.listing_type === 'standard') : [];
 
-  // Adaptive grouping:
-  // - if category filter active → group by SOURCE (you already know the category)
-  // - otherwise → group by CATEGORY for better hierarchy
-  const groupByCategory = !category && hasSearched;
-
+  // Always group by SOURCE, then by CATEGORY within each source
+  // This prevents the same source from appearing multiple times
   const sourceGroups = {};
   for (const item of standard) {
-    const key = groupByCategory
-      ? (item.category || 'Other')           // group by category
-      : (item.source_name || 'Other');       // group by source (default)
-    if (!sourceGroups[key]) sourceGroups[key] = { items: [], domain: item.source_domain, category: item.category };
-    sourceGroups[key].items.push(item);
+    const srcKey = item.source_name || 'Other';
+    if (!sourceGroups[srcKey]) {
+      sourceGroups[srcKey] = { items: [], domain: item.source_domain, categories: {} };
+    }
+    sourceGroups[srcKey].items.push(item);
+    const cat = item.category || 'Other';
+    if (!sourceGroups[srcKey].categories[cat]) sourceGroups[srcKey].categories[cat] = [];
+    sourceGroups[srcKey].categories[cat].push(item);
   }
   const groupEntries = Object.entries(sourceGroups)
     .sort(([, a], [, b]) => b.items.length - a.items.length);
@@ -294,11 +294,10 @@ export default function Home() {
                 </div>
               ) : groupEntries.length > 0 ? (
                 <div className={styles.groupGrid}>
-                  {groupEntries.map(([groupKey, { items, domain, category: cat }]) => (
+                  {groupEntries.map(([groupKey, { items: srcItems, domain, categories: cats }]) => (
                     <SourceGroup key={groupKey}
-                      sourceName={groupByCategory ? (items[0]?.source_name || groupKey) : groupKey}
-                      groupLabel={groupByCategory ? groupKey : null}
-                      domain={domain} category={cat} items={items} />
+                      sourceName={groupKey}
+                      domain={domain} categories={cats} items={srcItems} />
                   ))}
                 </div>
               ) : (

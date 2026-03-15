@@ -733,15 +733,6 @@
   border-top: 1px solid rgba(255,255,255,0.04);
 }
 
-/* Footer */
-.footer {
-  padding: 20px;
-  border-top: 1px solid var(--border);
-  text-align: center;
-  color: var(--dim); font-size: 0.78rem;
-}
-.footerLinks { margin-bottom: 6px; }
-.footer a { color: var(--muted); text-decoration: none; transition: color var(--t); }
 /* ── Sticky Bottom Bar ───────────────────────────────────────── */
 .stickyBar {
   position: fixed;

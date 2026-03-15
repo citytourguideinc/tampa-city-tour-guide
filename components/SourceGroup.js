@@ -1,11 +1,10 @@
-// components/SourceGroup.js — Compact source card grouping multiple events/news
+// components/SourceGroup.js — Source card with category tabs inside
 'use client';
 import { useState } from 'react';
 import styles from './SourceGroup.module.css';
 
-const PREVIEW_COUNT = 5;
+const PREVIEW_PER_CAT = 2; // show 2 items per category initially
 
-// News/informational categories shown with a different badge
 const NEWS_CATS = ['discovery', 'news', 'community'];
 
 function formatDate(dateStr) {
@@ -37,30 +36,72 @@ function trackClick(item) {
   }
 }
 
-export default function SourceGroup({ sourceName, domain, category, items }) {
+export default function SourceGroup({ sourceName, domain, categories = {}, items = [] }) {
+  const [activeCat, setActiveCat] = useState(null); // null = show all categories preview
   const [expanded, setExpanded] = useState(false);
-  const visible = expanded ? items : items.slice(0, PREVIEW_COUNT);
-  const hasMore = items.length > PREVIEW_COUNT;
 
-  // Determine primary display type for this group
-  const isNewsGroup = NEWS_CATS.some(c => (category || '').toLowerCase().includes(c));
+  const catEntries = Object.entries(categories).sort(([,a],[,b]) => b.length - a.length);
+  const totalCount = items.length;
+
+  // If a category tab is selected, show only that category's items
+  // Otherwise show PREVIEW_PER_CAT items from each category
+  let visibleItems;
+  if (activeCat) {
+    const catItems = categories[activeCat] || [];
+    visibleItems = expanded ? catItems : catItems.slice(0, 5);
+  } else {
+    // Show first 2 from each category (preview mode)
+    visibleItems = [];
+    for (const [, catItems] of catEntries) {
+      visibleItems.push(...catItems.slice(0, PREVIEW_PER_CAT));
+    }
+  }
+
+  const showExpandBtn = activeCat
+    ? (categories[activeCat]?.length || 0) > 5
+    : totalCount > visibleItems.length;
 
   return (
     <div className={styles.card}>
       {/* ── Source header ─────────────────────────────── */}
       <div className={styles.header}>
         <span className={styles.sourceName}>{sourceName}</span>
-        {category && (
-          <span className={`${styles.categoryBadge} ${isNewsGroup ? styles.newsBadge : ''}`}>
-            {isNewsGroup ? '📰 ' : ''}{category}
-          </span>
-        )}
-        <span className={styles.count}>{items.length}</span>
+        <span className={styles.count}>{totalCount}</span>
       </div>
+
+      {/* ── Category tabs ─────────────────────────────── */}
+      {catEntries.length > 1 && (
+        <div className={styles.catTabs}>
+          <button
+            className={`${styles.catTab} ${!activeCat ? styles.catTabActive : ''}`}
+            onClick={() => { setActiveCat(null); setExpanded(false); }}
+          >
+            All <span className={styles.catTabCount}>{totalCount}</span>
+          </button>
+          {catEntries.map(([cat, catItems]) => (
+            <button
+              key={cat}
+              className={`${styles.catTab} ${activeCat === cat ? styles.catTabActive : ''}`}
+              onClick={() => { setActiveCat(activeCat === cat ? null : cat); setExpanded(false); }}
+            >
+              {cat} <span className={styles.catTabCount}>{catItems.length}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Single category — just show the badge inline */}
+      {catEntries.length === 1 && (
+        <div className={styles.catSingle}>
+          <span className={`${styles.categoryBadge} ${NEWS_CATS.some(c => catEntries[0][0].toLowerCase().includes(c)) ? styles.newsBadge : ''}`}>
+            {catEntries[0][0]}
+          </span>
+        </div>
+      )}
 
       {/* ── Event/article rows ────────────────────────── */}
       <div className={styles.eventList}>
-        {visible.map(item => {
+        {visibleItems.map(item => {
           const url       = item.url || '#';
           const title     = cleanTitle(item.title, sourceName);
           const dateLabel = formatDate(item.event_date);
@@ -74,12 +115,14 @@ export default function SourceGroup({ sourceName, domain, category, items }) {
               <span className={styles.eventTitle}>{title}</span>
 
               <span className={styles.meta}>
-                {/* News badge for non-event items */}
                 {isNews && <span className={`${styles.chip} ${styles.chipNews}`}>📰 article</span>}
-                {/* Date only for events */}
                 {!isNews && dateLabel && <span className={`${styles.chip} ${styles.chipDate}`}>{dateLabel}</span>}
                 {item.price && <span className={`${styles.chip} ${styles.chipPrice}`}>{item.price}</span>}
                 {item.area  && <span className={`${styles.chip} ${styles.chipArea}`}>{item.area}</span>}
+                {/* Show category chip only in "All" view */}
+                {!activeCat && catEntries.length > 1 && (
+                  <span className={`${styles.chip} ${styles.chipCat}`}>{item.category || 'Other'}</span>
+                )}
               </span>
 
               <span className={styles.arrow} aria-hidden="true">↗</span>
@@ -89,9 +132,21 @@ export default function SourceGroup({ sourceName, domain, category, items }) {
       </div>
 
       {/* ── Show more ─────────────────────────────────── */}
-      {hasMore && (
-        <button className={styles.showMore} onClick={() => setExpanded(e => !e)} aria-expanded={expanded}>
-          {expanded ? '▲ Show fewer' : `▾ ${items.length - PREVIEW_COUNT} more from ${sourceName}`}
+      {showExpandBtn && (
+        <button className={styles.showMore} onClick={() => {
+          if (!activeCat) {
+            // In "All" view, clicking expand selects the largest category
+            setActiveCat(catEntries[0]?.[0] || null);
+          } else {
+            setExpanded(e => !e);
+          }
+        }} aria-expanded={expanded}>
+          {activeCat && expanded
+            ? '▲ Show fewer'
+            : activeCat
+              ? `▾ ${(categories[activeCat]?.length || 0) - 5} more`
+              : `▾ ${totalCount - visibleItems.length} more from ${sourceName}`
+          }
         </button>
       )}
 
