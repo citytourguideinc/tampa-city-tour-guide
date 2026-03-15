@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import styles from './page.module.css';
 
 const ADMIN_PWD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
-const TABS = ['📡 Sources', '📄 Items', '🏃 Activities', '🏪 Vendors', '✅ Setup'];
+const TABS = ['📡 Sources', '📄 Items', '🏃 Activities', '🏪 Vendors', '✅ Setup', '🗂 Tampa Resources'];
 
 export default function AdminPage() {
   const [authed,  setAuthed]  = useState(false);
@@ -55,6 +55,64 @@ function Dashboard({ onLogout }) {
   const [crawlLog,    setCrawlLog]    = useState(null);
   const [itemFilter,  setItemFilter]  = useState({ q:'', category:'', listing_type:'', status:'pending', page: 0 });
   const [itemLoading, setItemLoading] = useState(false);
+
+  // Tampa Resources state
+  const [tampaSources,      setTampaSources]      = useState([]);
+  const [tampaTotal,        setTampaTotal]        = useState(0);
+  const [tampaLoading,      setTampaLoading]      = useState(false);
+  const [tampaSubTab,       setTampaSubTab]       = useState('sources'); // 'sources' | 'candidates'
+  const [tampaFilter,       setTampaFilter]       = useState({ q:'', neighborhood:'', category:'', status:'', tier:'', is_core:'', event_type:'', page:0 });
+  const [candidates,        setCandidates]        = useState([]);
+  const [candidatesLoading, setCandidatesLoading] = useState(false);
+
+  const NEIGHBORHOODS = ['','Citywide','Downtown Core','Downtown / Channel District','Downtown / Riverwalk','Downtown / Water Street','Ybor City','NoHo / North Howard','SoHo / South Howard','Hyde Park','SOG / South of Gandy','Seminole Heights','Davis Islands','Westshore','Midtown','North Tampa','East Tampa'];
+  const CTG_CATEGORIES = ['','Calendars','Things To Do','Dining','Restaurant Events','Events & Activities','Arts & Culture','Sports & Recreation','Family & Attractions','Transportation','Venues'];
+  const EVENT_TYPES = ['','happy_hour','trivia','live_music','brunch','outdoor','festival','film','comedy','sports'];
+
+  const loadTampaSources = useCallback(async (filter = tampaFilter) => {
+    setTampaLoading(true);
+    try {
+      const p = new URLSearchParams({ limit: 30, page: filter.page });
+      if (filter.q)           p.set('q', filter.q);
+      if (filter.neighborhood) p.set('neighborhood', filter.neighborhood);
+      if (filter.category)    p.set('category', filter.category);
+      if (filter.status)      p.set('status', filter.status);
+      if (filter.tier)        p.set('tier', filter.tier);
+      if (filter.is_core)     p.set('is_core', filter.is_core);
+      if (filter.event_type)  p.set('event_type', filter.event_type);
+      const res  = await fetch(`/api/admin/tampa-resources?${p}`, { headers: adminHeaders });
+      const data = await res.json();
+      setTampaSources(data.resources || []);
+      setTampaTotal(data.total || 0);
+    } catch { flash('Failed to load Tampa Resources', true); }
+    finally { setTampaLoading(false); }
+  }, [tampaFilter]);
+
+  const updateTampaSource = useCallback(async (id, updates) => {
+    try {
+      await fetch('/api/admin/tampa-resources', { method:'PATCH', headers: adminHeaders, body: JSON.stringify({ id, ...updates }) });
+      setTampaSources(prev => prev.map(r => r.tables_record_id === id ? { ...r, ...updates } : r));
+      flash('Source updated');
+    } catch { flash('Update failed', true); }
+  }, []);
+
+  const loadCandidates = useCallback(async () => {
+    setCandidatesLoading(true);
+    try {
+      const res  = await fetch('/api/admin/tampa-resources?candidates=1', { headers: adminHeaders });
+      const data = await res.json();
+      setCandidates(data.candidates || []);
+    } catch { flash('Failed to load candidates', true); }
+    finally { setCandidatesLoading(false); }
+  }, []);
+
+  const reviewCandidate = useCallback(async (id, action, reason = '') => {
+    try {
+      await fetch('/api/admin/tampa-resources', { method:'POST', headers: adminHeaders, body: JSON.stringify({ candidateId: id, action, rejection_reason: reason }) });
+      setCandidates(prev => prev.filter(c => c.id !== id));
+      flash(action === 'approve' ? '✅ Approved — inserted into Tampa Resources' : '🚫 Rejected — logged with reason');
+    } catch { flash('Action failed', true); }
+  }, []);
 
   const adminHeaders = { 'x-admin-secret': ADMIN_PWD, 'Content-Type': 'application/json' };
 
@@ -175,7 +233,12 @@ function Dashboard({ onLogout }) {
     if (tab === 1) loadItems();
     if (tab === 2) fetchActivities();
     if (tab === 3) fetchVendors();
+    if (tab === 5) { if (tampaSubTab === 'sources') loadTampaSources(); else loadCandidates(); }
   }, [tab]);
+
+  useEffect(() => {
+    if (tab === 5) { if (tampaSubTab === 'sources') loadTampaSources(); else loadCandidates(); }
+  }, [tampaSubTab]);
 
   return (
     <div className={styles.page}>
@@ -505,6 +568,180 @@ function Dashboard({ onLogout }) {
             </div>
           </div>
         )}
+        {/* ── Tampa Resources Tab ──────────────────────────────── */}
+        {tab === 5 && (
+          <div>
+            {/* Sub-tabs */}
+            <div className={styles.statusTabs} style={{marginBottom:16}}>
+              <button className={`${styles.statusTab} ${tampaSubTab==='sources' ? styles.statusTabActive : ''}`}
+                onClick={() => setTampaSubTab('sources')}>🗂 Tampa Resources ({tampaTotal})</button>
+              <button className={`${styles.statusTab} ${tampaSubTab==='candidates' ? styles.statusTabActive : ''}`}
+                onClick={() => setTampaSubTab('candidates')}>🔬 Research Queue ({candidates.length})</button>
+            </div>
+
+            {/* ── Sources list ── */}
+            {tampaSubTab === 'sources' && (
+              <div>
+                <div className={styles.itemFilters} style={{flexWrap:'wrap', gap:8}}>
+                  <input placeholder="Search name or keyword…" value={tampaFilter.q}
+                    onChange={e => setTampaFilter(f => ({...f, q:e.target.value, page:0}))}
+                    className={styles.input} style={{maxWidth:230}} />
+                  <select value={tampaFilter.neighborhood}
+                    onChange={e => setTampaFilter(f => ({...f, neighborhood:e.target.value, page:0}))}
+                    className={styles.input} style={{width:'auto'}}>
+                    {NEIGHBORHOODS.map(n => <option key={n} value={n}>{n || 'All Neighborhoods'}</option>)}
+                  </select>
+                  <select value={tampaFilter.category}
+                    onChange={e => setTampaFilter(f => ({...f, category:e.target.value, page:0}))}
+                    className={styles.input} style={{width:'auto'}}>
+                    {CTG_CATEGORIES.map(c => <option key={c} value={c}>{c || 'All Categories'}</option>)}
+                  </select>
+                  <select value={tampaFilter.status}
+                    onChange={e => setTampaFilter(f => ({...f, status:e.target.value, page:0}))}
+                    className={styles.input} style={{width:'auto'}}>
+                    <option value=''>All Status</option>
+                    <option value='active'>Active</option>
+                    <option value='needs_verification'>Needs Verification</option>
+                    <option value='inactive'>Inactive</option>
+                  </select>
+                  <select value={tampaFilter.tier}
+                    onChange={e => setTampaFilter(f => ({...f, tier:e.target.value, page:0}))}
+                    className={styles.input} style={{width:'auto'}}>
+                    <option value=''>All Tiers</option>
+                    <option value='standard'>Standard</option>
+                    <option value='upgraded'>⬆️ Upgraded</option>
+                  </select>
+                  <select value={tampaFilter.is_core}
+                    onChange={e => setTampaFilter(f => ({...f, is_core:e.target.value, page:0}))}
+                    className={styles.input} style={{width:'auto'}}>
+                    <option value=''>All</option>
+                    <option value='true'>⭐ Core Only</option>
+                    <option value='false'>Non-Core</option>
+                  </select>
+                  <select value={tampaFilter.event_type}
+                    onChange={e => setTampaFilter(f => ({...f, event_type:e.target.value, page:0}))}
+                    className={styles.input} style={{width:'auto'}}>
+                    {EVENT_TYPES.map(e => <option key={e} value={e}>{e || 'All Event Types'}</option>)}
+                  </select>
+                  <button className={styles.btnPrimary} onClick={() => loadTampaSources(tampaFilter)}>Search</button>
+                </div>
+
+                {tampaLoading ? <p className={styles.muted}>Loading…</p> : (
+                  <div className={styles.table}>
+                    <div className={styles.thead}>
+                      <span>Name / Neighborhood</span>
+                      <span>Category</span>
+                      <span>URL</span>
+                      <span>Tier</span>
+                      <span>Core</span>
+                      <span>Status</span>
+                    </div>
+                    {tampaSources.map(r => (
+                      <div key={r.tables_record_id} className={styles.trow}>
+                        <span>
+                          <strong>{r.Resource || r['Resource']}</strong>
+                          <br/><span className={styles.muted} style={{fontSize:'0.75rem'}}>{r.neighborhood || '—'}</span>
+                        </span>
+                        <span><span className={styles.catBadge}>{r.Category || r['Category']}</span></span>
+                        <span className={styles.muted} style={{fontSize:'0.75rem', wordBreak:'break-all'}}>
+                          <a href={r['URL Link']} target='_blank' rel='noopener noreferrer' className={styles.actName}
+                            style={{fontSize:'0.75rem'}}>{(r['URL Link']||'').replace('https://','').slice(0,40)}</a>
+                          {r.url_broken && <span style={{color:'#ff4d4f', marginLeft:4}}>⚠️ Broken</span>}
+                        </span>
+                        <span>
+                          <select value={r.tier || 'standard'}
+                            onChange={e => updateTampaSource(r.tables_record_id, { tier: e.target.value })}
+                            className={styles.typeSelect}>
+                            <option value='standard'>Standard</option>
+                            <option value='upgraded'>⬆️ Upgraded</option>
+                          </select>
+                        </span>
+                        <span>
+                          <button
+                            className={`${styles.actionBtn} ${r.is_core ? styles.approveBtn : ''}`}
+                            onClick={() => updateTampaSource(r.tables_record_id, { is_core: !r.is_core })}
+                            title={r.is_core ? 'Core — click to remove core status' : 'Not core — click to mark as core'}>
+                            {r.is_core ? '⭐' : '☆'}
+                          </button>
+                        </span>
+                        <span>
+                          <select value={r.status || 'active'}
+                            onChange={e => updateTampaSource(r.tables_record_id, { status: e.target.value })}
+                            className={styles.typeSelect}>
+                            <option value='active'>Active</option>
+                            <option value='needs_verification'>⚠️ Needs Check</option>
+                            <option value='inactive'>Inactive</option>
+                          </select>
+                        </span>
+                      </div>
+                    ))}
+                    {tampaSources.length === 0 && (
+                      <p className={styles.muted} style={{padding:'20px 0'}}>
+                        No sources match this filter. Try clearing filters or importing the CSV.
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {tampaTotal > 30 && (
+                  <div className={styles.pagination}>
+                    <button disabled={tampaFilter.page === 0}
+                      onClick={() => { const f={...tampaFilter, page:tampaFilter.page-1}; setTampaFilter(f); loadTampaSources(f); }}>← Prev</button>
+                    <span>Page {tampaFilter.page+1} of {Math.ceil(tampaTotal/30)}</span>
+                    <button disabled={(tampaFilter.page+1)*30 >= tampaTotal}
+                      onClick={() => { const f={...tampaFilter, page:tampaFilter.page+1}; setTampaFilter(f); loadTampaSources(f); }}>Next →</button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ── Research Queue ── */}
+            {tampaSubTab === 'candidates' && (
+              <div>
+                <p className={styles.muted} style={{marginBottom:16}}>
+                  Pending sources from AI research. Approve to insert into Tampa Resources, or reject with a reason.
+                </p>
+                {candidatesLoading ? <p className={styles.muted}>Loading…</p> : (
+                  <div className={styles.table}>
+                    <div className={styles.thead}>
+                      <span>Name / URL</span>
+                      <span>Category</span>
+                      <span>Neighborhood</span>
+                      <span>Source Type</span>
+                      <span>Actions</span>
+                    </div>
+                    {candidates.map(c => (
+                      <div key={c.id} className={styles.trow}>
+                        <span>
+                          <strong>{c.name}</strong>
+                          <br/><a href={c.url} target='_blank' rel='noopener noreferrer'
+                            className={styles.actName} style={{fontSize:'0.75rem'}}>{(c.url||'').replace('https://','').slice(0,40)}</a>
+                          {c.description && <><br/><span className={styles.muted} style={{fontSize:'0.72rem'}}>{c.description.slice(0,80)}…</span></>}
+                        </span>
+                        <span><span className={styles.catBadge}>{c.category}</span></span>
+                        <span className={styles.muted}>{c.neighborhood || '—'}</span>
+                        <span className={styles.muted}>{c.source_type || '—'}</span>
+                        <span className={styles.rowActions}>
+                          <button className={`${styles.actionBtn} ${styles.approveBtn}`}
+                            onClick={() => reviewCandidate(c.id, 'approve')} title='Approve — insert into Tampa Resources'>✅</button>
+                          <button className={`${styles.actionBtn} ${styles.hideBtn}`}
+                            onClick={() => {
+                              const reason = prompt('Rejection reason (shown in log):');
+                              if (reason !== null) reviewCandidate(c.id, 'reject', reason);
+                            }} title='Reject'>🚫</button>
+                        </span>
+                      </div>
+                    ))}
+                    {candidates.length === 0 && (
+                      <p className={styles.muted} style={{padding:'20px 0'}}>No pending candidates. Queue is clear! 🎉</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
       </main>
     </div>
   );

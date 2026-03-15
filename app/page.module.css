@@ -91,6 +91,15 @@
   border-bottom: none;
   position: relative;
   overflow: hidden;
+  transition: padding 0.4s ease;
+}
+/* Compact mode — hero shrinks to just a search bar strip when results are shown */
+.heroCompact {
+  padding: 18px 0 18px;
+  text-align: left;
+}
+.heroCompact .heroSearch {
+  max-width: 680px;
 }
 .hero::after {
   content: '';

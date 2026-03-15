@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import SearchBar    from '@/components/SearchBar';
 import ResultCard   from '@/components/ResultCard';
 import SourceGroup  from '@/components/SourceGroup';
@@ -19,14 +19,15 @@ const PROMPTS = [
 ];
 
 export default function Home() {
-  const [query,      setQuery]      = useState('');
-  const [results,    setResults]    = useState([]);
-  const [loading,    setLoading]    = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [meta,       setMeta]       = useState({ categories: [], areas: [] });
-  const [category,   setCategory]   = useState('');
-  const [dateFilter, setDateFilter] = useState('');
-  const [featuredItems, setFeaturedItems] = useState([]);
+  const [query,        setQuery]        = useState('');
+  const [results,      setResults]      = useState([]);
+  const [loading,      setLoading]      = useState(false);
+  const [hasSearched,  setHasSearched]  = useState(false);
+  const [meta,         setMeta]         = useState({ categories: [], areas: [] });
+  const [category,     setCategory]     = useState('');
+  const [dateFilter,   setDateFilter]   = useState('');
+  const [featuredItems,setFeaturedItems]= useState([]);
+  const resultsRef = useRef(null);
 
   // Load meta once
   useEffect(() => {
@@ -52,6 +53,10 @@ export default function Home() {
   const fetchResults = useCallback(async (q = '', cat = '', date = '') => {
     setLoading(true);
     setHasSearched(true);
+    // Scroll to results after a short delay (let render happen first)
+    setTimeout(() => {
+      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
     try {
       const params = new URLSearchParams({ limit: '300' });
       if (q)    params.set('q',        q);
@@ -110,10 +115,16 @@ export default function Home() {
   const featured  = hasSearched ? results.filter(r => r.listing_type === 'featured' || r.listing_type === 'partner') : [];
   const standard  = hasSearched ? results.filter(r => !r.listing_type || r.listing_type === 'standard') : [];
 
-  // Group standard by source
+  // Adaptive grouping:
+  // - if category filter active → group by SOURCE (you already know the category)
+  // - otherwise → group by CATEGORY for better hierarchy
+  const groupByCategory = !category && hasSearched;
+
   const sourceGroups = {};
   for (const item of standard) {
-    const key = item.source_name || 'Other';
+    const key = groupByCategory
+      ? (item.category || 'Other')           // group by category
+      : (item.source_name || 'Other');       // group by source (default)
     if (!sourceGroups[key]) sourceGroups[key] = { items: [], domain: item.source_domain, category: item.category };
     sourceGroups[key].items.push(item);
   }
@@ -170,20 +181,24 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ── Landing Hero (shown only before search) ─────────────── */}
-      {!hasSearched && (
-        <section className={styles.hero}>
-          <div className={styles.container}>
-            <p className={styles.heroEyebrow}>🌴 Your City. Your Guide.</p>
-            <h1 className={styles.heroTitle}>Discover What&apos;s Happening</h1>
-            <p className={styles.heroSub}>Events, activities &amp; things to do. Updated daily.</p>
+      {/* ── Landing Hero — ALWAYS visible, compresses when results show ── */}
+      <section className={`${styles.hero} ${hasSearched ? styles.heroCompact : ''}`}>
+        <div className={styles.container}>
+          {!hasSearched && (
+            <>
+              <p className={styles.heroEyebrow}>🌴 Your City. Your Guide.</p>
+              <h1 className={styles.heroTitle}>Discover What&apos;s Happening</h1>
+              <p className={styles.heroSub}>Events, activities &amp; things to do. Updated daily.</p>
+            </>
+          )}
 
-            {/* Search */}
-            <div className={styles.heroSearch}>
-              <SearchBar onSearch={handleSearch} loading={loading} />
-            </div>
+          {/* Search — always in hero */}
+          <div className={styles.heroSearch}>
+            <SearchBar onSearch={handleSearch} loading={loading} initValue={query} />
+          </div>
 
-            {/* App Download Badges */}
+          {/* App Download Badges — only on landing */}
+          {!hasSearched && (
             <div className={styles.appBadges}>
               <a
                 href="https://play.google.com/store/apps/details?id=com.mytoursapp.android.app7801"
@@ -208,16 +223,16 @@ export default function Home() {
                 <span><span style={{fontSize:'0.65rem',display:'block'}}>COMING SOON</span>App Store</span>
               </span>
             </div>
-          </div>
-        </section>
-      )}
+          )}
+        </div>
+      </section>
 
 
       {/* ── Main ────────────────────────────────────────────────── */}
-      <main className={styles.main}>
+      <main className={styles.main} ref={resultsRef}>
         <div className={styles.container}>
 
-          {/* ══ LANDING STATE — no search yet ══════════════════════ */}
+          {/* ══ LANDING STATE — category cards + featured ════════════ */}
           {!hasSearched && (
             <div className={styles.landing}>
 
@@ -326,8 +341,10 @@ export default function Home() {
                 </div>
               ) : groupEntries.length > 0 ? (
                 <div className={styles.groupGrid}>
-                  {groupEntries.map(([sourceName, { items, domain, category: cat }]) => (
-                    <SourceGroup key={sourceName} sourceName={sourceName}
+                  {groupEntries.map(([groupKey, { items, domain, category: cat }]) => (
+                    <SourceGroup key={groupKey}
+                      sourceName={groupByCategory ? (items[0]?.source_name || groupKey) : groupKey}
+                      groupLabel={groupByCategory ? groupKey : null}
                       domain={domain} category={cat} items={items} />
                   ))}
                 </div>
