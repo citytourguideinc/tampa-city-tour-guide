@@ -193,8 +193,15 @@ export default function Home() {
           )}
 
           {/* Search — always in hero */}
-          <div className={styles.heroSearch}>
-            <SearchBar onSearch={handleSearch} loading={loading} initValue={query} />
+          <div className={styles.heroSearchRow}>
+            <div className={styles.heroSearch}>
+              <SearchBar onSearch={handleSearch} loading={loading} initValue={query} />
+            </div>
+            {hasSearched && (
+              <button className={styles.backToBrowse} onClick={clearAll} aria-label="Back to browse">
+                ← Browse All
+              </button>
+            )}
           </div>
 
           {/* App Download Badges — only on landing */}

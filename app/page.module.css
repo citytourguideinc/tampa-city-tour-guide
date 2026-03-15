@@ -101,6 +101,35 @@
 .heroCompact .heroSearch {
   max-width: 680px;
 }
+/* Search + back-button row in compact hero */
+.heroSearchRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.heroCompact .heroSearchRow {
+  margin: 0;
+}
+.backToBrowse {
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #93C5FD;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+.backToBrowse:hover {
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+}
 .hero::after {
   content: '';
   position: absolute;
