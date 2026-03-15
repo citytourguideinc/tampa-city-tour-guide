@@ -10,42 +10,135 @@
       "/login", "/membership", "/members", "/add-event",
       "/grants", "/about-us/grants", "/wp-admin", "/wp-login",
       "/cart", "/checkout", "/account", "/subscribe",
-      "/events-category/",
-      "/events-tag/",
-      "/author/",
-      "/tag/",
-      "?paged=",
-      "/page/2/", "/page/3/", "/page/4/", "/page/5/"
+      "/events-category/", "/events-tag/", "/author/", "/tag/",
+      "?paged=", "/page/2/", "/page/3/", "/page/4/", "/page/5/"
     ],
     "subsources": [
-      {
-        "url": "https://www.tampasdowntown.com/events/",
-        "category": "Events",
-        "subcategory": "Downtown Events",
-        "area": "Downtown"
-      },
-      {
-        "url": "https://www.tampasdowntown.com/events-category/free-events/",
-        "category": "Events",
-        "subcategory": "Free Events",
-        "area": "Downtown",
-        "priceHint": "Free"
-      },
-      {
-        "url": "https://www.tampasdowntown.com/community-events/",
-        "category": "Events",
-        "subcategory": "Community Events",
-        "area": "Downtown"
-      },
-      {
-        "url": "https://www.tampasdowntown.com/neighborhoods/",
-        "category": "Tours & Activities",
-        "subcategory": "Neighborhoods",
-        "area": "Downtown"
-      }
+      { "url": "https://www.tampasdowntown.com/events/", "category": "Events", "subcategory": "Downtown Events", "area": "Downtown" },
+      { "url": "https://www.tampasdowntown.com/events-category/free-events/", "category": "Events", "subcategory": "Free Events", "area": "Downtown", "priceHint": "Free" },
+      { "url": "https://www.tampasdowntown.com/community-events/", "category": "Events", "subcategory": "Community Events", "area": "Downtown" },
+      { "url": "https://www.tampasdowntown.com/neighborhoods/", "category": "Tours & Activities", "subcategory": "Neighborhoods", "area": "Downtown" }
     ],
     "active": true,
     "city": "Tampa",
     "area": "Downtown"
+  },
+  {
+    "sourceName": "Visit Tampa Bay",
+    "mainUrl": "https://www.visittampabay.com/",
+    "domain": "visittampabay.com",
+    "sourceType": "tourism",
+    "allowedDepth": 2,
+    "allowedPaths": ["/things-to-do/", "/events/", "/restaurants/", "/attractions/", "/tours/"],
+    "blockedPaths": [
+      "/members/", "/media/", "/about-us/", "/wp-admin", "/wp-login",
+      "/sitemap", "/careers", "/contact", "/newsletter",
+      "/page/2/", "/page/3/", "/page/4/"
+    ],
+    "subsources": [
+      { "url": "https://www.visittampabay.com/things-to-do/", "category": "Things To Do", "subcategory": "Tampa Attractions", "area": "Tampa Bay" },
+      { "url": "https://www.visittampabay.com/events/", "category": "Events", "subcategory": "Tampa Bay Events", "area": "Tampa Bay" },
+      { "url": "https://www.visittampabay.com/restaurants/", "category": "Food & Dining", "subcategory": "Tampa Restaurants", "area": "Tampa Bay" },
+      { "url": "https://www.visittampabay.com/tours/", "category": "Tours & Activities", "subcategory": "Tampa Tours", "area": "Tampa Bay" }
+    ],
+    "active": true,
+    "city": "Tampa",
+    "area": "Tampa Bay"
+  },
+  {
+    "sourceName": "Creative Loafing Tampa",
+    "mainUrl": "https://cltampa.com/",
+    "domain": "cltampa.com",
+    "sourceType": "media",
+    "allowedDepth": 2,
+    "allowedPaths": ["/events/", "/food/", "/music/", "/arts/", "/nightlife/", "/culture/"],
+    "blockedPaths": [
+      "/wp-admin", "/wp-login", "/author/", "/tag/",
+      "/advertise", "/subscribe", "/page/2/", "/page/3/", "/page/4/"
+    ],
+    "subsources": [
+      { "url": "https://cltampa.com/events/", "category": "Events", "subcategory": "Tampa Events", "area": "Tampa" },
+      { "url": "https://cltampa.com/food/", "category": "Food & Dining", "subcategory": "Tampa Food Scene", "area": "Tampa" },
+      { "url": "https://cltampa.com/music/", "category": "Nightlife", "subcategory": "Live Music", "area": "Tampa" },
+      { "url": "https://cltampa.com/arts/", "category": "Arts & Culture", "subcategory": "Tampa Arts", "area": "Tampa" }
+    ],
+    "active": true,
+    "city": "Tampa",
+    "area": "Tampa"
+  },
+  {
+    "sourceName": "Straz Center for the Performing Arts",
+    "mainUrl": "https://www.strazcenter.org/",
+    "domain": "strazcenter.org",
+    "sourceType": "venue",
+    "allowedDepth": 2,
+    "allowedPaths": ["/events/", "/shows/", "/season/", "/whats-on/"],
+    "blockedPaths": [
+      "/account", "/login", "/donate", "/about", "/education",
+      "/plan-your-visit/parking", "/wp-admin", "/page/2/"
+    ],
+    "subsources": [
+      { "url": "https://www.strazcenter.org/events/", "category": "Events", "subcategory": "Performing Arts", "area": "Downtown", "priceHint": null }
+    ],
+    "active": true,
+    "city": "Tampa",
+    "area": "Downtown"
+  },
+  {
+    "sourceName": "Tampa Riverwalk",
+    "mainUrl": "https://www.thetampariverwalk.com/",
+    "domain": "thetampariverwalk.com",
+    "sourceType": "official",
+    "allowedDepth": 2,
+    "allowedPaths": ["/events/", "/activities/", "/parks/", "/attractions/"],
+    "blockedPaths": [
+      "/wp-admin", "/wp-login", "/contact", "/page/2/", "/page/3/"
+    ],
+    "subsources": [
+      { "url": "https://www.thetampariverwalk.com/events/", "category": "Events", "subcategory": "Riverwalk Events", "area": "Downtown", "priceHint": "Free" },
+      { "url": "https://www.thetampariverwalk.com/activities/", "category": "Things To Do", "subcategory": "Outdoor Activities", "area": "Downtown" }
+    ],
+    "active": true,
+    "city": "Tampa",
+    "area": "Downtown"
+  },
+  {
+    "sourceName": "Tampa Museum of Art",
+    "mainUrl": "https://tampamuseum.org/",
+    "domain": "tampamuseum.org",
+    "sourceType": "venue",
+    "allowedDepth": 2,
+    "allowedPaths": ["/events/", "/exhibitions/", "/programs/", "/visit/"],
+    "blockedPaths": [
+      "/membership", "/support", "/about", "/press", "/wp-admin",
+      "/login", "/cart", "/checkout", "/page/2/"
+    ],
+    "subsources": [
+      { "url": "https://tampamuseum.org/events/", "category": "Arts & Culture", "subcategory": "Museum Events", "area": "Downtown" },
+      { "url": "https://tampamuseum.org/exhibitions/", "category": "Arts & Culture", "subcategory": "Exhibitions", "area": "Downtown" }
+    ],
+    "active": true,
+    "city": "Tampa",
+    "area": "Downtown"
+  },
+  {
+    "sourceName": "Tampa Bay Times Events",
+    "mainUrl": "https://www.tampabay.com/things-to-do/",
+    "domain": "tampabay.com",
+    "sourceType": "media",
+    "allowedDepth": 1,
+    "allowedPaths": ["/things-to-do/", "/entertainment/"],
+    "blockedPaths": [
+      "/subscribe", "/account", "/login", "/sports/",
+      "/business/", "/news/", "/opinion/", "/obituaries/",
+      "/weather/", "/real-estate/", "/classifieds/",
+      "/page/2/", "/page/3/"
+    ],
+    "subsources": [
+      { "url": "https://www.tampabay.com/things-to-do/", "category": "Things To Do", "subcategory": "Tampa Bay Events", "area": "Tampa Bay" }
+    ],
+    "active": true,
+    "city": "Tampa",
+    "area": "Tampa Bay"
   }
 ]
