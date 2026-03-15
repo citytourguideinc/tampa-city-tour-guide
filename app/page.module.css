@@ -90,7 +90,6 @@
   background: linear-gradient(160deg, #0D1117 0%, #0f2044 50%, #0D1117 100%);
   border-bottom: none;
   position: relative;
-  overflow: hidden;
   transition: padding 0.4s ease;
 }
 /* Compact mode — hero shrinks to just a search bar strip when results are shown */
