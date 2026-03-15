@@ -51,34 +51,34 @@ function toItem(p) {
   const rating = p.reviews?.combinedAverageRating;
   const reviewCount = p.reviews?.totalReviews;
   const duration = p.duration?.fixedDurationInMinutes;
-  const imageUrl = p.images?.[0]?.variants?.find(v => v.width >= 400)?.url
-    || p.images?.[0]?.variants?.[0]?.url;
 
   // Build affiliate URL with partner tracking
   const url = `https://www.viator.com/tours/${p.productCode}?pid=P00292624&mcid=42383&medium=api&api=1`;
 
-  const descParts = [];
-  if (price)  descParts.push(`From $${price}`);
-  if (rating) descParts.push(`⭐ ${rating.toFixed(1)} (${reviewCount?.toLocaleString() || 0} reviews)`);
+  const metaParts = [];
+  if (price)  metaParts.push(`From $${price}`);
+  if (rating) metaParts.push(`⭐ ${rating.toFixed(1)} (${(reviewCount || 0).toLocaleString()} reviews)`);
   if (duration) {
     const hrs = Math.floor(duration / 60);
     const mins = duration % 60;
-    descParts.push(hrs > 0 ? `${hrs}h${mins > 0 ? ` ${mins}m` : ''}` : `${mins}m`);
+    metaParts.push(hrs > 0 ? `${hrs}h${mins > 0 ? ` ${mins}m` : ''}` : `${mins}m`);
   }
 
+  const summary = [p.description?.substring(0, 200), metaParts.join(' · ')]
+    .filter(Boolean).join(' — ');
+
   return {
-    title: p.title,
-    description: [p.description?.substring(0, 200), ...descParts].filter(Boolean).join(' · '),
+    title:        p.title,
+    summary,
     url,
-    source_name: 'Viator',
-    source_domain: 'viator.com',
-    category: 'Tours & Activities',
-    neighborhood: 'Tampa',
-    image_url: imageUrl || null,
-    price: price ? `From $${price}` : null,
+    source_name:  'Viator',
+    source_domain:'viator.com',
+    category:     'Tours & Activities',
+    area:         'Tampa',
+    price:        price ? `From $${price}` : null,
     listing_type: 'standard',
-    status: 'approved',
-    viator_product_code: p.productCode,
+    status:       'approved',
+    city:         'Tampa',
   };
 }
 
