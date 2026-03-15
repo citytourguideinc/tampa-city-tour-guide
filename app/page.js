@@ -1,22 +1,12 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import SearchBar    from '@/components/SearchBar';
-import ResultCard   from '@/components/ResultCard';
-import SourceGroup  from '@/components/SourceGroup';
-import SkeletonCard from '@/components/SkeletonCard';
-import styles       from './page.module.css';
+import SearchBar        from '@/components/SearchBar';
+import ResultCard       from '@/components/ResultCard';
+import SourceGroup      from '@/components/SourceGroup';
+import SkeletonCard     from '@/components/SkeletonCard';
+import FilterDropdowns  from '@/components/FilterDropdowns';
+import styles           from './page.module.css';
 
-// Search suggestion prompts shown on first load
-const PROMPTS = [
-  { icon: '🎟', label: 'Events',         sub: 'This Weekend',      q: '',            date: 'weekend', grad: 'linear-gradient(135deg,#FF6B35,#F7C59F)' },
-  { icon: '🆓', label: 'Free Things',    sub: 'No Cost Activities', q: 'free',        date: '',        grad: 'linear-gradient(135deg,#11998e,#38ef7d)' },
-  { icon: '🎵', label: 'Live Music',     sub: 'Bars & Venues',     q: 'music',       date: '',        grad: 'linear-gradient(135deg,#7b4397,#dc2430)' },
-  { icon: '🧘', label: 'Wellness',       sub: 'Yoga & Fitness',    q: 'yoga fitness',date: '',        grad: 'linear-gradient(135deg,#1CB5E0,#000851)' },
-  { icon: '🎨', label: 'Arts & Culture', sub: 'Galleries & Shows', q: '',            date: '',        category: 'Arts & Culture', grad: 'linear-gradient(135deg,#f093fb,#f5576c)' },
-  { icon: '🍽', label: 'Food & Dining',  sub: 'Restaurants',       q: 'food dining', date: '',       grad: 'linear-gradient(135deg,#FA8231,#f7b731)' },
-  { icon: '🌿', label: 'Outdoors',       sub: 'Parks & Nature',    q: 'park outdoor',date: '',       grad: 'linear-gradient(135deg,#134E5E,#71B280)' },
-  { icon: '👨‍👩‍👧', label: 'Family', sub: 'Kid-Friendly Fun',  q: 'family kids', date: '', grad: 'linear-gradient(135deg,#4481eb,#04befe)' },
-];
 
 export default function Home() {
   const [query,        setQuery]        = useState('');
@@ -25,6 +15,7 @@ export default function Home() {
   const [hasSearched,  setHasSearched]  = useState(false);
   const [meta,         setMeta]         = useState({ categories: [], areas: [] });
   const [category,     setCategory]     = useState('');
+  const [area,         setArea]         = useState('');
   const [dateFilter,   setDateFilter]   = useState('');
   const [featuredItems,setFeaturedItems]= useState([]);
   const resultsRef = useRef(null);
@@ -90,6 +81,15 @@ export default function Home() {
     setDateFilter(prompt.date || '');
     setCategory(prompt.category || '');
     fetchResults(prompt.q || '', prompt.category || '', prompt.date || '');
+  }
+
+  function applyFilter({ category: cat, area: ar, date }) {
+    const nextCat  = cat  !== undefined ? cat  : category;
+    const nextDate = date !== undefined ? date : dateFilter;
+    if (cat  !== undefined) setCategory(cat);
+    if (ar   !== undefined) setArea(ar || '');
+    if (date !== undefined) setDateFilter(date);
+    fetchResults(query, nextCat, nextDate);
   }
 
   function applyCategory(cat) {
@@ -201,75 +201,26 @@ export default function Home() {
             )}
           </div>
 
-          {/* App Download Badges — only on landing */}
+          {/* Filter Dropdowns — only on landing */}
           {!hasSearched && (
-            <div className={styles.appBadges}>
-              <a
-                href="https://play.google.com/store/apps/details?id=com.mytoursapp.android.app7801"
-                target="_blank" rel="noopener noreferrer"
-                className={`${styles.appBadge} ${styles.appBadgeAndroid}`}
-                aria-label="Get it on Google Play"
-              >
-                <span className={styles.appBadgeIcon}>▶</span>
-                <span><span style={{fontSize:'0.65rem',display:'block',opacity:0.6}}>GET IT ON</span>Google Play</span>
-              </a>
-              <a
-                href="https://citytourguide.stqry.app/"
-                target="_blank" rel="noopener noreferrer"
-                className={`${styles.appBadge} ${styles.appBadgeWeb}`}
-                aria-label="Open Web App"
-              >
-                <span className={styles.appBadgeIcon}>🌐</span>
-                <span><span style={{fontSize:'0.65rem',display:'block',opacity:0.6}}>OPEN</span>Web App</span>
-              </a>
-              <span className={`${styles.appBadge} ${styles.appBadgeIos}`} title="Coming soon to iOS">
-                <span className={styles.appBadgeIcon} style={{fontFamily:'serif',fontStyle:'italic',fontWeight:700,fontSize:'1.1rem'}}></span>
-                <span><span style={{fontSize:'0.65rem',display:'block'}}>COMING SOON</span>App Store</span>
-              </span>
-            </div>
+            <FilterDropdowns onFilter={applyFilter} />
           )}
         </div>
       </section>
-
 
       {/* ── Main ────────────────────────────────────────────────── */}
       <main className={styles.main} ref={resultsRef}>
         <div className={styles.container}>
 
-          {/* ══ LANDING STATE — category cards + featured ════════════ */}
-          {!hasSearched && (
+          {/* ══ LANDING STATE — featured only (filters moved to hero) ════ */}
+          {!hasSearched && featuredItems.length > 0 && (
             <div className={styles.landing}>
-
-              {/* Premium category icon cards — vibrant gradients */}
-              <p className={styles.landingLabel}>Explore by Category</p>
-              <div className={styles.promptGrid}>
-                {PROMPTS.map(p => (
-                  <button
-                    key={p.label}
-                    className={styles.promptCard}
-                    style={{ background: p.grad }}
-                    onClick={() => applyPrompt(p)}
-                  >
-                    <span className={styles.promptCardIcon}>{p.icon}</span>
-                    <span className={styles.promptCardLabel} style={{ color: '#fff' }}>{p.label}</span>
-                    <span className={styles.promptCardSub} style={{ color: 'rgba(255,255,255,0.75)' }}>{p.sub}</span>
-                  </button>
+              <p className={styles.landingLabel}>⭐ Featured</p>
+              <div className={styles.grid}>
+                {featuredItems.map(item => (
+                  <ResultCard key={item.id} item={item} />
                 ))}
               </div>
-
-              {/* Featured listings — always visible */}
-              {featuredItems.length > 0 && (
-                <div className={styles.landingFeatured}>
-                  <p className={styles.landingLabel}>⭐ Featured</p>
-                  <div className={styles.grid}>
-                    {featuredItems.map(item => (
-                      <ResultCard key={item.id} item={item} />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Source credit */}
               <p className={styles.landingCredit}>
                 Listings sourced from verified Tampa Bay partners. All links go to original sources.
               </p>

@@ -1,0 +1,204 @@
+/* FilterDropdowns.module.css — Premium glassmorphism filter bar */
+
+.bar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+/* ── Pill trigger button ──────────────────────────────────────── */
+.dropWrapper {
+  position: relative;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 999px;
+  color: #E2E8F0;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.pill:hover {
+  background: rgba(255,255,255,0.14);
+  border-color: rgba(255,255,255,0.3);
+  transform: translateY(-1px);
+}
+.pillActive {
+  background: linear-gradient(135deg, #2563EB, #7C3AED);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.4);
+}
+.pillIcon { font-size: 1rem; line-height: 1; }
+.pillLabel { min-width: 80px; text-align: left; }
+
+.arrow {
+  font-size: 0.65rem;
+  opacity: 0.7;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+.arrowUp { transform: rotate(180deg); }
+
+/* ── Floating panel ───────────────────────────────────────────── */
+.panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 999;
+  min-width: 320px;
+  background: rgba(15, 23, 42, 0.96);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  animation: panelIn 0.18s ease;
+}
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+.panelTitle {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #64748B;
+  margin: 0 0 14px;
+}
+
+/* ── Option grid (2-col for categories/neighborhoods) ─────────── */
+.optionGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  color: #CBD5E1;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  text-align: left;
+}
+.option:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.15);
+  color: #fff;
+}
+.optionActive {
+  background: linear-gradient(135deg, rgba(37,99,235,0.3), rgba(124,58,237,0.3));
+  border-color: rgba(99,102,241,0.5);
+  color: #fff;
+}
+.optionIcon { font-size: 1rem; flex-shrink: 0; }
+.optionLabel { flex: 1; }
+.check {
+  font-size: 0.75rem;
+  color: #60A5FA;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ── Date panel (single column) ──────────────────────────────── */
+.panelDate { min-width: 220px; }
+
+.dateOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 4px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  color: #CBD5E1;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-align: left;
+}
+.dateOption:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+.dateOption.optionActive {
+  background: linear-gradient(135deg, rgba(37,99,235,0.3), rgba(124,58,237,0.3));
+  border-color: rgba(99,102,241,0.5);
+  color: #fff;
+}
+
+.customDateRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.datePicker {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  color: #E2E8F0;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.85rem;
+  color-scheme: dark;
+  cursor: pointer;
+}
+
+/* ── Clear button ─────────────────────────────────────────────── */
+.clearBtn {
+  margin-top: 14px;
+  width: 100%;
+  padding: 8px;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: #64748B;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.clearBtn:hover { color: #94A3B8; border-color: rgba(255,255,255,0.2); }
+
+/* ── Mobile ───────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .bar { gap: 8px; }
+  .pill { padding: 10px 14px; font-size: 0.82rem; }
+  .pillLabel { min-width: 60px; }
+  .panel { min-width: 280px; left: 50%; transform: translateX(-50%); }
+  .optionGrid { grid-template-columns: 1fr; }
+}
