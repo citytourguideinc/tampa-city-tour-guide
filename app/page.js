@@ -8,14 +8,14 @@ import styles       from './page.module.css';
 
 // Search suggestion prompts shown on first load
 const PROMPTS = [
-  { label: '🎟 Events this weekend', q: '', date: 'weekend' },
-  { label: '🆓 Free things to do',   q: 'free', date: '' },
-  { label: '🎵 Live music',          q: 'music', date: '' },
-  { label: '🧘 Yoga & fitness',      q: 'yoga fitness', date: '' },
-  { label: '🎨 Arts & culture',      q: '', date: '', category: 'Arts & Culture' },
-  { label: '🍽 Food & dining',       q: 'food dining', date: '' },
-  { label: '🌿 Outdoors & parks',    q: 'park outdoor', date: '' },
-  { label: '👨‍👩‍👧 Family friendly',   q: 'family kids', date: '' },
+  { icon: '🎟', label: 'Events',       sub: 'This Weekend',     q: '',            date: 'weekend' },
+  { icon: '🆓', label: 'Free Things',  sub: 'No Cost Activities', q: 'free',         date: '' },
+  { icon: '🎵', label: 'Live Music',   sub: 'Bars & Venues',     q: 'music',        date: '' },
+  { icon: '🧘', label: 'Wellness',     sub: 'Yoga & Fitness',    q: 'yoga fitness', date: '' },
+  { icon: '🎨', label: 'Arts & Culture', sub: 'Galleries & Shows', q: '',         date: '', category: 'Arts & Culture' },
+  { icon: '🍽', label: 'Food & Dining', sub: 'Restaurants',     q: 'food dining',  date: '' },
+  { icon: '🌿', label: 'Outdoors',     sub: 'Parks & Nature',   q: 'park outdoor', date: '' },
+  { icon: '👨‍👩‍👧', label: 'Family', sub: 'Kid-Friendly Fun', q: 'family kids', date: '' },
 ];
 
 export default function Home() {
@@ -208,26 +208,6 @@ export default function Home() {
                 <span><span style={{fontSize:'0.65rem',display:'block'}}>COMING SOON</span>App Store</span>
               </span>
             </div>
-
-            {/* Live Stats Strip */}
-            <div className={styles.heroStats}>
-              <div className={styles.heroStat}>
-                <div className={styles.heroStatNum}>350+</div>
-                <div className={styles.heroStatLabel}>Listings</div>
-              </div>
-              <div className={styles.heroStat}>
-                <div className={styles.heroStatNum}>15+</div>
-                <div className={styles.heroStatLabel}>Sources</div>
-              </div>
-              <div className={styles.heroStat}>
-                <div className={styles.heroStatNum}>50+</div>
-                <div className={styles.heroStatLabel}>Viator Tours</div>
-              </div>
-              <div className={styles.heroStat}>
-                <div className={styles.heroStatNum}>1</div>
-                <div className={styles.heroStatLabel}>City Live</div>
-              </div>
-            </div>
           </div>
         </section>
       )}
@@ -241,16 +221,18 @@ export default function Home() {
           {!hasSearched && (
             <div className={styles.landing}>
 
-              {/* Search prompt chips */}
-              <p className={styles.landingLabel}>What are you looking for?</p>
+              {/* Premium category icon cards */}
+              <p className={styles.landingLabel}>Explore by Category</p>
               <div className={styles.promptGrid}>
                 {PROMPTS.map(p => (
                   <button
                     key={p.label}
-                    className={styles.promptChip}
+                    className={styles.promptCard}
                     onClick={() => applyPrompt(p)}
                   >
-                    {p.label}
+                    <span className={styles.promptCardIcon}>{p.icon}</span>
+                    <span className={styles.promptCardLabel}>{p.label}</span>
+                    <span className={styles.promptCardSub}>{p.sub}</span>
                   </button>
                 ))}
               </div>

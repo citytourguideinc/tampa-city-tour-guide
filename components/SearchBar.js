@@ -1,4 +1,4 @@
-// components/SearchBar.js — Search-as-you-type with 300ms debounce
+// components/SearchBar.js — Search-as-you-type: 700ms debounce, 3-char minimum
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import styles from './SearchBar.module.css';
@@ -9,21 +9,24 @@ export default function SearchBar({ onSearch, loading, initValue = '' }) {
   const inputRef = useRef(null);
   const isMounted = useRef(false);
 
-  // When initValue changes (nav bar mounts with current query), sync it
+  // Sync initValue when nav bar mounts with current query
   useEffect(() => {
     if (initValue) setValue(initValue);
   }, [initValue]);
 
-  // Debounced search-as-you-type — skip first render
+  // Debounced search: 700ms delay + require at least 3 chars (or empty to clear)
   useEffect(() => {
     if (!isMounted.current) {
       isMounted.current = true;
       return;
     }
     if (debounceRef.current) clearTimeout(debounceRef.current);
+    const trimmed = value.trim();
+    // Only search if 3+ chars or completely empty (to go back to landing)
+    if (trimmed.length > 0 && trimmed.length < 3) return;
     debounceRef.current = setTimeout(() => {
-      onSearch(value.trim());
-    }, 300);
+      onSearch(trimmed);
+    }, 700);
     return () => clearTimeout(debounceRef.current);
   }, [value]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -50,7 +53,7 @@ export default function SearchBar({ onSearch, loading, initValue = '' }) {
         className={styles.input}
         value={value}
         onChange={e => setValue(e.target.value)}
-        placeholder="Ask anything — tours, events, free things, nightlife…"
+        placeholder="Search tours, events, dining, nightlife…"
         autoComplete="off"
         aria-label="Search City Tour Guide"
       />
