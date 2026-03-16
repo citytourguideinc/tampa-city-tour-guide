@@ -17,7 +17,7 @@
       { "url": "https://www.tampasdowntown.com/events/", "category": "Events", "subcategory": "Downtown Events", "area": "Downtown" },
       { "url": "https://www.tampasdowntown.com/events-category/free-events/", "category": "Events", "subcategory": "Free Events", "area": "Downtown", "priceHint": "Free" },
       { "url": "https://www.tampasdowntown.com/community-events/", "category": "Events", "subcategory": "Community Events", "area": "Downtown" },
-      { "url": "https://www.tampasdowntown.com/neighborhoods/", "category": "Tours & Activities", "subcategory": "Neighborhoods", "area": "Downtown" }
+      { "url": "https://www.tampasdowntown.com/neighborhoods/", "category": "Discovery", "subcategory": "Neighborhoods", "area": "Downtown" }
     ],
     "active": true,
     "city": "Tampa",
@@ -140,5 +140,99 @@
     "active": true,
     "city": "Tampa",
     "area": "Tampa Bay"
+  },
+  {
+    "sourceName": "Do813 Tampa Events",
+    "mainUrl": "https://do813.com/",
+    "domain": "do813.com",
+    "sourceType": "media",
+    "allowedDepth": 2,
+    "allowedPaths": ["/events/", "/things-to-do/", "/restaurants/"],
+    "blockedPaths": ["/login", "/account", "/advertise", "/page/2/", "/page/3/"],
+    "subsources": [
+      { "url": "https://do813.com/events/", "category": "Events", "subcategory": "Tampa Events", "area": "Tampa" },
+      { "url": "https://do813.com/things-to-do/", "category": "Things To Do", "subcategory": "Tampa Attractions", "area": "Tampa" }
+    ],
+    "active": true,
+    "city": "Tampa",
+    "area": "Tampa"
+  },
+  {
+    "sourceName": "Tampa Theatre",
+    "mainUrl": "https://www.tampatheatre.org/",
+    "domain": "tampatheatre.org",
+    "sourceType": "venue",
+    "allowedDepth": 2,
+    "allowedPaths": ["/movies/", "/events/", "/whats-on/"],
+    "blockedPaths": ["/donate", "/membership", "/about", "/login", "/wp-admin"],
+    "subsources": [
+      { "url": "https://www.tampatheatre.org/movies/", "category": "Arts & Culture", "subcategory": "Film & Cinema", "area": "Downtown" },
+      { "url": "https://www.tampatheatre.org/events/", "category": "Arts & Culture", "subcategory": "Theatre Events", "area": "Downtown" }
+    ],
+    "active": true,
+    "city": "Tampa",
+    "area": "Downtown"
+  },
+  {
+    "sourceName": "Ybor City Chamber of Commerce",
+    "mainUrl": "https://www.yborcitychamber.com/",
+    "domain": "yborcitychamber.com",
+    "sourceType": "official",
+    "allowedDepth": 2,
+    "allowedPaths": ["/events/", "/things-to-do/", "/dining/"],
+    "blockedPaths": ["/membership", "/about", "/login", "/wp-admin"],
+    "subsources": [
+      { "url": "https://www.yborcitychamber.com/events/", "category": "Events", "subcategory": "Ybor City Events", "area": "Ybor City" },
+      { "url": "https://www.yborcitychamber.com/dining/", "category": "Food & Dining", "subcategory": "Ybor Dining", "area": "Ybor City" }
+    ],
+    "active": true,
+    "city": "Tampa",
+    "area": "Ybor City"
+  },
+  {
+    "sourceName": "Florida Aquarium",
+    "mainUrl": "https://www.flaquarium.org/",
+    "domain": "flaquarium.org",
+    "sourceType": "venue",
+    "allowedDepth": 2,
+    "allowedPaths": ["/events/", "/exhibits/", "/programs/", "/things-to-do/"],
+    "blockedPaths": ["/donate", "/membership", "/about", "/login", "/careers", "/wp-admin"],
+    "subsources": [
+      { "url": "https://www.flaquarium.org/events/", "category": "Events", "subcategory": "Aquarium Events", "area": "Downtown / Channel District", "priceHint": null },
+      { "url": "https://www.flaquarium.org/exhibits/", "category": "Family & Attractions", "subcategory": "Aquarium Exhibits", "area": "Downtown / Channel District" }
+    ],
+    "active": true,
+    "city": "Tampa",
+    "area": "Downtown / Channel District"
+  },
+  {
+    "sourceName": "Tampa Bay Rays",
+    "mainUrl": "https://www.mlb.com/rays",
+    "domain": "mlb.com",
+    "sourceType": "venue",
+    "allowedDepth": 1,
+    "allowedPaths": ["/rays/schedule", "/rays/tickets"],
+    "blockedPaths": ["/news/", "/video/", "/stats/", "/roster/", "/login"],
+    "subsources": [
+      { "url": "https://www.mlb.com/rays/schedule", "category": "Sports & Recreation", "subcategory": "Baseball", "area": "Downtown / Channel District" }
+    ],
+    "active": true,
+    "city": "Tampa",
+    "area": "Downtown / Channel District"
+  },
+  {
+    "sourceName": "Glazer Children's Museum",
+    "mainUrl": "https://www.glazermuseum.org/",
+    "domain": "glazermuseum.org",
+    "sourceType": "venue",
+    "allowedDepth": 2,
+    "allowedPaths": ["/events/", "/programs/", "/visit/"],
+    "blockedPaths": ["/donate", "/membership", "/about", "/login", "/wp-admin"],
+    "subsources": [
+      { "url": "https://www.glazermuseum.org/events/", "category": "Family & Attractions", "subcategory": "Kids Events", "area": "Downtown", "priceHint": null }
+    ],
+    "active": true,
+    "city": "Tampa",
+    "area": "Downtown"
   }
 ]

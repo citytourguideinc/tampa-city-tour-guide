@@ -56,6 +56,7 @@ export async function GET(request) {
 
     if (q)        query = query.textSearch('fts', q, { type: 'websearch', config: 'english' });
     if (category) query = query.eq('category', category);
+    else if (q)   query = query.neq('subcategory', 'Neighborhoods'); // hide neighborhood guide pages from keyword searches
     if (area)     query = query.ilike('area', `%${area}%`);
     if (price === 'free') query = query.ilike('price', '%free%');
 
