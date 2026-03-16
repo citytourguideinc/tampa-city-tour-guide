@@ -8,9 +8,10 @@ import SOURCES            from '@/lib/trusted-sources.json';
 const MAX_PAGES_PER_SOURCE = 60;
 
 function authCheck(req) {
-  const s = process.env.CRAWL_SECRET || process.env.ADMIN_SECRET;
-  if (!s) return true;
-  return req.headers.get('x-crawl-secret') === s || req.headers.get('x-admin-secret') === s;
+  const s = process.env.CRAWL_SECRET || process.env.ADMIN_SECRET || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
+  const hCrawl = req.headers.get('x-crawl-secret');
+  const hAdmin = req.headers.get('x-admin-secret');
+  return hCrawl === s || hAdmin === s;
 }
 
 export async function POST(request) {

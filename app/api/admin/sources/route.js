@@ -6,8 +6,7 @@ import { NextResponse } from 'next/server';
 import { getAdminClient } from '@/lib/supabase';
 
 function authCheck(request) {
-  const secret = process.env.ADMIN_SECRET || process.env.CRAWL_SECRET;
-  if (!secret) return true; // no secret set = open (dev mode)
+  const secret = process.env.ADMIN_SECRET || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
   const h = request.headers.get('x-admin-secret');
   const q = new URL(request.url).searchParams.get('key');
   return h === secret || q === secret;

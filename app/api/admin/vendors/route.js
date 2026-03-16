@@ -2,8 +2,15 @@
 import { NextResponse } from 'next/server';
 import { getAdminClient } from '@/lib/supabase';
 
+function authCheck(request) {
+  const secret = process.env.ADMIN_SECRET || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
+  const h = request.headers.get('x-admin-secret');
+  return h === secret;
+}
+
 // GET — list all vendors
-export async function GET() {
+export async function GET(req) {
+  if (!authCheck(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getAdminClient();
   if (!sb) return NextResponse.json({ vendors: [] });
   const { data, error } = await sb
@@ -16,6 +23,7 @@ export async function GET() {
 
 // PATCH — update claim_status or paid_status
 export async function PATCH(req) {
+  if (!authCheck(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getAdminClient();
   if (!sb) return NextResponse.json({ error: 'Database not connected' }, { status: 503 });
   const { id, ...updates } = await req.json();

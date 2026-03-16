@@ -1,41 +1,20 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 
 const ADMIN_PWD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
 const TABS = ['📡 Sources', '📄 Items', '🏃 Activities', '🏪 Vendors', '✅ Setup', '🗂 Tampa Resources'];
 
 export default function AdminPage() {
-  const [authed,  setAuthed]  = useState(false);
-  const [pwd,     setPwd]     = useState('');
-  const [error,   setError]   = useState('');
+  const router = useRouter();
 
-  useEffect(() => {
-    if (localStorage.getItem('ctg_admin')) setAuthed(true);
-  }, []);
-
-  function login() {
-    if (pwd === ADMIN_PWD) { localStorage.setItem('ctg_admin', '1'); setAuthed(true); }
-    else setError('Incorrect password.');
+  async function handleLogout() {
+    await fetch('/api/admin/auth', { method: 'DELETE' });
+    router.push('/admin/login');
   }
 
-  function logout() { localStorage.removeItem('ctg_admin'); setAuthed(false); }
-
-  if (!authed) return (
-    <div className={styles.loginPage}>
-      <div className={styles.loginBox}>
-        <div className={styles.loginIcon}>⚙️</div>
-        <h1 className={styles.loginTitle}>City Tour Guide Admin</h1>
-        <p className={styles.loginSub}>City Tour Guide, Inc. — Internal panel</p>
-        <input className={styles.loginInput} type="password" placeholder="Password" value={pwd}
-          onChange={e => setPwd(e.target.value)} onKeyDown={e => e.key === 'Enter' && login()} />
-        <button className={styles.loginBtn} onClick={login}>Sign In</button>
-        {error && <p className={styles.loginErr}>{error}</p>}
-      </div>
-    </div>
-  );
-
-  return <Dashboard onLogout={logout} />;
+  return <Dashboard onLogout={handleLogout} />;
 }
 
 // ── Full dashboard ─────────────────────────────────────────────────────────

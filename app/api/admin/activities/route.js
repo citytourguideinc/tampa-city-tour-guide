@@ -4,6 +4,12 @@
 import { NextResponse } from 'next/server';
 import { getAdminClient } from '@/lib/supabase';
 
+function authCheck(request) {
+  const secret = process.env.ADMIN_SECRET || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
+  const h = request.headers.get('x-admin-secret');
+  return h === secret;
+}
+
 function getAdmin() {
   const client = getAdminClient();
   if (!client) return null;
@@ -11,7 +17,8 @@ function getAdmin() {
 }
 
 // GET — list all activities (including inactive)
-export async function GET() {
+export async function GET(req) {
+  if (!authCheck(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getAdmin();
   if (!sb) return NextResponse.json({ activities: [] });
   const { data, error } = await sb
@@ -25,6 +32,7 @@ export async function GET() {
 
 // POST — add new activity
 export async function POST(req) {
+  if (!authCheck(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getAdmin();
   if (!sb) return NextResponse.json({ error: 'Database not connected' }, { status: 503 });
   const body = await req.json();
@@ -39,6 +47,7 @@ export async function POST(req) {
 
 // PATCH — update active_status or featured_status
 export async function PATCH(req) {
+  if (!authCheck(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getAdmin();
   if (!sb) return NextResponse.json({ error: 'Database not connected' }, { status: 503 });
   const { id, ...updates } = await req.json();
@@ -49,6 +58,7 @@ export async function PATCH(req) {
 
 // DELETE — remove activity
 export async function DELETE(req) {
+  if (!authCheck(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const sb = getAdmin();
   if (!sb) return NextResponse.json({ error: 'Database not connected' }, { status: 503 });
   const { id } = await req.json();

@@ -1,7 +1,7 @@
 // middleware.js — Protects /admin routes with password auth
 import { NextResponse } from 'next/server';
 
-const ADMIN_SECRET = process.env.ADMIN_SECRET || 'ctg-admin-secure';
+const ADMIN_SECRET = process.env.ADMIN_SECRET || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
 const COOKIE_NAME  = 'ctg_admin_auth';
 
 export function middleware(request) {

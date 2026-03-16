@@ -9,7 +9,7 @@ import { NextResponse } from 'next/server';
 
 const TABLE   = 'Tampa Resources';
 const CANDS   = 'source_candidates';
-const SECRET  = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
+const SECRET  = process.env.ADMIN_SECRET || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
 
 function auth(req) {
   const h = req.headers.get('x-admin-secret');
