@@ -56,7 +56,7 @@ export async function GET(request) {
 
     if (q)        query = query.textSearch('fts', q, { type: 'websearch', config: 'english' });
     if (category) query = query.eq('category', category);
-    else if (q)   query = query.neq('subcategory', 'Neighborhoods'); // hide neighborhood guide pages from keyword searches
+    else if (q)   query = query.neq('subcategory', 'Neighborhoods');
     if (area)     query = query.ilike('area', `%${area}%`);
     if (price === 'free') query = query.ilike('price', '%free%');
 
@@ -77,8 +77,54 @@ export async function GET(request) {
       .order('event_date',   { ascending: true, nullsFirst: false })
       .order('title',        { ascending: true });
 
-    const { data, error } = await query;
+    let { data, error } = await query;
     if (error) throw error;
+
+    // If FTS returned 0 results for a keyword query, try a category-name fallback
+    // This fixes: 'tours' → Tours & Activities, 'restaurants' → Food & Dining, etc.
+    const CATEGORY_ALIASES = {
+      'tour':        'Tours & Activities',
+      'tours':       'Tours & Activities',
+      'activity':    'Tours & Activities',
+      'activities':  'Tours & Activities',
+      'things to do':'Things To Do',
+      'todo':        'Things To Do',
+      'restaurant':  'Food & Dining',
+      'restaurants': 'Food & Dining',
+      'dining':      'Food & Dining',
+      'food':        'Food & Dining',
+      'event':       'Events',
+      'events':      'Events',
+      'art':         'Arts & Culture',
+      'arts':        'Arts & Culture',
+      'music':       'Events',
+      'nightlife':   'Nightlife',
+      'night':       'Nightlife',
+      'shop':        'Shopping',
+      'shopping':    'Shopping',
+      'sport':       'Sports & Recreation',
+      'sports':      'Sports & Recreation',
+      'family':      'Family & Attractions',
+      'kids':        'Family & Attractions',
+    };
+    if ((data || []).length === 0 && q && !category) {
+      const alias = CATEGORY_ALIASES[q.toLowerCase().trim()];
+      if (alias) {
+        let fallbackQ = supabase
+          .from('trusted_items')
+          .select('id,title,url,source_name,source_domain,category,subcategory,area,price,event_date,summary,listing_type,is_monetized,status')
+          .eq('status', 'approved')
+          .eq('category', alias)
+          .limit(300);
+        if (area) fallbackQ = fallbackQ.ilike('area', `%${area}%`);
+        fallbackQ = fallbackQ
+          .order('listing_type', { ascending: false })
+          .order('event_date', { ascending: true, nullsFirst: false })
+          .order('title', { ascending: true });
+        const fb = await fallbackQ;
+        if (!fb.error) data = fb.data;
+      }
+    }
 
     function pickBetter(a, b) {
       if (date?.match(/^\d{4}-\d{2}-\d{2}$/)) {

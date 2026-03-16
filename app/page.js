@@ -147,11 +147,6 @@ export default function Home() {
             <span className={styles.navTagline}>Your City. Your Guide.</span>
           </div>
 
-          {hasSearched && (
-            <div className={styles.navSearch}>
-              <SearchBar onSearch={handleSearch} loading={loading} initValue={query} />
-            </div>
-          )}
           {!hasSearched && <div className={styles.navRightSpacer} />}
 
         </div>
@@ -169,7 +164,6 @@ export default function Home() {
         <div className={styles.container}>
           {!hasSearched && (
             <>
-              <p className={styles.heroEyebrow}>🌴 Your City. Your Guide.</p>
               <h1 className={styles.heroTitle}>Discover What&apos;s Happening</h1>
               <p className={styles.heroSub}>Events, activities &amp; things to do in Tampa. Updated daily.</p>
             </>

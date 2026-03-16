@@ -5,9 +5,9 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: #FFFFFF;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+  background: #060D1F;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 1px 12px rgba(0,0,0,0.4);
 }
 .navInner {
   max-width: 1200px;
@@ -43,11 +43,11 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #0066CC;
+  color: rgba(255,255,255,0.5);
   white-space: nowrap;
   line-height: 1.3;
 }
-@media (max-width: 480px) { .navTagline { display: none; } }
+@media (max-width: 640px) { .navTagline { display: none; } }
 
 /* City picker pill — used inside hero */
 .cityPicker {
