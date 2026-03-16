@@ -6,16 +6,16 @@ import SourceGroup from '@/components/SourceGroup';
 import SkeletonCard from '@/components/SkeletonCard';
 import styles      from './page.module.css';
 
-// Quick-tap category tiles shown in the hero
+// Quick-tap category tiles — mapped to ACTUAL DB categories
 const QUICK_CATS = [
-  { icon: '🎟', label: 'Events',           cat: 'Events' },
-  { icon: '🍽', label: 'Dining',           cat: 'Food' },
-  { icon: '🏛', label: 'Tours',            cat: 'Tours & Activities' },
-  { icon: '🎵', label: 'Nightlife',        cat: 'Nightlife' },
-  { icon: '🎨', label: 'Arts & Culture',   cat: 'Arts & Culture' },
-  { icon: '👨‍👩‍👧', label: 'Family',           cat: 'Family & Attractions' },
-  { icon: '🆓', label: 'Free',             cat: 'Free' },
-  { icon: '🛍', label: 'Shopping',         cat: 'Shopping' },
+  { icon: '🎟', label: 'Events',    cat: 'Events' },
+  { icon: '🍽', label: 'Dining',    cat: 'Food' },
+  { icon: '🏛', label: 'Tours',     cat: 'Tours & Activities' },
+  { icon: '🛍', label: 'Shopping',  cat: 'Shopping' },
+  { icon: '🗺', label: 'Discovery', cat: 'Discovery' },
+  { icon: '📅', label: 'This Week', cat: '', date: 'weekend' },
+  { icon: '🆓', label: 'Free',      cat: '', price: 'free' },
+  { icon: '🌟', label: 'Browse All',cat: '' },
 ];
 
 export default function Home() {
@@ -29,16 +29,17 @@ export default function Home() {
   const [activeQuick, setActiveQuick] = useState('');
   const resultsRef = useRef(null);
 
-  const fetchResults = useCallback(async (q = '', cat = '', date = '', ar = '') => {
+  const fetchResults = useCallback(async (q = '', cat = '', date = '', ar = '', price = '') => {
     setLoading(true);
     setHasSearched(true);
     setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     try {
       const params = new URLSearchParams({ limit: '300' });
-      if (q)    params.set('q', q);
-      if (cat)  params.set('category', cat);
-      if (date) params.set('date', date);
-      if (ar)   params.set('area', ar);
+      if (q)     params.set('q', q);
+      if (cat)   params.set('category', cat);
+      if (date)  params.set('date', date);
+      if (ar)    params.set('area', ar);
+      if (price) params.set('price', price);
       const res  = await fetch(`/api/search?${params}`);
       const data = await res.json();
       setResults(data.results || []);
@@ -60,14 +61,17 @@ export default function Home() {
     }
   }
 
-  function pickCategory(cat, label) {
-    const next = activeQuick === label ? '' : label;
-    const nextCat = activeQuick === label ? '' : cat;
-    setActiveQuick(next);
+  function pickCategory(tile) {
+    const isActive = activeQuick === tile.label;
+    setActiveQuick(isActive ? '' : tile.label);
+    const nextCat   = isActive ? '' : (tile.cat   || '');
+    const nextDate  = isActive ? '' : (tile.date  || '');
+    const nextPrice = isActive ? '' : (tile.price || '');
     setCategory(nextCat);
+    setDateFilter(nextDate);
     setQuery('');
-    if (nextCat) {
-      fetchResults('', nextCat, dateFilter, area);
+    if (!isActive) {
+      fetchResults('', nextCat, nextDate, area, nextPrice);
     } else {
       setHasSearched(false);
       setResults([]);
@@ -148,14 +152,14 @@ export default function Home() {
           {/* Quick-tap category tiles — only on landing */}
           {!hasSearched && (
             <div className={styles.quickGrid}>
-              {QUICK_CATS.map(c => (
+              {QUICK_CATS.map(tile => (
                 <button
-                  key={c.label}
-                  className={`${styles.quickTile} ${activeQuick === c.label ? styles.quickActive : ''}`}
-                  onClick={() => pickCategory(c.cat, c.label)}
+                  key={tile.label}
+                  className={`${styles.quickTile} ${activeQuick === tile.label ? styles.quickActive : ''}`}
+                  onClick={() => pickCategory(tile)}
                 >
-                  <span className={styles.quickIcon}>{c.icon}</span>
-                  <span className={styles.quickLabel}>{c.label}</span>
+                  <span className={styles.quickIcon}>{tile.icon}</span>
+                  <span className={styles.quickLabel}>{tile.label}</span>
                 </button>
               ))}
             </div>
