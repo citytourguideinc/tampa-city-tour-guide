@@ -159,11 +159,19 @@ export default function Home() {
 
       {/* ── Landing Hero — blue section, always visible ── */}
       <section className={`${styles.hero} ${hasSearched ? styles.heroCompact : ''}`}>
+        {/* Ambient glow orbs for visual richness */}
+        {!hasSearched && (
+          <>
+            <div className={styles.glowOrb1} aria-hidden="true" />
+            <div className={styles.glowOrb2} aria-hidden="true" />
+          </>
+        )}
         <div className={styles.container}>
           {!hasSearched && (
             <>
+              <p className={styles.heroEyebrow}>🌴 Your City. Your Guide.</p>
               <h1 className={styles.heroTitle}>Discover What&apos;s Happening</h1>
-              <p className={styles.heroSub}>Events, activities &amp; things to do. Updated daily.</p>
+              <p className={styles.heroSub}>Events, activities &amp; things to do in Tampa. Updated daily.</p>
             </>
           )}
 
