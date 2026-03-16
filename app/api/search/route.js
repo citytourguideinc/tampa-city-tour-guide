@@ -1,7 +1,8 @@
-// app/api/search/route.js — Trusted-items search: current-only, 3-pass dedup, junk filter
+// app/api/search/route.js — reliable ilike-based search (no broken FTS dependency)
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabase }     from '@/lib/supabase';
 
+// ── Helpers ────────────────────────────────────────────────────────────────────
 function baseUrl(u) {
   try {
     const url = new URL(u);
@@ -21,116 +22,107 @@ function normTitle(t, src) {
     .slice(0, 50);
 }
 
-// WordPress index/archive/navigation pages — no unique content
-const JUNK_TITLE = [/\barchives?\b/i, /^all\s+\w/i, /\bpage\s+\d+/i, /^(events|news|newsletter|monday morning memo|insider|memo)$/i];
-const JUNK_URL   = [/\/page\/\d+\//, /\?paged=\d+/, /\/wp-json\//, /\/feed\//];
+const JUNK_TITLE = [/\barchives?\b/i, /^all\s+\w/i, /\bpage\s+\d+/i,
+  /^(events|news|newsletter|monday\s+morning\s+memo|insider|memo)$/i];
+const JUNK_URL = [/\/page\/\d+\//, /\?paged=\d+/, /\/wp-json\//, /\/feed\//];
 function isJunk(item) {
-  return JUNK_TITLE.some(p => p.test(item.title || '')) || JUNK_URL.some(p => p.test(item.url || ''));
+  return JUNK_TITLE.some(p => p.test(item.title || '')) ||
+         JUNK_URL.some(p => p.test(item.url || ''));
 }
 
-// Non-event categories — these don't have event dates, keep them always
-const NEWS_CATEGORIES = ['Discovery', 'News', 'Community'];
-function isNewsType(item) {
-  return NEWS_CATEGORIES.some(c => (item.category || '').toLowerCase().includes(c.toLowerCase()));
+const ALWAYS_SHOW = ['Discovery', 'News', 'Community'];
+function isAlwaysShow(item) {
+  return ALWAYS_SHOW.some(c => (item.category || '').toLowerCase().includes(c.toLowerCase()));
 }
 
+// keyword → exact category name (makes 'tours' find 'Tours & Activities' items)
+const CAT_MAP = {
+  tour: 'Tours & Activities', tours: 'Tours & Activities',
+  activity: 'Tours & Activities', activities: 'Tours & Activities',
+  'things to do': 'Things To Do', todo: 'Things To Do',
+  restaurant: 'Food', restaurants: 'Food',
+  dining: 'Food', food: 'Food',
+  event: 'Events', events: 'Events', calendar: 'Events',
+  art: 'Arts', arts: 'Arts', culture: 'Arts',
+  music: 'Events', concert: 'Events', live: 'Events',
+  nightlife: 'Nightlife', night: 'Nightlife', bar: 'Nightlife', bars: 'Nightlife',
+  shop: 'Shopping', shopping: 'Shopping',
+  sport: 'Sports', sports: 'Sports', recreation: 'Sports',
+  family: 'Family', kids: 'Family', children: 'Family',
+  free: 'Events', outdoor: 'Things To Do', outdoors: 'Things To Do',
+  museum: 'Arts', theater: 'Arts', theatre: 'Arts',
+  beach: 'Things To Do', park: 'Things To Do',
+  hotel: 'Discovery', hotels: 'Discovery',
+};
+
+// ── Main handler ───────────────────────────────────────────────────────────────
 export async function GET(request) {
   if (!supabase) return NextResponse.json({ results: [], hint: 'Supabase not configured.' });
 
   const { searchParams } = new URL(request.url);
-  const q        = searchParams.get('q')?.trim();
-  const category = searchParams.get('category');
-  const area     = searchParams.get('area');
-  const date     = searchParams.get('date');
-  const price    = searchParams.get('price');
+  const q        = (searchParams.get('q') || '').trim();
+  const category = searchParams.get('category') || '';
+  const area     = searchParams.get('area')     || '';
+  const date     = searchParams.get('date')     || '';
+  const price    = searchParams.get('price')    || '';
 
   const todayStr  = new Date().toISOString().slice(0, 10);
   const todayDate = new Date(todayStr);
+  const qLow      = q.toLowerCase();
 
   try {
-    let query = supabase
-      .from('trusted_items')
-      .select('id,title,url,source_name,source_domain,category,subcategory,area,price,event_date,summary,listing_type,is_monetized,status')
-      .eq('status', 'approved')
-      .limit(300);
+    // ── Base select ──────────────────────────────────────────────────────────
+    const SELECT = 'id,title,url,source_name,source_domain,category,subcategory,area,price,event_date,summary,listing_type,is_monetized,status';
 
-    if (q)        query = query.textSearch('fts', q, { type: 'websearch', config: 'english' });
-    if (category) query = query.eq('category', category);
-    else if (q)   query = query.neq('subcategory', 'Neighborhoods');
-    if (area)     query = query.ilike('area', `%${area}%`);
-    if (price === 'free') query = query.ilike('price', '%free%');
+    function makeQuery() {
+      return supabase.from('trusted_items').select(SELECT).eq('status', 'approved').limit(300);
+    }
 
-    // Date filters — applied at DB level
+    let qb = makeQuery();
+
+    // ── Category filter (from dropdown) ──────────────────────────────────────
+    if (category) {
+      qb = qb.ilike('category', `%${category}%`);
+
+    // ── Keyword → category alias ─────────────────────────────────────────────
+    } else if (q && CAT_MAP[qLow]) {
+      qb = qb.ilike('category', `%${CAT_MAP[qLow]}%`)
+             .neq('subcategory', 'Neighborhoods');
+
+    // ── Free-text: title OR summary OR subcategory ilike ─────────────────────
+    } else if (q) {
+      qb = qb.or(`title.ilike.%${q}%,summary.ilike.%${q}%,subcategory.ilike.%${q}%`)
+             .neq('subcategory', 'Neighborhoods');
+    }
+
+    // ── Area filter ──────────────────────────────────────────────────────────
+    if (area) qb = qb.ilike('area', `%${area}%`);
+
+    // ── Price filter ─────────────────────────────────────────────────────────
+    if (price === 'free') qb = qb.ilike('price', '%free%');
+
+    // ── Date filters ─────────────────────────────────────────────────────────
     if (date === 'today') {
-      query = query.eq('event_date', todayStr);
+      qb = qb.eq('event_date', todayStr);
     } else if (date === 'weekend') {
       const d = new Date();
       const sat = new Date(d); sat.setDate(d.getDate() + ((6 - d.getDay() + 7) % 7));
       const sun = new Date(sat); sun.setDate(sat.getDate() + 1);
-      query = query.gte('event_date', sat.toISOString().slice(0,10)).lte('event_date', sun.toISOString().slice(0,10));
+      qb = qb.gte('event_date', sat.toISOString().slice(0, 10))
+             .lte('event_date', sun.toISOString().slice(0, 10));
     } else if (date?.match(/^\d{4}-\d{2}-\d{2}$/)) {
-      query = query.eq('event_date', date);
+      qb = qb.eq('event_date', date);
     }
 
-    query = query
-      .order('listing_type', { ascending: false })
-      .order('event_date',   { ascending: true, nullsFirst: false })
-      .order('title',        { ascending: true });
+    qb = qb.order('listing_type', { ascending: false })
+           .order('event_date',   { ascending: true, nullsFirst: false })
+           .order('title',        { ascending: true });
 
-    let { data, error } = await query;
+    const { data, error } = await qb;
     if (error) throw error;
 
-    // If FTS returned 0 results for a keyword query, try a category-name fallback
-    // This fixes: 'tours' → Tours & Activities, 'restaurants' → Food & Dining, etc.
-    const CATEGORY_ALIASES = {
-      'tour':        'Tours & Activities',
-      'tours':       'Tours & Activities',
-      'activity':    'Tours & Activities',
-      'activities':  'Tours & Activities',
-      'things to do':'Things To Do',
-      'todo':        'Things To Do',
-      'restaurant':  'Food & Dining',
-      'restaurants': 'Food & Dining',
-      'dining':      'Food & Dining',
-      'food':        'Food & Dining',
-      'event':       'Events',
-      'events':      'Events',
-      'art':         'Arts & Culture',
-      'arts':        'Arts & Culture',
-      'music':       'Events',
-      'nightlife':   'Nightlife',
-      'night':       'Nightlife',
-      'shop':        'Shopping',
-      'shopping':    'Shopping',
-      'sport':       'Sports & Recreation',
-      'sports':      'Sports & Recreation',
-      'family':      'Family & Attractions',
-      'kids':        'Family & Attractions',
-    };
-    if ((data || []).length === 0 && q && !category) {
-      const alias = CATEGORY_ALIASES[q.toLowerCase().trim()];
-      if (alias) {
-        let fallbackQ = supabase
-          .from('trusted_items')
-          .select('id,title,url,source_name,source_domain,category,subcategory,area,price,event_date,summary,listing_type,is_monetized,status')
-          .eq('status', 'approved')
-          .eq('category', alias)
-          .limit(300);
-        if (area) fallbackQ = fallbackQ.ilike('area', `%${area}%`);
-        fallbackQ = fallbackQ
-          .order('listing_type', { ascending: false })
-          .order('event_date', { ascending: true, nullsFirst: false })
-          .order('title', { ascending: true });
-        const fb = await fallbackQ;
-        if (!fb.error) data = fb.data;
-      }
-    }
-
+    // ── Post-processing ──────────────────────────────────────────────────────
     function pickBetter(a, b) {
-      if (date?.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        if (a.event_date === date) return a;
-        if (b.event_date === date) return b;
-      }
       const aD = a.event_date ? new Date(a.event_date) : null;
       const bD = b.event_date ? new Date(b.event_date) : null;
       if (!aD && bD) return b;
@@ -141,31 +133,30 @@ export async function GET(request) {
       return aUp ? (aD <= bD ? a : b) : (aD >= bD ? a : b);
     }
 
-    // Pass 1: remove junk index/archive pages
+    // Pass 1: remove junk
     const clean = (data || []).filter(item => !isJunk(item));
 
-    // Pass 2: remove PAST events (but keep news/discovery items regardless of date)
+    // Pass 2: filter past events (keep discovery/news items regardless)
     const current = clean.filter(item => {
-      if (!item.event_date) return true;             // no date = always show (news, info pages)
-      if (isNewsType(item)) return true;             // news/discovery = always show
-      return new Date(item.event_date) >= todayDate; // events = current/upcoming only
+      if (!item.event_date) return true;
+      if (isAlwaysShow(item)) return true;
+      return new Date(item.event_date) >= todayDate;
     });
 
-    // Pass 3: dedup by base URL
+    // Pass 3: dedup by URL
     const byUrl = {};
     for (const item of current) {
       const key = baseUrl(item.url);
       byUrl[key] = byUrl[key] ? pickBetter(byUrl[key], item) : item;
     }
 
-    // Pass 4: dedup by source + normalized title
+    // Pass 4: dedup by source + title
     const byTitle = {};
     for (const item of Object.values(byUrl)) {
       const key = `${item.source_name}::${normTitle(item.title, item.source_name)}`;
       byTitle[key] = byTitle[key] ? pickBetter(byTitle[key], item) : item;
     }
 
-    // Normalise + tag news items
     const results = Object.values(byTitle).map(item => ({
       ...item,
       description:    item.summary,
@@ -174,7 +165,7 @@ export async function GET(request) {
       isMonetized:    item.is_monetized || false,
       isFeatured:     item.listing_type === 'featured',
       isPartner:      item.listing_type === 'partner',
-      isNews:         isNewsType(item) && !item.event_date, // flag for UI badge
+      isNews:         isAlwaysShow(item) && !item.event_date,
     }));
 
     return NextResponse.json({ results, count: results.length, source: 'trusted_items' });

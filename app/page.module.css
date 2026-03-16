@@ -39,15 +39,15 @@
 }
 .navTagline {
   font-family: 'Inter', sans-serif;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
-  white-space: nowrap;
+  color: rgba(255,255,255,0.65);
   line-height: 1.3;
+  max-width: 120px;
+  white-space: normal;
 }
-@media (max-width: 640px) { .navTagline { display: none; } }
 
 /* City picker pill — used inside hero */
 .cityPicker {
