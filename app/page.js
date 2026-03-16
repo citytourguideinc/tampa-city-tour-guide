@@ -140,9 +140,12 @@ export default function Home() {
       <header className={styles.navbar}>
         <div className={styles.navInner}>
 
-          <a href="/" className={styles.logoLink} aria-label="City Tour Guide home">
-            <img src="/logo.png" alt="City Tour Guide" className={styles.logoImg} />
-          </a>
+          <div className={styles.navBrand}>
+            <a href="/" className={styles.logoLink} aria-label="City Tour Guide home">
+              <img src="/logo.png" alt="City Tour Guide" className={styles.logoImg} />
+            </a>
+            <span className={styles.navTagline}>Your City. Your Guide.</span>
+          </div>
 
           {hasSearched && (
             <div className={styles.navSearch}>
@@ -154,12 +157,11 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ── Landing Hero — ALWAYS visible, compresses when results show ── */}
+      {/* ── Landing Hero — blue section, always visible ── */}
       <section className={`${styles.hero} ${hasSearched ? styles.heroCompact : ''}`}>
         <div className={styles.container}>
           {!hasSearched && (
             <>
-              <p className={styles.heroEyebrow}>🌴 Your City. Your Guide.</p>
               <h1 className={styles.heroTitle}>Discover What&apos;s Happening</h1>
               <p className={styles.heroSub}>Events, activities &amp; things to do. Updated daily.</p>
             </>
