@@ -530,8 +530,8 @@ function Dashboard({ onLogout }) {
                 { done: false, label: 'Set CRAWL_SECRET in Vercel env vars', detail: 'Protects POST /api/crawl endpoint' },
                 { done: false, label: 'Set ADMIN_SECRET in Vercel env vars', detail: 'Protects /api/admin/* endpoints' },
                 { done: false, label: 'Trigger first crawl', detail: 'POST /api/crawl — ingests Tampa Downtown Partnership' },
-                { done: false, label: 'Add GETYOURGUIDE_PARTNER_ID env var', detail: 'Get from partner.getyourguide.com' },
-                { done: false, label: 'Add VIATOR_AFFILIATE_ID env var', detail: 'Get from partnerresources.viator.com' },
+                { done: true,  label: 'Add GETYOURGUIDE_PARTNER_ID', detail: 'ID: 0G4LDMJ' },
+                { done: true,  label: 'Add VIATOR_AFFILIATE_ID', detail: 'ID: P00292624' },
               ].map((item, i) => (
                 <div key={i} className={styles.checkItem}>
                   <span className={styles.checkIcon}>{item.done ? '✅' : '⏳'}</span>
@@ -554,7 +554,7 @@ function Dashboard({ onLogout }) {
                 ['NEXT_PUBLIC_ADMIN_PASSWORD', 'Admin panel UI password'],
                 ['FEATURED_VENDOR_NAME', 'Featured partner display name'],
                 ['FEATURED_VENDOR_URL', 'Featured partner booking URL'],
-                ['GETYOURGUIDE_PARTNER_ID', 'GYG affiliate partner ID'],
+                ['GETYOURGUIDE_PARTNER_ID', 'GYG affiliate ID (Optional)'],
                 ['VIATOR_AFFILIATE_ID', 'Viator MCID (or VIATOR_PARTNER_ID)'],
               ].map(([k, v]) => (
                 <div key={k} className={styles.envRow}>
