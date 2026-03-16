@@ -1,10 +1,10 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import SearchBar   from '@/components/SearchBar';
-import ResultCard  from '@/components/ResultCard';
-import SourceGroup from '@/components/SourceGroup';
+import SearchBar    from '@/components/SearchBar';
+import SourceGroup  from '@/components/SourceGroup';
 import SkeletonCard from '@/components/SkeletonCard';
-import styles      from './page.module.css';
+import ViatorWidget from '@/components/ViatorWidget';
+import styles       from './page.module.css';
 
 // Quick-tap category tiles — mapped to ACTUAL DB categories
 const QUICK_CATS = [
@@ -100,12 +100,24 @@ export default function Home() {
   return (
     <div className={styles.page}>
 
-      {/* ── Slim Sticky Navbar ── */}
       <header className={styles.navbar}>
         <div className={styles.navInner}>
           <a href="/" className={styles.logoLink} aria-label="City Tour Guide">
             <img src="/logo.png" alt="City Tour Guide" className={styles.logoImg} />
           </a>
+
+          {/* Partner ad slot — between logo and city picker */}
+          <a
+            href="https://www.viator.com/Tampa/d663?pid=P00292624&mcid=42383&medium=link"
+            target="_blank" rel="noopener noreferrer"
+            className={styles.navBannerAd}
+            aria-label="Sponsored: Book Tampa tours"
+          >
+            <span className={styles.navBannerAdLabel}>✦ Sponsored</span>
+            <span className={styles.navBannerAdText}>Book Tampa Bay Tours &amp; Experiences</span>
+            <span className={styles.navBannerAdCta}>Book Now →</span>
+          </a>
+
           <div className={styles.cityPill}>
             <span>📍</span>
             <select
@@ -133,6 +145,20 @@ export default function Home() {
         )}
 
         <div className={styles.heroContent}>
+          {!hasSearched && (
+            /* ── TOP PREMIUM BANNER ── */
+            <a
+              href="https://www.viator.com/Tampa/d663?pid=P00292624&mcid=42383&medium=link"
+              target="_blank" rel="noopener noreferrer"
+              className={styles.topBanner}
+              aria-label="Sponsored: Book Tampa tours on Viator"
+            >
+              <span className={styles.topBannerLabel}>✨ Sponsored</span>
+              <span className={styles.topBannerText}>Book Tampa Bay Tours &amp; Experiences on Viator</span>
+              <span className={styles.topBannerCta}>Book Now →</span>
+            </a>
+          )}
+
           {!hasSearched && (
             <>
               <p className={styles.eyebrow}>Your City. Your Guide.</p>
@@ -162,6 +188,27 @@ export default function Home() {
                   <span className={styles.quickLabel}>{tile.label}</span>
                 </button>
               ))}
+            </div>
+          )}
+
+          {/* ── BOTTOM FEATURED VIATOR BANNER ── */}
+          {!hasSearched && (
+            <div className={styles.featuredBanner}>
+              <p className={styles.featuredBannerTitle}>🏆 Featured Tampa Experiences</p>
+              <div className={styles.featuredCards}>
+                {[
+                  { emoji: '🚤', label: 'Sunset Cruise',   href: 'https://www.viator.com/Tampa-Bay/d663-g15953/tours-cruises?pid=P00292624&mcid=42383&medium=link' },
+                  { emoji: '🐊', label: 'Zoo & Wildlife',  href: 'https://www.viator.com/Tampa/d663-g3/tours-nature?pid=P00292624&mcid=42383&medium=link' },
+                  { emoji: '🏙', label: 'City Tours',      href: 'https://www.viator.com/Tampa/d663-g9/tours-city?pid=P00292624&mcid=42383&medium=link' },
+                  { emoji: '🎭', label: 'Events & Shows',  href: 'https://www.viator.com/Tampa/d663-g12/tours-shows?pid=P00292624&mcid=42383&medium=link' },
+                ].map(({ emoji, label, href }) => (
+                  <a key={label} href={href} target="_blank" rel="noopener noreferrer" className={styles.featuredCard}>
+                    <span className={styles.featuredEmoji}>{emoji}</span>
+                    <span className={styles.featuredLabel}>{label}</span>
+                  </a>
+                ))}
+              </div>
+              <p className={styles.featuredDisclaimer}>Powered by Viator · Affiliate links</p>
             </div>
           )}
 
@@ -225,26 +272,8 @@ export default function Home() {
         )}
       </main>
 
-      {/* ── Sticky bottom bar ── */}
+      {/* ── Footer bar ── */}
       <div className={styles.bottomBar}>
-        <div className={styles.appLinks}>
-          <a href="https://play.google.com/store/apps/details?id=com.mytoursapp.android.app7801"
-             target="_blank" rel="noopener noreferrer" className={styles.appBtn}>
-            <svg width="14" height="16" viewBox="0 0 24 27" fill="none" aria-hidden="true">
-              <path d="M1.5 0.5L13.5 13.5L1.5 26.5C0.7 26.1 0 25.1 0 23.9V3.1C0 1.9 0.7 0.9 1.5 0.5Z" fill="#EA4335"/>
-              <path d="M20 9L13.5 13.5L20 18L23.3 16.1C24.2 15.6 24.2 14.4 23.3 13.9L20 9Z" fill="#FBBC04"/>
-              <path d="M1.5 0.5L13.5 13.5L20 9L4.5 0.1C3.5 -0.4 2.3 -0.1 1.5 0.5Z" fill="#4285F4"/>
-              <path d="M1.5 26.5L13.5 13.5L20 18L4.5 26.9C3.5 27.4 2.3 27.1 1.5 26.5Z" fill="#34A853"/>
-            </svg>
-            <span><small>GET IT ON</small><strong>Google Play</strong></span>
-          </a>
-          <a href="https://citytourguide.stqry.app/" target="_blank" rel="noopener noreferrer" className={styles.appBtn}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4" ry="10"/><path d="M2 12h20"/>
-            </svg>
-            <span><small>OPEN</small><strong>Web App</strong></span>
-          </a>
-        </div>
         <nav className={styles.footerNav}>
           <span>© 2026 City Tour Guide, Inc.</span>
           <a href="/partner">Partner</a>
