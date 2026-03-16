@@ -3,19 +3,24 @@ import { NextResponse } from 'next/server';
 import { getAdminClient } from '@/lib/supabase';
 import { crawlSource }    from '@/lib/crawler';
 import { extractPage }    from '@/lib/extractor';
+import { cookies }        from 'next/headers';
 import SOURCES            from '@/lib/trusted-sources.json';
 
 const MAX_PAGES_PER_SOURCE = 60;
 
-function authCheck(req) {
+async function authCheck(req) {
   const s = process.env.CRAWL_SECRET || process.env.ADMIN_SECRET || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
   const hCrawl = req.headers.get('x-crawl-secret');
   const hAdmin = req.headers.get('x-admin-secret');
-  return hCrawl === s || hAdmin === s;
+  if (hCrawl === s || hAdmin === s) return true;
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get('ctg_admin_auth')?.value;
+  return token === s;
 }
 
 export async function POST(request) {
-  if (!authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!await authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const admin = getAdminClient();
   if (!admin) return NextResponse.json({ error: 'DB admin not configured. Set SUPABASE_SERVICE_ROLE_KEY.' }, { status: 503 });
