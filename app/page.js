@@ -1,58 +1,44 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import SearchBar        from '@/components/SearchBar';
-import ResultCard       from '@/components/ResultCard';
-import SourceGroup      from '@/components/SourceGroup';
-import SkeletonCard     from '@/components/SkeletonCard';
-import FilterDropdowns  from '@/components/FilterDropdowns';
-import styles           from './page.module.css';
+import SearchBar   from '@/components/SearchBar';
+import ResultCard  from '@/components/ResultCard';
+import SourceGroup from '@/components/SourceGroup';
+import SkeletonCard from '@/components/SkeletonCard';
+import styles      from './page.module.css';
 
+// Quick-tap category tiles shown in the hero
+const QUICK_CATS = [
+  { icon: '🎟', label: 'Events',           cat: 'Events' },
+  { icon: '🍽', label: 'Dining',           cat: 'Food' },
+  { icon: '🏛', label: 'Tours',            cat: 'Tours & Activities' },
+  { icon: '🎵', label: 'Nightlife',        cat: 'Nightlife' },
+  { icon: '🎨', label: 'Arts & Culture',   cat: 'Arts & Culture' },
+  { icon: '👨‍👩‍👧', label: 'Family',           cat: 'Family & Attractions' },
+  { icon: '🆓', label: 'Free',             cat: 'Free' },
+  { icon: '🛍', label: 'Shopping',         cat: 'Shopping' },
+];
 
 export default function Home() {
-  const [query,        setQuery]        = useState('');
-  const [results,      setResults]      = useState([]);
-  const [loading,      setLoading]      = useState(false);
-  const [hasSearched,  setHasSearched]  = useState(false);
-  const [meta,         setMeta]         = useState({ categories: [], areas: [] });
-  const [category,     setCategory]     = useState('');
-  const [area,         setArea]         = useState('');
-  const [dateFilter,   setDateFilter]   = useState('');
-  const [featuredItems,setFeaturedItems]= useState([]);
+  const [query,       setQuery]       = useState('');
+  const [results,     setResults]     = useState([]);
+  const [loading,     setLoading]     = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [category,    setCategory]    = useState('');
+  const [area,        setArea]        = useState('');
+  const [dateFilter,  setDateFilter]  = useState('');
+  const [activeQuick, setActiveQuick] = useState('');
   const resultsRef = useRef(null);
 
-  // Load meta once
-  useEffect(() => {
-    fetch('/api/search/meta')
-      .then(r => r.json())
-      .then(data => setMeta(data))
-      .catch(() => {});
-  }, []);
-
-  // Load featured items once for the landing page
-  useEffect(() => {
-    fetch('/api/search?listing_type=featured&limit=3')
-      .then(r => r.json())
-      .then(data => {
-        const featured = (data.results || []).filter(r =>
-          r.listing_type === 'featured' || r.listing_type === 'partner'
-        );
-        setFeaturedItems(featured);
-      })
-      .catch(() => {});
-  }, []);
-
-  const fetchResults = useCallback(async (q = '', cat = '', date = '') => {
+  const fetchResults = useCallback(async (q = '', cat = '', date = '', ar = '') => {
     setLoading(true);
     setHasSearched(true);
-    // Scroll to results after a short delay (let render happen first)
-    setTimeout(() => {
-      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 150);
+    setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     try {
       const params = new URLSearchParams({ limit: '300' });
-      if (q)    params.set('q',        q);
+      if (q)    params.set('q', q);
       if (cat)  params.set('category', cat);
-      if (date) params.set('date',     date);
+      if (date) params.set('date', date);
+      if (ar)   params.set('area', ar);
       const res  = await fetch(`/api/search?${params}`);
       const data = await res.json();
       setResults(data.results || []);
@@ -65,242 +51,182 @@ export default function Home() {
 
   function handleSearch(q) {
     setQuery(q);
-    if (q.trim()) {
-      fetchResults(q, category, dateFilter);
-    } else if (category || dateFilter) {
-      fetchResults('', category, dateFilter);
+    setActiveQuick('');
+    if (q.trim() || category || dateFilter) {
+      fetchResults(q, category, dateFilter, area);
     } else {
-      // Cleared search with no filters — go back to landing
       setHasSearched(false);
       setResults([]);
     }
   }
 
-  function applyPrompt(prompt) {
-    setQuery(prompt.q || '');
-    setDateFilter(prompt.date || '');
-    setCategory(prompt.category || '');
-    fetchResults(prompt.q || '', prompt.category || '', prompt.date || '');
-  }
-
-  function applyFilter({ category: cat, area: ar, date }) {
-    const nextCat  = cat  !== undefined ? cat  : category;
-    const nextDate = date !== undefined ? date : dateFilter;
-    if (cat  !== undefined) setCategory(cat);
-    if (ar   !== undefined) setArea(ar || '');
-    if (date !== undefined) setDateFilter(date);
-    fetchResults(query, nextCat, nextDate);
-  }
-
-  function applyCategory(cat) {
-    setCategory(cat);
-    if (cat || query || dateFilter) {
-      fetchResults(query, cat, dateFilter);
-    }
-  }
-
-  function applyDate(date) {
-    setDateFilter(date);
-    if (date || query || category) {
-      fetchResults(query, category, date);
+  function pickCategory(cat, label) {
+    const next = activeQuick === label ? '' : label;
+    const nextCat = activeQuick === label ? '' : cat;
+    setActiveQuick(next);
+    setCategory(nextCat);
+    setQuery('');
+    if (nextCat) {
+      fetchResults('', nextCat, dateFilter, area);
+    } else {
+      setHasSearched(false);
+      setResults([]);
     }
   }
 
   function clearAll() {
-    setQuery(''); setCategory(''); setDateFilter('');
-    setHasSearched(false); setResults([]);
+    setQuery(''); setCategory(''); setDateFilter(''); setArea('');
+    setHasSearched(false); setResults([]); setActiveQuick('');
   }
 
-  // Split featured vs standard
-  const featured  = hasSearched ? results.filter(r => r.listing_type === 'featured' || r.listing_type === 'partner') : [];
-  const standard  = hasSearched ? results.filter(r => !r.listing_type || r.listing_type === 'standard') : [];
-
-  // Always group by SOURCE, then by CATEGORY within each source
-  // This prevents the same source from appearing multiple times
+  // Group results by source
   const sourceGroups = {};
-  for (const item of standard) {
-    const srcKey = item.source_name || 'Other';
-    if (!sourceGroups[srcKey]) {
-      sourceGroups[srcKey] = { items: [], domain: item.source_domain, categories: {} };
-    }
-    sourceGroups[srcKey].items.push(item);
-    const cat = item.category || 'Other';
-    if (!sourceGroups[srcKey].categories[cat]) sourceGroups[srcKey].categories[cat] = [];
-    sourceGroups[srcKey].categories[cat].push(item);
+  for (const item of results) {
+    const key = item.source_name || 'Other';
+    if (!sourceGroups[key]) sourceGroups[key] = { items: [], domain: item.source_domain, categories: {} };
+    sourceGroups[key].items.push(item);
+    const c = item.category || 'Other';
+    if (!sourceGroups[key].categories[c]) sourceGroups[key].categories[c] = [];
+    sourceGroups[key].categories[c].push(item);
   }
-  const groupEntries = Object.entries(sourceGroups)
-    .sort(([, a], [, b]) => b.items.length - a.items.length);
+  const groupEntries = Object.entries(sourceGroups).sort(([, a], [, b]) => b.items.length - a.items.length);
 
   const today = new Date().toISOString().slice(0, 10);
 
   return (
     <div className={styles.page}>
 
-      {/* ── Sticky 3-col Navbar ──────────────────────────────────── */}
+      {/* ── Slim Sticky Navbar ── */}
       <header className={styles.navbar}>
         <div className={styles.navInner}>
-          <a href="/" className={styles.logoLink} aria-label="City Tour Guide home">
+          <a href="/" className={styles.logoLink} aria-label="City Tour Guide">
             <img src="/logo.png" alt="City Tour Guide" className={styles.logoImg} />
           </a>
+          <div className={styles.cityPill}>
+            <span>📍</span>
+            <select
+              className={styles.citySelect}
+              defaultValue="tampa"
+              onChange={e => { if (e.target.value !== 'tampa') { alert('More cities coming soon!'); e.target.value = 'tampa'; } }}
+              aria-label="Select city"
+            >
+              <option value="tampa">Tampa, FL</option>
+              <option value="stpete" disabled>St. Pete — Soon</option>
+              <option value="orlando" disabled>Orlando — Soon</option>
+            </select>
+            <span className={styles.chevron}>▾</span>
+          </div>
         </div>
       </header>
 
-      {/* ── Landing Hero — blue section, always visible ── */}
+      {/* ── Hero — full-viewport immersive ── */}
       <section className={`${styles.hero} ${hasSearched ? styles.heroCompact : ''}`}>
-        {/* Ambient glow orbs for visual richness */}
         {!hasSearched && (
           <>
-            <div className={styles.glowOrb1} aria-hidden="true" />
-            <div className={styles.glowOrb2} aria-hidden="true" />
+            <div className={styles.orb1} aria-hidden="true" />
+            <div className={styles.orb2} aria-hidden="true" />
           </>
         )}
-        <div className={styles.container}>
+
+        <div className={styles.heroContent}>
           {!hasSearched && (
             <>
-              <p className={styles.heroEyebrow}>Your City. Your Guide.</p>
-              <h1 className={styles.heroTitle}>Discover What&apos;s Happening</h1>
-              <p className={styles.heroSub}>Events, activities &amp; things to do in Tampa. Updated daily.</p>
+              <p className={styles.eyebrow}>Your City. Your Guide.</p>
+              <h1 className={styles.headline}>Discover What&apos;s<br />Happening</h1>
+              <p className={styles.subline}>Events, dining, tours &amp; nightlife in Tampa Bay</p>
             </>
           )}
 
-          {/* City picker — always visible in hero, above search */}
-          <div className={styles.heroCityRow}>
-            <div className={styles.cityPicker}>
-              <span className={styles.cityPickerPin}>📍</span>
-              <select
-                className={styles.cityPickerSelect}
-                defaultValue="tampa"
-                onChange={e => {
-                  if (e.target.value !== 'tampa') {
-                    alert('More cities coming soon!');
-                    e.target.value = 'tampa';
-                  }
-                }}
-                aria-label="Select city"
-              >
-                <option value="tampa">Tampa, FL</option>
-                <option value="stpete" disabled>St. Pete, FL — Coming Soon</option>
-                <option value="orlando" disabled>Orlando, FL — Coming Soon</option>
-                <option value="miami" disabled>Miami, FL — Coming Soon</option>
-              </select>
-              <span className={styles.cityPickerChevron}>▾</span>
-            </div>
-          </div>
-
-          {/* Search — always in hero */}
-          <div className={styles.heroSearchRow}>
-            <div className={styles.heroSearch}>
-              <SearchBar onSearch={handleSearch} loading={loading} initValue={query} />
-            </div>
+          {/* Search bar */}
+          <div className={styles.searchWrap}>
+            <SearchBar onSearch={handleSearch} loading={loading} initValue={query} />
             {hasSearched && (
-              <button className={styles.backToBrowse} onClick={clearAll} aria-label="Back to browse">
-                ← Browse All
-              </button>
+              <button className={styles.clearBtn} onClick={clearAll} aria-label="Back">← Back</button>
             )}
           </div>
 
-          {/* Filter Dropdowns — always visible in both states */}
-          <FilterDropdowns onFilter={applyFilter} />
-        </div>
-      </section>
-
-      {/* ── Main ────────────────────────────────────────────────── */}
-      <main className={styles.main} ref={resultsRef}>
-        <div className={styles.container}>
-
-          {/* ══ LANDING STATE — featured only (filters moved to hero) ════ */}
-          {!hasSearched && featuredItems.length > 0 && (
-            <div className={styles.landing}>
-              <p className={styles.landingLabel}>⭐ Featured</p>
-              <div className={styles.grid}>
-                {featuredItems.map(item => (
-                  <ResultCard key={item.id} item={item} />
-                ))}
-              </div>
-              <p className={styles.landingCredit}>
-                Listings sourced from verified Tampa Bay partners. All links go to original sources.
-              </p>
+          {/* Quick-tap category tiles — only on landing */}
+          {!hasSearched && (
+            <div className={styles.quickGrid}>
+              {QUICK_CATS.map(c => (
+                <button
+                  key={c.label}
+                  className={`${styles.quickTile} ${activeQuick === c.label ? styles.quickActive : ''}`}
+                  onClick={() => pickCategory(c.cat, c.label)}
+                >
+                  <span className={styles.quickIcon}>{c.icon}</span>
+                  <span className={styles.quickLabel}>{c.label}</span>
+                </button>
+              ))}
             </div>
           )}
 
-          {/* ══ RESULTS STATE ═══════════════════════════════════════ */}
+          {/* Date filters when results are shown */}
           {hasSearched && (
-            <>
-              {/* Skeleton loading */}
-              {loading && (
-                <div className={styles.groupGrid}>
-                  {[1,2,3,4,5,6].map(i => <SkeletonCard key={i} />)}
-                </div>
-              )}
-              {/* Count */}
-              {!loading && (
-                <p className={styles.resultCount}>
-                  {query ? `"${query}"` : category || 'All listings'}
-                  {' · '}<strong>{results.length}</strong> result{results.length !== 1 ? 's' : ''}
-                  {groupEntries.length > 0 && ` · ${groupEntries.length} source${groupEntries.length !== 1 ? 's' : ''}`}
-                  <button className={styles.clearLink} onClick={clearAll}> · clear</button>
-                </p>
-              )}
-
-              {/* Featured cards */}
-              {featured.length > 0 && (
-                <section className={styles.featuredSection}>
-                  <div className={styles.featuredLabel}>⭐ Featured</div>
-                  <div className={styles.grid}>
-                    {featured.map(item => <ResultCard key={item.id} item={item} />)}
-                  </div>
-                </section>
-              )}
-
-              {/* Grouped results */}
-              {loading ? (
-                <div className={styles.loadingList}>
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className={styles.skeletonCard}>
-                      <div className={styles.skeletonHeader} />
-                      <div className={styles.skeletonRow} style={{ width: '75%' }} />
-                      <div className={styles.skeletonRow} style={{ width: '60%' }} />
-                    </div>
-                  ))}
-                </div>
-              ) : groupEntries.length > 0 ? (
-                <div className={styles.groupGrid}>
-                  {groupEntries.map(([groupKey, { items: srcItems, domain, categories: cats }]) => (
-                    <SourceGroup key={groupKey}
-                      sourceName={groupKey}
-                      domain={domain} categories={cats} items={srcItems} />
-                  ))}
-                </div>
-              ) : (
-                <div className={styles.empty}>
-                  <span className={styles.emptyIcon}>🔍</span>
-                  <p>No results found{query ? ` for "${query}"` : ''}.</p>
-                  <button className={styles.clearBtn} onClick={clearAll}>Try a different search</button>
-                </div>
-              )}
-
-              {/* Compliance */}
-              {results.length > 0 && (
-                <p className={styles.complianceNote}>
-                  Listings aggregated from verified local sources for discovery purposes. All links go to original third-party sites.
-                  City Tour Guide is not affiliated with listed sources.
-                  {featured.some(r => r.is_monetized) ? ' Featured listings may generate commissions.' : ''}
-                </p>
-              )}
-            </>
+            <div className={styles.dateBar}>
+              {['', 'today', 'weekend'].map((d, i) => (
+                <button key={i}
+                  className={`${styles.dateChip} ${dateFilter === d ? styles.dateChipActive : ''}`}
+                  onClick={() => { setDateFilter(d); fetchResults(query, category, d, area); }}>
+                  {d === '' ? 'Any date' : d === 'today' ? 'Today' : 'This Weekend'}
+                </button>
+              ))}
+              <input type="date" className={styles.datePicker} min={today}
+                onChange={e => { setDateFilter(e.target.value); fetchResults(query, category, e.target.value, area); }} />
+            </div>
           )}
-
         </div>
+      </section>
+
+      {/* ── Results ── */}
+      <main className={styles.main} ref={resultsRef}>
+        {hasSearched && (
+          <div className={styles.container}>
+            {loading && (
+              <div className={styles.groupGrid}>
+                {[1,2,3,4].map(i => <SkeletonCard key={i} />)}
+              </div>
+            )}
+            {!loading && (
+              <>
+                <p className={styles.resultMeta}>
+                  {activeQuick || (query ? `"${query}"` : 'All')}
+                  {' · '}<strong>{results.length}</strong> result{results.length !== 1 ? 's' : ''}
+                  {groupEntries.length > 1 && ` · ${groupEntries.length} sources`}
+                  <button className={styles.clearInline} onClick={clearAll}> · clear</button>
+                </p>
+
+                {groupEntries.length > 0 ? (
+                  <div className={styles.groupGrid}>
+                    {groupEntries.map(([key, { items: srcItems, domain, categories: cats }]) => (
+                      <SourceGroup key={key} sourceName={key} domain={domain} categories={cats} items={srcItems} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className={styles.empty}>
+                    <span>🔍</span>
+                    <p>No results found{query ? ` for "${query}"` : ''}.</p>
+                    <button onClick={clearAll}>Try something else</button>
+                  </div>
+                )}
+
+                {results.length > 0 && (
+                  <p className={styles.compliance}>
+                    Listings aggregated from verified local sources. All links go to original third-party sites. City Tour Guide is not affiliated with listed sources.
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+        )}
       </main>
 
-      {/* ── Sticky Bottom Bar ────────────────────────────────────────── */}
-      <div className={styles.stickyBar}>
-        <div className={styles.stickyBadges}>
-          {/* Google Play */}
+      {/* ── Sticky bottom bar ── */}
+      <div className={styles.bottomBar}>
+        <div className={styles.appLinks}>
           <a href="https://play.google.com/store/apps/details?id=com.mytoursapp.android.app7801"
-             target="_blank" rel="noopener noreferrer"
-             className={styles.stickyBadge} aria-label="Get it on Google Play">
-            <svg width="16" height="18" viewBox="0 0 24 27" fill="none" aria-hidden="true">
+             target="_blank" rel="noopener noreferrer" className={styles.appBtn}>
+            <svg width="14" height="16" viewBox="0 0 24 27" fill="none" aria-hidden="true">
               <path d="M1.5 0.5L13.5 13.5L1.5 26.5C0.7 26.1 0 25.1 0 23.9V3.1C0 1.9 0.7 0.9 1.5 0.5Z" fill="#EA4335"/>
               <path d="M20 9L13.5 13.5L20 18L23.3 16.1C24.2 15.6 24.2 14.4 23.3 13.9L20 9Z" fill="#FBBC04"/>
               <path d="M1.5 0.5L13.5 13.5L20 9L4.5 0.1C3.5 -0.4 2.3 -0.1 1.5 0.5Z" fill="#4285F4"/>
@@ -308,34 +234,20 @@ export default function Home() {
             </svg>
             <span><small>GET IT ON</small><strong>Google Play</strong></span>
           </a>
-
-          {/* Web App */}
-          <a href="https://citytourguide.stqry.app/" target="_blank" rel="noopener noreferrer"
-             className={styles.stickyBadge} aria-label="Open Web App">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4" ry="10"/>
-              <path d="M2 12h20"/>
+          <a href="https://citytourguide.stqry.app/" target="_blank" rel="noopener noreferrer" className={styles.appBtn}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4" ry="10"/><path d="M2 12h20"/>
             </svg>
             <span><small>OPEN</small><strong>Web App</strong></span>
           </a>
-
-          {/* App Store */}
-          <span className={`${styles.stickyBadge} ${styles.stickyBadgeDim}`} title="Coming soon to iOS">
-            <svg width="14" height="17" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true">
-              <path d="M814 700c-3 130-100 210-150 230-80 30-150-20-200-20s-110 25-195 25C180 935 0 760 0 555c0-180 115-270 225-275 85-5 165 55 215 55s130-65 225-55c38 2 145 15 215 120-190 115-160 330 35 300zm-280-460c-5-90 75-175 165-185 15 110-95 200-165 185z"/>
-            </svg>
-            <span><small>COMING SOON</small><strong>App Store</strong></span>
-          </span>
         </div>
-
-        <div className={styles.stickyLinks}>
+        <nav className={styles.footerNav}>
           <span>© 2026 City Tour Guide, Inc.</span>
           <a href="/partner">Partner</a>
           <a href="/disclaimer">Disclaimer</a>
           <a href="/privacy">Privacy</a>
           <a href="/terms">Terms</a>
-          <a href="mailto:info@citytourguideinc.com">Contact</a>
-        </div>
+        </nav>
       </div>
     </div>
   );
