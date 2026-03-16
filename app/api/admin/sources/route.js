@@ -4,16 +4,21 @@
 // PATCH /api/admin/sources — toggle active status
 import { NextResponse } from 'next/server';
 import { getAdminClient } from '@/lib/supabase';
+import { cookies } from 'next/headers';
 
-function authCheck(request) {
+async function authCheck(request) {
   const secret = process.env.ADMIN_SECRET || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
   const h = request.headers.get('x-admin-secret');
   const q = new URL(request.url).searchParams.get('key');
-  return h === secret || q === secret;
+  if (h === secret || q === secret) return true;
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get('ctg_admin_auth')?.value;
+  return token === secret;
 }
 
 export async function GET(request) {
-  if (!authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!await authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const admin = getAdminClient();
   if (!admin) return NextResponse.json({ error: 'DB not configured' }, { status: 503 });
 
@@ -43,7 +48,7 @@ export async function GET(request) {
 }
 
 export async function PATCH(request) {
-  if (!authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!await authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const admin = getAdminClient();
   if (!admin) return NextResponse.json({ error: 'DB not configured' }, { status: 503 });
 
@@ -67,7 +72,7 @@ export async function PATCH(request) {
 }
 
 export async function POST(request) {
-  if (!authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!await authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const admin = getAdminClient();
   if (!admin) return NextResponse.json({ error: 'DB not configured' }, { status: 503 });
 

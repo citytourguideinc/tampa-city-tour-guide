@@ -527,8 +527,8 @@ function Dashboard({ onLogout }) {
                 { done: true,  label: 'Import tampa_new_sources_fixed.csv', detail: '96 rows imported into Tampa Resources table' },
                 { done: true,  label: 'Run Supabase SQL for trusted engine', detail: 'scripts/setup-trusted-engine.sql — enabled crawler storage' },
                 { done: true,  label: 'Run add_learning_cols.sql', detail: 'Enabled System Learning for neighborhoods/categories' },
-                { done: false, label: 'Set CRAWL_SECRET in Vercel env vars', detail: 'Protects POST /api/crawl endpoint' },
-                { done: false, label: 'Set ADMIN_SECRET in Vercel env vars', detail: 'Protects /api/admin/* endpoints' },
+                { done: true,  label: 'Set CRAWL_SECRET in Vercel env vars', detail: 'Protects POST /api/crawl endpoint' },
+                { done: true,  label: 'Set ADMIN_SECRET in Vercel env vars', detail: 'Protects /api/admin/* endpoints' },
                 { done: false, label: 'Trigger first crawl', detail: 'POST /api/crawl — ingests Tampa Downtown Partnership' },
                 { done: true,  label: 'Add GETYOURGUIDE_PARTNER_ID', detail: 'ID: 0G4LDMJ' },
                 { done: true,  label: 'Add VIATOR_AFFILIATE_ID', detail: 'ID: P00292624' },
@@ -625,7 +625,7 @@ function Dashboard({ onLogout }) {
 
                 {tampaLoading ? <p className={styles.muted}>Loading…</p> : (
                   <div className={styles.table}>
-                    <div className={styles.thead} style={{gridTemplateColumns:'1.5fr 1fr 1fr 1fr 0.5fr 0.8fr 0.8fr'}}>
+                    <div className={styles.thead} style={{gridTemplateColumns:'1.5fr 1fr 1fr 0.5fr 0.8fr 0.8fr'}}>
                       <span>Name / Areas</span>
                       <span>Category</span>
                       <span>URL</span>
@@ -634,7 +634,7 @@ function Dashboard({ onLogout }) {
                       <span>Status</span>
                     </div>
                     {tampaSources.map(r => (
-                      <div key={r.tables_record_id} className={styles.trow} style={{gridTemplateColumns:'1.5fr 1fr 1fr 1fr 0.5fr 0.8fr 0.8fr'}}>
+                      <div key={r.tables_record_id} className={styles.trow} style={{gridTemplateColumns:'1.5fr 1fr 1fr 0.5fr 0.8fr 0.8fr'}}>
                         <span style={{display:'flex', flexDirection:'column', gap:4}}>
                           <input className={styles.inputCompact} value={r.Resource || ''} 
                             onChange={e => updateTampaSource(r.tables_record_id, { Resource: e.target.value })}

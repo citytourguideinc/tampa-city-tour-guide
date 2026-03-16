@@ -6,19 +6,24 @@
 
 import { getAdminClient } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 const TABLE   = 'Tampa Resources';
 const CANDS   = 'source_candidates';
 const SECRET  = process.env.ADMIN_SECRET || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
 
-function auth(req) {
+async function auth(req) {
   const h = req.headers.get('x-admin-secret');
-  return h === SECRET;
+  if (h === SECRET) return true;
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get('ctg_admin_auth')?.value;
+  return token === SECRET;
 }
 
 // ── GET ──────────────────────────────────────────────────────────────────────
 export async function GET(req) {
-  if (!auth(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!await auth(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const supabase = getAdminClient();
   if (!supabase)  return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
@@ -69,7 +74,7 @@ export async function GET(req) {
 
 // ── PATCH — update a Tampa Resources record ───────────────────────────────────
 export async function PATCH(req) {
-  if (!auth(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!await auth(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const supabase = getAdminClient();
   if (!supabase)  return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
@@ -113,7 +118,7 @@ export async function PATCH(req) {
 
 // ── POST — approve or reject a source_candidate ───────────────────────────────
 export async function POST(req) {
-  if (!auth(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!await auth(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const supabase = getAdminClient();
   if (!supabase)  return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
