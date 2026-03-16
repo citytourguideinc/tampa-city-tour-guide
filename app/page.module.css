@@ -13,10 +13,10 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 28px;
-  height: 110px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  height: 72px;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 20px;
 }
 
@@ -28,28 +28,27 @@
   justify-self: start;
 }
 .logoImg {
-  height: 100px;
+  height: 64px;
   width: auto;
   display: block;
   object-fit: contain;
 }
 
-/* CENTER — City picker pill */
+/* City picker pill — used inside hero */
 .cityPicker {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(0,102,204,0.06);
-  border: 1.5px solid rgba(0,102,204,0.2);
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.2);
   border-radius: 999px;
-  padding: 8px 14px 8px 12px;
+  padding: 6px 14px 6px 12px;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
-  justify-self: center;
 }
 .cityPicker:hover {
-  background: rgba(0,102,204,0.1);
-  border-color: rgba(0,102,204,0.35);
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.35);
 }
 .cityPickerPin { font-size: 0.9rem; line-height: 1; }
 .cityPickerSelect {
@@ -58,9 +57,9 @@
   background: transparent;
   border: none;
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 700;
-  color: #0066CC;
+  color: #fff;
   cursor: pointer;
   padding: 0 16px 0 4px;
   outline: none;
@@ -69,7 +68,7 @@
 }
 .cityPickerChevron {
   font-size: 0.7rem;
-  color: #0066CC;
+  color: rgba(255,255,255,0.7);
   pointer-events: none;
   margin-left: -14px;
   flex-shrink: 0;
@@ -77,11 +76,23 @@
 
 /* RIGHT — nav search (compact results mode) */
 .navSearch {
-  justify-self: end;
-  width: 100%;
-  max-width: 360px;
+  flex: 1;
+  max-width: 400px;
 }
-.navRightSpacer { justify-self: end; }
+.navRightSpacer { width: 40px; }
+
+/* ── City row in hero (above search bar) ────────────── */
+.heroCityRow {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
+}
+.heroCompact .heroCityRow {
+  margin-bottom: 10px;
+  justify-content: flex-start;
+}
 
 /* ── Hero section ─────────────────────────────────────────────── */
 .hero {

@@ -144,30 +144,6 @@ export default function Home() {
             <img src="/logo.png" alt="City Tour Guide" className={styles.logoImg} />
           </a>
 
-          {/* CENTER — City / Region Picker */}
-          <div className={styles.cityPicker}>
-            <span className={styles.cityPickerPin}>📍</span>
-            <select
-              className={styles.cityPickerSelect}
-              defaultValue="tampa"
-              onChange={e => {
-                if (e.target.value !== 'tampa') {
-                  alert('More cities coming soon!');
-                  e.target.value = 'tampa';
-                }
-              }}
-              aria-label="Select city or region"
-            >
-              <option value="tampa">Tampa, FL</option>
-              <option value="stpete" disabled>St. Pete, FL — Coming Soon</option>
-              <option value="orlando" disabled>Orlando, FL — Coming Soon</option>
-              <option value="miami" disabled>Miami, FL — Coming Soon</option>
-              <option value="nyc" disabled>New York, NY — Coming Soon</option>
-              <option value="la" disabled>Los Angeles, CA — Coming Soon</option>
-            </select>
-            <span className={styles.cityPickerChevron}>▾</span>
-          </div>
-
           {hasSearched && (
             <div className={styles.navSearch}>
               <SearchBar onSearch={handleSearch} loading={loading} initValue={query} />
@@ -188,6 +164,30 @@ export default function Home() {
               <p className={styles.heroSub}>Events, activities &amp; things to do. Updated daily.</p>
             </>
           )}
+
+          {/* City picker — always visible in hero, above search */}
+          <div className={styles.heroCityRow}>
+            <div className={styles.cityPicker}>
+              <span className={styles.cityPickerPin}>📍</span>
+              <select
+                className={styles.cityPickerSelect}
+                defaultValue="tampa"
+                onChange={e => {
+                  if (e.target.value !== 'tampa') {
+                    alert('More cities coming soon!');
+                    e.target.value = 'tampa';
+                  }
+                }}
+                aria-label="Select city"
+              >
+                <option value="tampa">Tampa, FL</option>
+                <option value="stpete" disabled>St. Pete, FL — Coming Soon</option>
+                <option value="orlando" disabled>Orlando, FL — Coming Soon</option>
+                <option value="miami" disabled>Miami, FL — Coming Soon</option>
+              </select>
+              <span className={styles.cityPickerChevron}>▾</span>
+            </div>
+          </div>
 
           {/* Search — always in hero */}
           <div className={styles.heroSearchRow}>
@@ -234,33 +234,6 @@ export default function Home() {
                   {[1,2,3,4,5,6].map(i => <SkeletonCard key={i} />)}
                 </div>
               )}
-              {/* Filters */}
-              <div className={styles.filterRow}>
-                <div className={styles.filterPills}>
-                  <button className={`${styles.pill} ${!category ? styles.pillActive : ''}`}
-                    onClick={() => applyCategory('')}>All</button>
-                  {meta.categories.map(cat => (
-                    <button key={cat.name}
-                      className={`${styles.pill} ${category === cat.name ? styles.pillActive : ''}`}
-                      onClick={() => applyCategory(category === cat.name ? '' : cat.name)}>
-                      {cat.name}<span className={styles.pillCount}>{cat.count}</span>
-                    </button>
-                  ))}
-                </div>
-                <div className={styles.dateFilters}>
-                  <button className={`${styles.datePill} ${!dateFilter ? styles.datePillActive : ''}`}
-                    onClick={() => applyDate('')}>Any date</button>
-                  <button className={`${styles.datePill} ${dateFilter === 'today' ? styles.datePillActive : ''}`}
-                    onClick={() => applyDate(dateFilter === 'today' ? '' : 'today')}>Today</button>
-                  <button className={`${styles.datePill} ${dateFilter === 'weekend' ? styles.datePillActive : ''}`}
-                    onClick={() => applyDate(dateFilter === 'weekend' ? '' : 'weekend')}>This Weekend</button>
-                  <input type="date" className={styles.datePicker}
-                    value={dateFilter && !['today','weekend'].includes(dateFilter) ? dateFilter : ''}
-                    min={today} title="Pick a date"
-                    onChange={e => applyDate(e.target.value || '')} />
-                </div>
-              </div>
-
               {/* Count */}
               {!loading && (
                 <p className={styles.resultCount}>
