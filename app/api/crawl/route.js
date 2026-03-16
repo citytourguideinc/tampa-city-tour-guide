@@ -47,11 +47,13 @@ export async function POST(request) {
     try {
       // ── Register source in Supabase if needed ──────────────────
       let sourceId = null;
+      let sourceDefaults = {};
       const { data: existing } = await admin
-        .from('trusted_sources').select('id').eq('domain', source.domain).single();
+        .from('trusted_sources').select('*').eq('domain', source.domain).single();
 
       if (existing) {
         sourceId = existing.id;
+        sourceDefaults = { neighborhood: existing.neighborhood, category: existing.category };
       } else {
         const { data: inserted, error: ie } = await admin
           .from('trusted_sources')
@@ -101,8 +103,11 @@ export async function POST(request) {
             source_id: sourceId, source_name: item.source_name,
             source_domain: item.source_domain, source_type: item.source_type,
             title: item.title, url: item.url,
-            category: item.category, subcategory: item.subcategory,
-            location: item.location, area: item.area, price: item.price,
+            category: sourceDefaults.category || item.category, 
+            subcategory: item.subcategory,
+            location: item.location, 
+            area: sourceDefaults.neighborhood || item.area, 
+            price: item.price,
             event_date: item.event_date, audience: item.audience,
             summary: item.summary, listing_type: 'standard',
             status: autoApprove ? 'approved' : 'pending',

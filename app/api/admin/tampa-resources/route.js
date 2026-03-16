@@ -78,7 +78,10 @@ export async function PATCH(req) {
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
 
   // Only allow safe columns to be patched
-  const allowed = ['tier', 'is_core', 'status', 'url_broken', 'admin_notes', 'event_type', 'source_type'];
+  const allowed = [
+    'tier', 'is_core', 'status', 'url_broken', 'admin_notes', 'event_type', 'source_type',
+    'neighborhood', 'Category', 'Subcategory', 'Description', 'Resource', 'Keywords'
+  ];
   const safe = Object.fromEntries(Object.entries(updates).filter(([k]) => allowed.includes(k)));
 
   const { error } = await supabase
@@ -87,6 +90,24 @@ export async function PATCH(req) {
     .eq('tables_record_id', id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // ── "System Learning" — propagate neighborhood/category to parent source ──
+  if (updates.neighborhood || updates.Category) {
+    // 1. Get the URL of this resource
+    const { data: res } = await supabase.from(TABLE).select('"URL Link"').eq('tables_record_id', id).single();
+    if (res?.['URL Link']) {
+      try {
+        const domain = new URL(res['URL Link']).hostname.replace('www.', '');
+        const sourceUpdates = {};
+        if (updates.neighborhood) sourceUpdates.neighborhood = updates.neighborhood;
+        if (updates.Category)     sourceUpdates.category     = updates.Category;
+
+        // 2. Update the parent source if it exists
+        await supabase.from('trusted_sources').update(sourceUpdates).eq('domain', domain);
+      } catch (e) { /* ignore URL errors */ }
+    }
+  }
+
   return NextResponse.json({ ok: true });
 }
 

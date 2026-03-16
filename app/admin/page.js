@@ -172,37 +172,47 @@ function Dashboard({ onLogout }) {
   // ── Legacy activities / vendors ───────────────────────────────
   async function fetchActivities() {
     setLoading(true);
-    const r = await fetch('/api/admin/activities');
+    const r = await fetch('/api/admin/activities', { headers: adminHeaders });
     const d = await r.json();
     setActs(d.activities || []);
     setLoading(false);
   }
   async function fetchVendors() {
     setLoading(true);
-    const r = await fetch('/api/admin/vendors');
+    const r = await fetch('/api/admin/vendors', { headers: adminHeaders });
     const d = await r.json();
     setVendors(d.vendors || []);
     setLoading(false);
   }
   async function toggleActive(id, current) {
-    await fetch('/api/admin/activities', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id, active_status: !current }) });
+    await fetch('/api/admin/activities', { method:'PATCH', headers: adminHeaders, body: JSON.stringify({ id, active_status: !current }) });
     setActs(prev => prev.map(a => a.id === id ? { ...a, active_status: !current } : a));
     flash(`Activity ${!current ? 'published' : 'unpublished'}.`);
   }
   async function toggleFeatured(id, current) {
-    await fetch('/api/admin/activities', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id, featured_status: !current }) });
+    await fetch('/api/admin/activities', { method:'PATCH', headers: adminHeaders, body: JSON.stringify({ id, featured_status: !current }) });
     setActs(prev => prev.map(a => a.id === id ? { ...a, featured_status: !current } : a));
     flash(`Featured ${!current ? 'on' : 'off'}.`);
   }
   async function addActivity() {
     if (!newAct.activity_name || !newAct.category) return flash('Name and category are required.', true);
-    const r = await fetch('/api/admin/activities', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(newAct) });
-    if (r.ok) { flash('Activity added!'); fetchActivities(); setNewAct({ activity_name:'', category:'', neighborhood:'', short_summary:'', booking_link:'', official_link:'', icon:'📍', source_name:'', city:'Tampa' }); }
-    else flash('Error adding activity.', true);
+    try {
+      const r = await fetch('/api/admin/activities', { method:'POST', headers: adminHeaders, body: JSON.stringify(newAct) });
+      const d = await r.json();
+      if (r.ok) { 
+        flash('Activity added!'); 
+        fetchActivities(); 
+        setNewAct({ activity_name:'', category:'', neighborhood:'', short_summary:'', booking_link:'', official_link:'', icon:'📍', source_name:'', city:'Tampa' }); 
+      } else {
+        flash(`Error: ${d.error || 'Check if table exists'}`, true);
+      }
+    } catch (err) {
+      flash(`Network error: ${err.message}`, true);
+    }
   }
   async function deleteActivity(id) {
     if (!confirm('Delete this activity?')) return;
-    await fetch('/api/admin/activities', { method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id }) });
+    await fetch('/api/admin/activities', { method:'DELETE', headers: adminHeaders, body: JSON.stringify({ id }) });
     setActs(prev => prev.filter(a => a.id !== id));
     flash('Deleted.');
   }
@@ -436,9 +446,13 @@ function Dashboard({ onLogout }) {
                 <input className={styles.input} placeholder="Activity name *" value={newAct.activity_name} onChange={e => setNewAct(p=>({...p,activity_name:e.target.value}))} />
                 <select className={styles.input} value={newAct.category} onChange={e => setNewAct(p=>({...p,category:e.target.value}))}>
                   <option value="">Category *</option>
-                  {['Things To Do','Events Calendar','Tours & Activities','Deals & Discounts','Volunteer','Museums / Culture','Nightlife','History & Culture'].map(c=><option key={c} value={c}>{c}</option>)}
+                  {CTG_CATEGORIES.map(c=><option key={c} value={c}>{c || 'Select Category'}</option>)}
+                  <option value="Tours & Activities">Tours & Activities</option>
                 </select>
-                <input className={styles.input} placeholder="Neighborhood" value={newAct.neighborhood} onChange={e => setNewAct(p=>({...p,neighborhood:e.target.value}))} />
+                <select className={styles.input} value={newAct.neighborhood} onChange={e => setNewAct(p=>({...p,neighborhood:e.target.value}))}>
+                  <option value="">Neighborhood</option>
+                  {NEIGHBORHOODS.map(n=><option key={n} value={n}>{n || 'Select Neighborhood'}</option>)}
+                </select>
                 <input className={styles.input} placeholder="Source (e.g. Viator)" value={newAct.source_name} onChange={e => setNewAct(p=>({...p,source_name:e.target.value}))} />
                 <input className={styles.input} placeholder="Booking link" value={newAct.booking_link} onChange={e => setNewAct(p=>({...p,booking_link:e.target.value}))} />
                 <input className={styles.input} placeholder="Official link" value={newAct.official_link} onChange={e => setNewAct(p=>({...p,official_link:e.target.value}))} />
@@ -509,9 +523,10 @@ function Dashboard({ onLogout }) {
                 { done: true,  label: '/resources page live', detail: 'Curated links with PDF download' },
                 { done: true,  label: 'Trusted source engine built', detail: 'Crawler + extractor + crawl API + this admin panel' },
                 { done: true,  label: '🗂 Tampa Resources admin tab built', detail: 'Filter by neighborhood, category, tier, is_core + Research Queue approve/reject' },
-                { done: false, label: 'Run migration_schema_v2.sql in Supabase', detail: 'gravitic-spirit/ctgsources/migration_schema_v2.sql — adds new columns + source_candidates table' },
-                { done: false, label: 'Import tampa_new_sources.csv (85 rows)', detail: 'gravitic-spirit/ctgsources/tampa_new_sources.csv — INSERT into Tampa Resources' },
-                { done: false, label: 'Run Supabase SQL for trusted engine', detail: 'scripts/setup-trusted-engine.sql in Supabase SQL Editor' },
+                { done: true,  label: 'Run migration_schema_v2.sql in Supabase', detail: 'gravitic-spirit/ctgsources/migration_schema_v2.sql — added RecordID + correct casing' },
+                { done: true,  label: 'Import tampa_new_sources_fixed.csv', detail: '96 rows imported into Tampa Resources table' },
+                { done: true,  label: 'Run Supabase SQL for trusted engine', detail: 'scripts/setup-trusted-engine.sql — enabled crawler storage' },
+                { done: true,  label: 'Run add_learning_cols.sql', detail: 'Enabled System Learning for neighborhoods/categories' },
                 { done: false, label: 'Set CRAWL_SECRET in Vercel env vars', detail: 'Protects POST /api/crawl endpoint' },
                 { done: false, label: 'Set ADMIN_SECRET in Vercel env vars', detail: 'Protects /api/admin/* endpoints' },
                 { done: false, label: 'Trigger first crawl', detail: 'POST /api/crawl — ingests Tampa Downtown Partnership' },
@@ -540,7 +555,7 @@ function Dashboard({ onLogout }) {
                 ['FEATURED_VENDOR_NAME', 'Featured partner display name'],
                 ['FEATURED_VENDOR_URL', 'Featured partner booking URL'],
                 ['GETYOURGUIDE_PARTNER_ID', 'GYG affiliate partner ID'],
-                ['VIATOR_AFFILIATE_ID', 'Viator MCID affiliate ID'],
+                ['VIATOR_AFFILIATE_ID', 'Viator MCID (or VIATOR_PARTNER_ID)'],
               ].map(([k, v]) => (
                 <div key={k} className={styles.envRow}>
                   <code className={styles.envKey}>{k}</code>
@@ -610,8 +625,8 @@ function Dashboard({ onLogout }) {
 
                 {tampaLoading ? <p className={styles.muted}>Loading…</p> : (
                   <div className={styles.table}>
-                    <div className={styles.thead}>
-                      <span>Name / Neighborhood</span>
+                    <div className={styles.thead} style={{gridTemplateColumns:'1.5fr 1fr 1fr 1fr 0.5fr 0.8fr 0.8fr'}}>
+                      <span>Name / Areas</span>
                       <span>Category</span>
                       <span>URL</span>
                       <span>Tier</span>
@@ -619,12 +634,24 @@ function Dashboard({ onLogout }) {
                       <span>Status</span>
                     </div>
                     {tampaSources.map(r => (
-                      <div key={r.tables_record_id} className={styles.trow}>
-                        <span>
-                          <strong>{r.Resource || r['Resource']}</strong>
-                          <br/><span className={styles.muted} style={{fontSize:'0.75rem'}}>{r.neighborhood || '—'}</span>
+                      <div key={r.tables_record_id} className={styles.trow} style={{gridTemplateColumns:'1.5fr 1fr 1fr 1fr 0.5fr 0.8fr 0.8fr'}}>
+                        <span style={{display:'flex', flexDirection:'column', gap:4}}>
+                          <input className={styles.inputCompact} value={r.Resource || ''} 
+                            onChange={e => updateTampaSource(r.tables_record_id, { Resource: e.target.value })}
+                            style={{fontWeight:'bold', width:'100%'}} />
+                          <select className={styles.inputCompact} value={r.neighborhood || ''} 
+                            onChange={e => updateTampaSource(r.tables_record_id, { neighborhood: e.target.value })}
+                            style={{fontSize:'0.7rem', color:'#888', background:'transparent', border:'none', padding:0}}>
+                            {NEIGHBORHOODS.map(n => <option key={n} value={n}>{n || '— Neighborhood —'}</option>)}
+                          </select>
                         </span>
-                        <span><span className={styles.catBadge}>{r.Category || r['Category']}</span></span>
+                        <span>
+                          <select className={styles.inputCompact} value={r.Category || ''} 
+                            onChange={e => updateTampaSource(r.tables_record_id, { Category: e.target.value })}
+                            style={{width:'100%', fontSize:'0.8rem'}}>
+                            {CTG_CATEGORIES.map(c => <option key={c} value={c}>{c || '— Category —'}</option>)}
+                          </select>
+                        </span>
                         <span className={styles.muted} style={{fontSize:'0.75rem', wordBreak:'break-all'}}>
                           <a href={r['URL Link']} target='_blank' rel='noopener noreferrer' className={styles.actName}
                             style={{fontSize:'0.75rem'}}>{(r['URL Link']||'').replace('https://','').slice(0,40)}</a>
