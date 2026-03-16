@@ -105,8 +105,6 @@ export default function Home() {
           <a href="/" className={styles.logoLink} aria-label="City Tour Guide">
             <img src="/logo.png" alt="City Tour Guide" className={styles.logoImg} />
           </a>
-
-          {/* Partner ad slot — between logo and city picker */}
           <a
             href="https://www.viator.com/Tampa/d663?pid=P00292624&mcid=42383&medium=link"
             target="_blank" rel="noopener noreferrer"
@@ -114,24 +112,9 @@ export default function Home() {
             aria-label="Sponsored: Book Tampa tours"
           >
             <span className={styles.navBannerAdLabel}>✦ Sponsored</span>
-            <span className={styles.navBannerAdText}>Book Tampa Bay Tours &amp; Experiences</span>
+            <span className={styles.navBannerAdText}>Book Tampa Bay Tours &amp; Experiences — Sunset Cruises, City Tours, Family Fun &amp; More</span>
             <span className={styles.navBannerAdCta}>Book Now →</span>
           </a>
-
-          <div className={styles.cityPill}>
-            <span>📍</span>
-            <select
-              className={styles.citySelect}
-              defaultValue="tampa"
-              onChange={e => { if (e.target.value !== 'tampa') { alert('More cities coming soon!'); e.target.value = 'tampa'; } }}
-              aria-label="Select city"
-            >
-              <option value="tampa">Tampa, FL</option>
-              <option value="stpete" disabled>St. Pete — Soon</option>
-              <option value="orlando" disabled>Orlando — Soon</option>
-            </select>
-            <span className={styles.chevron}>▾</span>
-          </div>
         </div>
       </header>
 
@@ -162,6 +145,21 @@ export default function Home() {
           {!hasSearched && (
             <>
               <p className={styles.eyebrow}>Your City. Your Guide.</p>
+              {/* City picker inside hero */}
+              <div className={styles.heroCityPicker}>
+                <span>📍</span>
+                <select
+                  className={styles.heroCitySelect}
+                  defaultValue="tampa"
+                  onChange={e => { if (e.target.value !== 'tampa') { alert('More cities coming soon!'); e.target.value = 'tampa'; } }}
+                  aria-label="Select city"
+                >
+                  <option value="tampa">Tampa, FL</option>
+                  <option value="stpete" disabled>St. Pete — Soon</option>
+                  <option value="orlando" disabled>Orlando — Soon</option>
+                </select>
+                <span>▾</span>
+              </div>
               <h1 className={styles.headline}>Discover What&apos;s<br />Happening</h1>
               <p className={styles.subline}>Events, dining, tours &amp; nightlife in Tampa Bay</p>
             </>
