@@ -43,6 +43,8 @@ function Dashboard({ onLogout }) {
   const [tampaFilter,       setTampaFilter]       = useState({ q:'', neighborhood:'', category:'', status:'', tier:'', is_core:'', event_type:'', page:0 });
   const [candidates,        setCandidates]        = useState([]);
   const [candidatesLoading, setCandidatesLoading] = useState(false);
+  const [showManualEntry,   setShowManualEntry]   = useState(false);
+  const [newManualItem,     setNewManualItem]     = useState({ title:'', url:'', category:'', subcategory:'', area:'', price:'', event_date:'', summary:'', source_name:'' });
 
   const NEIGHBORHOODS = ['','Citywide','Downtown Core','Downtown / Channel District','Downtown / Riverwalk','Downtown / Water Street','Ybor City','NoHo / North Howard','SoHo / South Howard','Hyde Park','SOG / South of Gandy','Seminole Heights','Davis Islands','Westshore','Midtown','North Tampa','East Tampa'];
   const CTG_CATEGORIES = ['','Calendars','Things To Do','Dining','Restaurant Events','Events & Activities','Arts & Culture','Sports & Recreation','Family & Attractions','Transportation','Venues'];
@@ -92,6 +94,22 @@ function Dashboard({ onLogout }) {
       flash(action === 'approve' ? '✅ Approved — inserted into Tampa Resources' : '🚫 Rejected — logged with reason');
     } catch { flash('Action failed', true); }
   }, []);
+
+  async function addManualItem() {
+    if (!newManualItem.title || !newManualItem.category) return flash('Title and Category are required', true);
+    try {
+      const r = await fetch('/api/admin/items', { method: 'POST', headers: adminHeaders, body: JSON.stringify(newManualItem) });
+      const d = await r.json();
+      if (r.ok) {
+        flash('✅ Manual item added — review in Pending queue');
+        setNewManualItem({ title:'', url:'', category:'', subcategory:'', area:'', price:'', event_date:'', summary:'', source_name:'' });
+        setShowManualEntry(false);
+        loadItems({ ...itemFilter, status: 'pending', page: 0 });
+      } else {
+        flash(`Error: ${d.error}`, true);
+      }
+    } catch (err) { flash(`Failed: ${err.message}`, true); }
+  }
 
   const adminHeaders = { 'x-admin-secret': ADMIN_PWD, 'Content-Type': 'application/json' };
 
@@ -434,6 +452,52 @@ function Dashboard({ onLogout }) {
                   onClick={() => { const f={...itemFilter, page: itemFilter.page+1}; setItemFilter(f); loadItems(f); }}>Next →</button>
               </div>
             )}
+
+            {/* ── Manual Entry Form ─────────────────────────────── */}
+            <div style={{marginTop:24, borderTop:'1px solid rgba(0,0,0,0.08)', paddingTop:20}}>
+              <button className={styles.btnPrimary}
+                style={{marginBottom: showManualEntry ? 16 : 0, background: showManualEntry ? '#6B7280' : undefined}}
+                onClick={() => setShowManualEntry(v => !v)}>
+                {showManualEntry ? '✕ Cancel' : '✏️ Add Item Manually'}
+              </button>
+              <p className={styles.muted} style={{fontSize:'0.78rem', marginTop:4}}>
+                For events from JS-heavy sites (Straz, etc.) the crawler can't reach.
+              </p>
+              {showManualEntry && (
+                <div className={styles.addForm}>
+                  <div className={styles.formGrid}>
+                    <input className={styles.input} placeholder="Event title *" value={newManualItem.title}
+                      onChange={e => setNewManualItem(p=>({...p,title:e.target.value}))} />
+                    <select className={styles.input} value={newManualItem.category}
+                      onChange={e => setNewManualItem(p=>({...p,category:e.target.value}))}>
+                      <option value="">Category *</option>
+                      {CTG_CATEGORIES.filter(Boolean).map(c=><option key={c} value={c}>{c}</option>)}
+                    </select>
+                    <input className={styles.input} placeholder="Subcategory (optional)" value={newManualItem.subcategory}
+                      onChange={e => setNewManualItem(p=>({...p,subcategory:e.target.value}))} />
+                    <input className={styles.input} placeholder="URL to event page" value={newManualItem.url}
+                      onChange={e => setNewManualItem(p=>({...p,url:e.target.value}))} />
+                    <select className={styles.input} value={newManualItem.area}
+                      onChange={e => setNewManualItem(p=>({...p,area:e.target.value}))}>
+                      <option value="">— Neighborhood —</option>
+                      {NEIGHBORHOODS.filter(Boolean).map(n=><option key={n} value={n}>{n}</option>)}
+                    </select>
+                    <input className={styles.input} placeholder="Event date (YYYY-MM-DD)" value={newManualItem.event_date}
+                      onChange={e => setNewManualItem(p=>({...p,event_date:e.target.value}))} />
+                    <input className={styles.input} placeholder="Price (e.g. Free, $25)" value={newManualItem.price}
+                      onChange={e => setNewManualItem(p=>({...p,price:e.target.value}))} />
+                    <input className={styles.input} placeholder="Source name (e.g. Straz Center)" value={newManualItem.source_name}
+                      onChange={e => setNewManualItem(p=>({...p,source_name:e.target.value}))} />
+                  </div>
+                  <textarea className={styles.input} placeholder="Summary / description" value={newManualItem.summary}
+                    onChange={e => setNewManualItem(p=>({...p,summary:e.target.value}))}
+                    style={{width:'100%', minHeight:80, marginTop:8, resize:'vertical'}} />
+                  <button className={styles.btnPrimary} style={{marginTop:12}} onClick={addManualItem}>
+                    + Add to Review Queue
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         )}
 

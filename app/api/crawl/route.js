@@ -1,7 +1,7 @@
 // app/api/crawl/route.js — v2 with diagnostics, review workflow, source health
 import { NextResponse } from 'next/server';
 import { getAdminClient } from '@/lib/supabase';
-import { crawlSource }    from '@/lib/crawler';
+import { crawlSource, discoverSubsources } from '@/lib/crawler';
 import { extractPage }    from '@/lib/extractor';
 import { cookies }        from 'next/headers';
 import SOURCES            from '@/lib/trusted-sources.json';
@@ -72,6 +72,25 @@ export async function POST(request) {
         sourceId = inserted.id;
       }
 
+      // ── Auto-discover new subsources from homepage nav ──────────────
+      try {
+        const homepageRes = await fetch(source.mainUrl, { headers: { 'User-Agent': 'CityTourGuideBot/1.0' }, signal: AbortSignal.timeout(8000) });
+        if (homepageRes.ok) {
+          const homeHtml = await homepageRes.text();
+          const currentSubs = (existing?.subsources || source.subsources || []);
+          const autoSubs = discoverSubsources(homeHtml, source.mainUrl, source.domain, currentSubs);
+          if (autoSubs.length > 0) {
+            const merged = [...currentSubs, ...autoSubs];
+            await admin.from('trusted_sources').update({ subsources: merged }).eq('id', sourceId);
+            sourceReport.autoDiscoveredSubsources = autoSubs.length;
+            // Add new subsources to current crawl queue dynamically
+            source.subsources = merged;
+          }
+        }
+      } catch (autoErr) {
+        sourceReport.extractionErrors.push(`Auto-discover: ${autoErr.message}`);
+      }
+
       // ── Crawl ──────────────────────────────────────────────────
       const { pages, diagnostics } = await crawlSource(source);
       sourceReport.diagnostics = diagnostics;
@@ -81,6 +100,11 @@ export async function POST(request) {
 
       for (const { url, html, subsource } of toProcess) {
         try {
+          // Skip the index/root page of the subsource itself to prevent "two-click" results
+          if (url.replace(/\/$/, '') === subsource.url.replace(/\/$/, '') || url.replace(/\/$/, '') === source.mainUrl.replace(/\/$/, '')) {
+            continue;
+          }
+
           const item = extractPage(html, url, source, subsource);
 
           if (!item.title || item.title.length < 3) { sourceReport.skippedNoTitle++; continue; }

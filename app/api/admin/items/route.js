@@ -4,16 +4,19 @@
 // DELETE /api/admin/items — remove an item
 import { NextResponse } from 'next/server';
 import { getAdminClient } from '@/lib/supabase';
+import { cookies } from 'next/headers';
 
-function authCheck(request) {
+async function authCheck(request) {
   const secret = process.env.ADMIN_SECRET || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
   const h = request.headers.get('x-admin-secret');
   const q = new URL(request.url).searchParams.get('key');
-  return h === secret || q === secret;
+  if (h === secret || q === secret) return true;
+  const cookieStore = await cookies();
+  return cookieStore.get('ctg_admin_auth')?.value === secret;
 }
 
 export async function GET(request) {
-  if (!authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!await authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const admin = getAdminClient();
   if (!admin) return NextResponse.json({ error: 'DB not configured' }, { status: 503 });
 
@@ -46,7 +49,7 @@ export async function GET(request) {
 }
 
 export async function PATCH(request) {
-  if (!authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!await authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const admin = getAdminClient();
   if (!admin) return NextResponse.json({ error: 'DB not configured' }, { status: 503 });
 
@@ -75,8 +78,31 @@ export async function PATCH(request) {
   return NextResponse.json({ item: data });
 }
 
+// POST — manually add an item (for JS-heavy sites the crawler can't reach)
+export async function POST(request) {
+  if (!await authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const admin = getAdminClient();
+  if (!admin) return NextResponse.json({ error: 'DB not configured' }, { status: 503 });
+
+  const body = await request.json();
+  const { title, url, category, subcategory, area, price, event_date, summary, source_name, source_domain } = body;
+  if (!title || !category) return NextResponse.json({ error: 'title and category are required' }, { status: 400 });
+
+  const { data, error } = await admin.from('trusted_items').insert({
+    title, url, category, subcategory, area: area || 'Tampa',
+    price, event_date: event_date || null, summary, source_name: source_name || 'Manual Entry',
+    source_domain: source_domain || 'manual', source_type: 'manual',
+    listing_type: 'standard', status: 'pending',
+    is_external: false, is_monetized: false, city: 'Tampa',
+    crawled_at: new Date().toISOString(),
+  }).select().single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ item: data }, { status: 201 });
+}
+
 export async function DELETE(request) {
-  if (!authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!await authCheck(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const admin = getAdminClient();
   if (!admin) return NextResponse.json({ error: 'DB not configured' }, { status: 503 });
 
