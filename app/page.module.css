@@ -33,9 +33,9 @@
   position: sticky;
   top: 0;
   z-index: 200;
-  background: #FFFFFF;
-  border-bottom: 2px solid #E8E8E8;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  background: #000000;
+  border-bottom: 2px solid #222;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
 }
 .navInner {
   max-width: 1200px;
@@ -48,9 +48,19 @@
 }
 
 /* Logo */
-.logoLink { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
-.logoImg  { height: 60px; width: auto; display: block; object-fit: contain; }
-@media (min-width: 768px) { .logoImg { height: 72px; } }
+.logoLink {
+  display: flex;
+  align-items: stretch;
+  text-decoration: none;
+  flex-shrink: 0;
+  height: 72px;
+}
+.logoImg {
+  height: 100%;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
 
 /* Partner/sponsored ad banner — expands to fill all space to the right of logo */
 .navBannerAd {
