@@ -292,7 +292,9 @@
 /* ── Quick-tap category tiles ─────────────────────────────────── */
 .quickGrid {
   display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 10px; width: 100%; animation: fadeUp 0.9s ease both;
+  gap: 10px; width: 100%;
+  align-items: start;
+  animation: fadeUp 0.9s ease both;
 }
 
 .quickTile {
