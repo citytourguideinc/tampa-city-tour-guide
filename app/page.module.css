@@ -42,14 +42,14 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 16px;
-  height: 56px;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 .logoLink { display: flex; align-items: center; text-decoration: none; }
-.logoImg  { height: 42px; width: auto; display: block; object-fit: contain; }
-@media (min-width: 768px) { .logoImg { height: 50px; } }
+.logoImg  { height: 64px; width: auto; display: block; object-fit: contain; }
+@media (min-width: 768px) { .logoImg { height: 80px; } }
 
 /* City pill */
 .cityPill {
@@ -105,7 +105,7 @@
   position: relative; z-index: 1;
   width: 100%; max-width: 780px;
   margin: 0 auto;
-  padding: 52px 20px 44px;
+  padding: 28px 20px 44px;
   text-align: center;
   display: flex; flex-direction: column; align-items: center;
 }
@@ -118,12 +118,12 @@
 /* Eyebrow — gold, bold, readable */
 .eyebrow {
   font-family: 'DM Sans', sans-serif;
-  font-size: clamp(0.8rem, 2.8vw, 0.95rem);
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-size: clamp(1.1rem, 3.5vw, 1.3rem);
+  font-weight: 800;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gold);
-  margin: 0 0 16px;
+  margin: 0 0 18px;
   animation: fadeUp 0.5s ease both;
 }
 
@@ -220,17 +220,17 @@
   color: var(--navy);
   box-shadow: 0 4px 14px rgba(192,139,26,0.2);
 }
-.quickIcon  { font-size: 1.5rem; line-height: 1; }
+.quickIcon  { font-size: 2rem; line-height: 1; }
 .quickLabel {
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.68rem; font-weight: 600;
+  font-size: 0.85rem; font-weight: 700;
   text-align: center; line-height: 1.2;
-  color: var(--text-2);
+  color: var(--text);
 }
-.quickActive .quickLabel { color: var(--navy); font-weight: 700; }
+.quickActive .quickLabel { color: var(--navy); font-weight: 800; }
 @media (max-width: 380px) {
-  .quickIcon { font-size: 1.2rem; }
-  .quickLabel { font-size: 0.58rem; }
+  .quickIcon { font-size: 1.6rem; }
+  .quickLabel { font-size: 0.75rem; }
   .quickTile  { padding: 12px 4px; border-radius: 12px; }
 }
 
