@@ -7,22 +7,19 @@ import styles       from './page.module.css';
 
 // Quick-tap tiles — single scrollable row, mapped to real DB categories + keyword searches
 const QUICK_CATS = [
-  { icon: '🎟', label: 'Events',    cat: 'Events' },
-  { icon: '🍽', label: 'Dining',    cat: 'Food' },
-  { icon: '🏛', label: 'Tours',     cat: 'Tours & Activities' },
-  { icon: '🛍', label: 'Shopping',  cat: 'Shopping' },
-  { icon: '🗺', label: 'Discover',  cat: 'Discovery' },
-  { icon: '📅', label: 'Weekend',   cat: '', date: 'weekend' },
-  { icon: '🆓', label: 'Free',      cat: '', price: 'free' },
-  { icon: '🌟', label: 'All',       cat: '' },
-  { icon: '🎵', label: 'Music',     cat: '', q: 'music' },
-  { icon: '🏊', label: 'Sports',    cat: '', q: 'sports' },
-  { icon: '🎨', label: 'Arts',      cat: '', q: 'arts' },
-  { icon: '🌺', label: 'Family',    cat: '', q: 'family' },
-  { icon: '🌊', label: 'Outdoor',   cat: '', q: 'outdoor' },
-  { icon: '🍻', label: 'Nightlife', cat: '', q: 'nightlife' },
-  { icon: '🏖', label: 'Beaches',   cat: '', q: 'beach' },
-  { icon: '🏛', label: 'Historic',  cat: '', q: 'historic' },
+  { icon: '🌟', label: 'All',          cat: '' },
+  { icon: '🍽', label: 'Dining',       cat: 'Dining' },
+  { icon: '🗺', label: 'Things To Do', cat: 'Things To Do' },
+  { icon: '🎟', label: 'Events',       cat: 'Events & Activities' },
+  { icon: '🎨', label: 'Arts',         cat: 'Arts & Culture' },
+  { icon: '🎡', label: 'Family',       cat: 'Family & Attractions' },
+  { icon: '🏆', label: 'Sports',       cat: 'Sports' },
+  { icon: '🏛', label: 'Venues',       cat: 'Venues' },
+  { icon: '🍴', label: 'Food Events',  cat: 'Restaurant Events' },
+  { icon: '📅', label: 'Calendar',     cat: 'Calendars' },
+  { icon: '🚌', label: 'Transport',    cat: 'Transportation' },
+  { icon: '📅', label: 'Weekend',      cat: '', date: 'weekend' },
+  { icon: '🆓', label: 'Free',         cat: '', price: 'free' },
 ];
 
 const VIATOR_FALLBACK = [
@@ -162,19 +159,6 @@ export default function Home() {
         )}
 
         <div className={styles.heroContent}>
-          {/* ── GYG Karaoke Golf Cart Tour — Official Widget ── */}
-          {!hasSearched && (
-            <div className={styles.gygWidget}>
-              <div
-                data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
-                data-gyg-locale-code="en-US"
-                data-gyg-widget="activities"
-                data-gyg-partner-id="0G4LDMJ"
-                data-gyg-number-of-items="1"
-                data-gyg-q="karaoke golf cart tour tampa"
-              />
-            </div>
-          )}
 
           {!hasSearched && (
             <>
@@ -207,21 +191,19 @@ export default function Home() {
             )}
           </div>
 
-          {/* Quick-tap category tiles */}
-          {!hasSearched && (
-            <div className={styles.quickGrid}>
-              {QUICK_CATS.map(tile => (
-                <button
-                  key={tile.label}
-                  className={`${styles.quickTile} ${activeQuick === tile.label ? styles.quickActive : ''}`}
-                  onClick={() => pickCategory(tile)}
-                >
-                  <span className={styles.quickIcon}>{tile.icon}</span>
-                  <span className={styles.quickLabel}>{tile.label}</span>
-                </button>
-              ))}
-            </div>
-          )}
+          {/* Quick-tap category tiles — always visible for filtering */}
+          <div className={styles.quickGrid}>
+            {QUICK_CATS.map(tile => (
+              <button
+                key={tile.label}
+                className={`${styles.quickTile} ${activeQuick === tile.label ? styles.quickActive : ''}`}
+                onClick={() => pickCategory(tile)}
+              >
+                <span className={styles.quickIcon}>{tile.icon}</span>
+                <span className={styles.quickLabel}>{tile.label}</span>
+              </button>
+            ))}
+          </div>
 
           {/* YouTube live stream */}
           {!hasSearched && (
@@ -301,14 +283,26 @@ export default function Home() {
           </div>
         )}
 
-        {/* Viator Official Widget */}
+        {/* GYG Karaoke Golf Cart Tour + Viator — stacked at bottom */}
         {!hasSearched && (
-          <div className={styles.viatorWidget}>
-            <div
-              data-vi-partner-id="P00292624"
-              data-vi-widget-ref="W-00e88448-1190-4c49-94b1-356d0345e485"
-              data-vi-search-term="Tampa"
-            />
+          <div className={styles.widgetStack}>
+            <div className={styles.gygWidget}>
+              <div
+                data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
+                data-gyg-locale-code="en-US"
+                data-gyg-widget="activities"
+                data-gyg-partner-id="0G4LDMJ"
+                data-gyg-number-of-items="1"
+                data-gyg-q="karaoke golf cart tour tampa"
+              />
+            </div>
+            <div className={styles.viatorWidget}>
+              <div
+                data-vi-partner-id="P00292624"
+                data-vi-widget-ref="W-00e88448-1190-4c49-94b1-356d0345e485"
+                data-vi-search-term="Tampa"
+              />
+            </div>
           </div>
         )}
       </main>

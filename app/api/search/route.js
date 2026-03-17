@@ -5,20 +5,30 @@ import { supabase }     from '@/lib/supabase';
 
 // ── Category aliases — maps user keywords → exact Category enum values ──────
 const CAT_MAP = {
-  tour: 'Tours & Activities', tours: 'Tours & Activities',
-  activity: 'Tours & Activities', activities: 'Tours & Activities',
+  // Dining
+  dining: 'Dining', restaurant: 'Dining', restaurants: 'Dining', food: 'Dining', eat: 'Dining',
+  // Events & Activities
+  event: 'Events & Activities', events: 'Events & Activities', calendar: 'Events & Activities',
+  activity: 'Events & Activities', activities: 'Events & Activities',
+  // Things To Do
   'things to do': 'Things To Do', todo: 'Things To Do', things: 'Things To Do',
-  restaurant: 'Restaurants', restaurants: 'Restaurants',
-  dining: 'Restaurants', food: 'Restaurants',
-  event: 'Events', events: 'Events', calendar: 'Events',
-  arts: 'Arts & Culture', art: 'Arts & Culture', culture: 'Arts & Culture', museum: 'Arts & Culture',
-  music: 'Events', concert: 'Events',
-  nightlife: 'Nightlife', night: 'Nightlife', bar: 'Nightlife', bars: 'Nightlife',
-  shop: 'Shopping', shopping: 'Shopping',
+  outdoor: 'Things To Do', outdoors: 'Things To Do', beach: 'Things To Do', park: 'Things To Do',
+  // Arts & Culture
+  arts: 'Arts & Culture', art: 'Arts & Culture', culture: 'Arts & Culture',
+  museum: 'Arts & Culture', theater: 'Arts & Culture', theatre: 'Arts & Culture',
+  // Family & Attractions
+  family: 'Family & Attractions', kids: 'Family & Attractions', children: 'Family & Attractions',
+  attractions: 'Family & Attractions',
+  // Sports
   sport: 'Sports', sports: 'Sports',
-  family: 'Family', kids: 'Family',
-  beach: 'Things To Do', park: 'Things To Do', outdoor: 'Things To Do',
-  hotel: 'Hotels', hotels: 'Hotels',
+  // Venues
+  venue: 'Venues', venues: 'Venues', concert: 'Venues',
+  // Restaurant Events
+  'food events': 'Restaurant Events', 'restaurant events': 'Restaurant Events',
+  // Calendars
+  calendars: 'Calendars',
+  // Transportation
+  transport: 'Transportation', transportation: 'Transportation',
 };
 
 export async function GET(request) {
