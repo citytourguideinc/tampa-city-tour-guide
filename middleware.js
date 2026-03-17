@@ -8,7 +8,7 @@ export function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // 1. Site-wide Basic Authentication (Stops public viewing before launch)
-  const sitePassword = process.env.SITE_PASSWORD || 'tampa2026';
+  const sitePassword = process.env.SITE_PASSWORD || 'mptampa2026';
   const basicAuth = request.headers.get('authorization');
 
   // Skip auth for static assets just in case, though the matcher should handle it
