@@ -1,7 +1,7 @@
 import './globals.css';
 import { Outfit } from 'next/font/google';
 import Script from 'next/script';
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from '@vercel/analytics/next';
 
 const outfit = Outfit({ subsets: ['latin'], weight: ['600','700','800'] });
 
