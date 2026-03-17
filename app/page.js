@@ -301,37 +301,17 @@ export default function Home() {
           </div>
         )}
 
-        {/* Viator Carousel */}
-        {!hasSearched && (() => {
-          const items = viatorProducts.length >= 8 ? viatorProducts.slice(0, 8) : VIATOR_FALLBACK;
-          const pages = Math.ceil(items.length / 4);
-          const slide = items.slice(carouselIdx * 4, carouselIdx * 4 + 4);
-          return (
-            <div className={styles.carouselSection}>
-              <div className={styles.carouselTrack}>
-                {slide.map(p => (
-                  <a key={p.code} href={p.url} target="_blank" rel="noopener noreferrer" className={styles.featuredCard}>
-                    {p.image ? <img src={p.image} alt={p.title} className={styles.featuredImg} /> : <span className={styles.featuredEmoji}>{p.emoji || '🎟'}</span>}
-                    <span className={styles.featuredLabel}>{p.title}</span>
-                    {p.price  && <span className={styles.featuredPrice}>{p.price}</span>}
-                    {p.rating && <span className={styles.featuredRating}>★ {p.rating}</span>}
-                  </a>
-                ))}
-              </div>
-              <div className={styles.carouselDots}>
-                {Array.from({ length: pages }).map((_, i) => (
-                  <button
-                    key={i}
-                    className={`${styles.dot} ${i === carouselIdx ? styles.dotActive : ''}`}
-                    onClick={() => setCarouselIdx(i)}
-                    aria-label={`Slide ${i + 1}`}
-                  />
-                ))}
-              </div>
-              <p className={styles.featuredDisclaimer}>Powered by Viator · Affiliate links</p>
-            </div>
-          );
-        })()}
+        {/* Viator — simple text links */}
+        {!hasSearched && (
+          <div className={styles.viatorLinks}>
+            {VIATOR_FALLBACK.map(p => (
+              <a key={p.code} href={p.url} target="_blank" rel="noopener noreferrer" className={styles.viatorLink}>
+                {p.emoji} {p.title}
+              </a>
+            ))}
+            <span className={styles.viatorPowered}>Powered by Viator</span>
+          </div>
+        )}
       </main>
 
       {/* ── Footer ── */}
