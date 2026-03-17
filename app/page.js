@@ -46,6 +46,7 @@ export default function Home() {
   const [dateFilter,     setDateFilter]     = useState('');
   const [activeQuick,    setActiveQuick]    = useState('');
   const [viatorProducts, setViatorProducts] = useState([]);
+  const [carouselIdx,    setCarouselIdx]    = useState(0);
   const resultsRef = useRef(null);
 
   // Fetch real Viator featured products on mount
@@ -55,6 +56,14 @@ export default function Home() {
       .then(d => { if (d.products?.length) setViatorProducts(d.products); })
       .catch(() => {});
   }, []);
+
+  // Auto-advance carousel every 3.5 seconds
+  useEffect(() => {
+    const items = viatorProducts.length >= 8 ? viatorProducts.slice(0, 8) : VIATOR_FALLBACK;
+    const total = Math.ceil(items.length / 4);
+    const t = setInterval(() => setCarouselIdx(i => (i + 1) % total), 3500);
+    return () => clearInterval(t);
+  }, [viatorProducts]);
 
   const fetchResults = useCallback(async (q = '', cat = '', date = '', ar = '', price = '') => {
     setLoading(true);
@@ -292,25 +301,37 @@ export default function Home() {
           </div>
         )}
 
-        {/* Viator Featured — 2-row grid, no title */}
-        {!hasSearched && (
-          <div className={styles.featuredSection}>
-            <div className={styles.featuredGrid}>
-              {(viatorProducts.length >= 8 ? viatorProducts.slice(0,8) : VIATOR_FALLBACK).map(p => (
-                <a key={p.code} href={p.url} target="_blank" rel="noopener noreferrer" className={styles.featuredCard}>
-                  {p.image
-                    ? <img src={p.image} alt={p.title} className={styles.featuredImg} />
-                    : <span className={styles.featuredEmoji}>{p.emoji || '🎟'}</span>
-                  }
-                  <span className={styles.featuredLabel}>{p.title}</span>
-                  {p.price  && <span className={styles.featuredPrice}>{p.price}</span>}
-                  {p.rating && <span className={styles.featuredRating}>★ {p.rating}</span>}
-                </a>
-              ))}
+        {/* Viator Carousel */}
+        {!hasSearched && (() => {
+          const items = viatorProducts.length >= 8 ? viatorProducts.slice(0, 8) : VIATOR_FALLBACK;
+          const pages = Math.ceil(items.length / 4);
+          const slide = items.slice(carouselIdx * 4, carouselIdx * 4 + 4);
+          return (
+            <div className={styles.carouselSection}>
+              <div className={styles.carouselTrack}>
+                {slide.map(p => (
+                  <a key={p.code} href={p.url} target="_blank" rel="noopener noreferrer" className={styles.featuredCard}>
+                    {p.image ? <img src={p.image} alt={p.title} className={styles.featuredImg} /> : <span className={styles.featuredEmoji}>{p.emoji || '🎟'}</span>}
+                    <span className={styles.featuredLabel}>{p.title}</span>
+                    {p.price  && <span className={styles.featuredPrice}>{p.price}</span>}
+                    {p.rating && <span className={styles.featuredRating}>★ {p.rating}</span>}
+                  </a>
+                ))}
+              </div>
+              <div className={styles.carouselDots}>
+                {Array.from({ length: pages }).map((_, i) => (
+                  <button
+                    key={i}
+                    className={`${styles.dot} ${i === carouselIdx ? styles.dotActive : ''}`}
+                    onClick={() => setCarouselIdx(i)}
+                    aria-label={`Slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+              <p className={styles.featuredDisclaimer}>Powered by Viator · Affiliate links</p>
             </div>
-            <p className={styles.featuredDisclaimer}>Powered by Viator · Affiliate links</p>
-          </div>
-        )}
+          );
+        })()}
       </main>
 
       {/* ── Footer ── */}
