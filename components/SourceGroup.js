@@ -150,12 +150,14 @@ export default function SourceGroup({ sourceName, domain, categories = {}, items
         </button>
       )}
 
-      {/* ── Legal attribution ─────────────────────────── */}
-      <div className={styles.attribution}>
-        Via{' '}
-        <a href={`https://${domain}`} target="_blank" rel="noopener noreferrer">{domain}</a>
-        {' '}· Not affiliated · Links go to original source
-      </div>
+      {/* ── Legal attribution ─────────────────────────────── */}
+      {domain && (
+        <div className={styles.attribution}>
+          Links go to original source ·{' '}
+          <a href={`https://${domain}`} target="_blank" rel="noopener noreferrer">{domain}</a>
+          {' '}· Not affiliated with City Tour Guide
+        </div>
+      )}
     </div>
   );
 }
