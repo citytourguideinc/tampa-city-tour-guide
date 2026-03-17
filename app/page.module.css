@@ -640,3 +640,27 @@
 }
 
 /* Widget stack */.widgetStack { display: flex; flex-direction: column; gap: 0; width: 100%; }
+
+/* GYG direct-link banner */
+.gygBanner {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; padding: 16px 20px; margin: 0 0 4px;
+  background: linear-gradient(135deg, #C9A227 0%, #F0C84A 50%, #C9A227 100%);
+  text-decoration: none; border-radius: 0;
+  transition: filter 0.15s; box-shadow: 0 2px 12px rgba(201,162,39,0.3);
+}
+.gygBanner:hover { filter: brightness(1.07); }
+.gygBannerBadge {
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; color: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.12); padding: 3px 8px; border-radius: 4px;
+  flex-shrink: 0; white-space: nowrap;
+}
+.gygBannerTitle {
+  flex: 1; font-size: 1rem; font-weight: 800; color: #000;
+}
+.gygBannerCta {
+  flex-shrink: 0; font-size: 0.85rem; font-weight: 800; color: #000;
+  background: rgba(255,255,255,0.35); padding: 7px 16px;
+  border-radius: 999px; border: 2px solid rgba(0,0,0,0.15); white-space: nowrap;
+}

@@ -285,26 +285,28 @@ export default function Home() {
           </div>
         )}
 
-        {/* GYG Karaoke Golf Cart Tour + Viator — stacked at bottom */}
+        {/* GYG Karaoke Golf Cart Tour — direct link (widget iframe blocks booking) */}
         {!hasSearched && (
-          <div className={styles.widgetStack}>
-            <div className={styles.gygWidget}>
-              <div
-                data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
-                data-gyg-locale-code="en-US"
-                data-gyg-widget="activities"
-                data-gyg-partner-id="0G4LDMJ"
-                data-gyg-number-of-items="1"
-                data-gyg-q="karaoke golf cart tour tampa"
-              />
-            </div>
-            <div className={styles.viatorWidget}>
-              <div
-                data-vi-partner-id="P00292624"
-                data-vi-widget-ref="W-00e88448-1190-4c49-94b1-356d0345e485"
-                data-vi-search-term="Tampa"
-              />
-            </div>
+          <a
+            href="https://gyg.me/PBnl9fQh"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.gygBanner}
+          >
+            <span className={styles.gygBannerBadge}>🎶 GetYourGuide</span>
+            <span className={styles.gygBannerTitle}>Karaoke Golf Cart City Tour — Tampa</span>
+            <span className={styles.gygBannerCta}>Book Now →</span>
+          </a>
+        )}
+
+        {/* Viator Official Widget */}
+        {!hasSearched && (
+          <div className={styles.viatorWidget}>
+            <div
+              data-vi-partner-id="P00292624"
+              data-vi-widget-ref="W-00e88448-1190-4c49-94b1-356d0345e485"
+              data-vi-search-term="Tampa"
+            />
           </div>
         )}
       </main>
