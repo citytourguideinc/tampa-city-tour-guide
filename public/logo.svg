@@ -1,13 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 72" fill="none">
-  <!-- CITY -->
-  <text x="110" y="19" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="22" letter-spacing="4" fill="#111827" text-anchor="middle" dominant-baseline="auto">CITY</text>
+  <!-- Black background -->
+  <rect width="220" height="72" fill="#000000"/>
 
-  <!-- TOUR with NATIONWIDE pill overlaid -->
-  <text x="110" y="42" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="22" letter-spacing="4" fill="#111827" text-anchor="middle" dominant-baseline="auto">TOUR</text>
-  <!-- NATIONWIDE pill badge centered on TOUR line -->
-  <rect x="52" y="26" width="116" height="18" rx="9" fill="#111827"/>
-  <text x="110" y="38.5" font-family="'Inter', 'Arial', sans-serif" font-weight="700" font-size="8.5" letter-spacing="1.8" fill="#FFFFFF" text-anchor="middle" dominant-baseline="auto">NATIONWIDE</text>
+  <!-- CITY -->
+  <text x="110" y="19" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="22" letter-spacing="4" fill="#FFFFFF" text-anchor="middle" dominant-baseline="auto">CITY</text>
+
+  <!-- TOUR -->
+  <text x="110" y="42" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="22" letter-spacing="4" fill="#FFFFFF" text-anchor="middle" dominant-baseline="auto">TOUR</text>
+  <!-- NATIONWIDE pill badge -->
+  <rect x="52" y="26" width="116" height="18" rx="9" fill="#FFFFFF"/>
+  <text x="110" y="38.5" font-family="'Inter', 'Arial', sans-serif" font-weight="700" font-size="8.5" letter-spacing="1.8" fill="#000000" text-anchor="middle" dominant-baseline="auto">NATIONWIDE</text>
 
   <!-- GUIDE -->
-  <text x="110" y="65" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="22" letter-spacing="4" fill="#111827" text-anchor="middle" dominant-baseline="auto">GUIDE</text>
+  <text x="110" y="65" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="22" letter-spacing="4" fill="#FFFFFF" text-anchor="middle" dominant-baseline="auto">GUIDE</text>
 </svg>
