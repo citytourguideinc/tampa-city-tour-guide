@@ -664,3 +664,12 @@
   background: rgba(255,255,255,0.35); padding: 7px 16px;
   border-radius: 999px; border: 2px solid rgba(0,0,0,0.15); white-space: nowrap;
 }
+
+.gygSimpleLink {
+  display: block; width: 100%; text-align: center;
+  padding: 12px 16px; margin-bottom: 8px;
+  font-weight: 700; color: #000; text-decoration: none;
+  background-color: #f1f5f9; border-radius: 8px;
+  transition: background-color 0.2s;
+}
+.gygSimpleLink:hover { background-color: #e2e8f0; text-decoration: underline; }

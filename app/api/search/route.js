@@ -86,25 +86,30 @@ export async function GET(request) {
     );
 
     // ── Normalize to frontend-expected shape ─────────────────────────────────
-    const results = clean.map(r => ({
-      id:             r.tables_record_id,
-      title:          r.Resource,
-      category:       r.Category,
-      url:            r['URL Link'],
-      destinationUrl: r['URL Link'],
-      area:           r.neighborhood,
-      source_name:    r.Category || 'Tampa Resources',
-      source_domain:  '',
-      summary:        r.Description || '',
-      description:    r.Description || '',
-      listing_type:   r.tier === 1 ? 'featured' : 'standard',
-      listingType:    r.tier === 1 ? 'featured' : 'standard',
-      isFeatured:     r.tier === 1,
-      isPartner:      r.is_core === true,
-      isMonetized:    false,
-      isNews:         false,
-      event_date:     null,
-    }));
+    const results = clean.map(r => {
+      const isFree = (r.Keywords || '').toLowerCase().includes('free');
+      
+      return {
+        id:             r.tables_record_id,
+        title:          r.Resource,
+        category:       r.Category,
+        url:            r['URL Link'],
+        destinationUrl: r['URL Link'],
+        area:           r.neighborhood,
+        source_name:    r.Category || 'Tampa Resources',
+        source_domain:  '',
+        summary:        r.Description || '',
+        description:    r.Description || '',
+        listing_type:   r.tier === 1 ? 'featured' : 'standard',
+        listingType:    r.tier === 1 ? 'featured' : 'standard',
+        isFeatured:     r.tier === 1,
+        isPartner:      r.is_core === true,
+        isMonetized:    false,
+        isNews:         false,
+        price:          isFree ? 'Free' : null,
+        event_date:     null, // Tampa Resources DB doesn't have event_date yet
+      };
+    });
 
     return NextResponse.json({ results, count: results.length, source: 'Tampa Resources' });
   } catch (err) {

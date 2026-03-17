@@ -18,6 +18,17 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
 }
 
+function formatDate(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr + 'T00:00:00');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff = Math.round((d - today) / 86400000);
+  if (diff === 0) return 'Today';
+  if (diff === 1) return 'Tomorrow';
+  if (diff > 1 && diff < 7) return d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+}
+
 function cleanTitle(title, sourceName) {
   if (!title) return 'Untitled';
   const word = (sourceName || '').split(' ')[0];

@@ -285,17 +285,14 @@ export default function Home() {
           </div>
         )}
 
-        {/* GYG — Sponsored Partner Link, always visible */}
+        {/* GYG — Raw Link per user request */}
         <a
           href="https://www.getyourguide.com/tampa-l1187/karaoke-golf-cart-city-tour-tampa-t740841/?partner_id=0G4LDMJ&utm_medium=online_publisher&cmp=Tampa_Karaoke"
           target="_blank"
           rel="noopener noreferrer sponsored"
-          className={styles.gygBanner}
-          aria-label="Sponsored: Karaoke Golf Cart City Tour Tampa on GetYourGuide"
+          className={styles.gygSimpleLink}
         >
-          <span className={styles.gygBannerBadge}>✦ Sponsored · GetYourGuide</span>
-          <span className={styles.gygBannerTitle}>Karaoke Golf Cart City Tour — Tampa</span>
-          <span className={styles.gygBannerCta}>Book Now →</span>
+          Karaoke Golf Cart City Tour — Tampa
         </a>
 
         {/* Viator Official Widget — always visible */}
