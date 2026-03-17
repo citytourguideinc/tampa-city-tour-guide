@@ -198,28 +198,31 @@
 .topBanner {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   width: 100%;
-  padding: 10px 16px;
-  margin-bottom: 24px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #C9A227 0%, #F0C84A 50%, #C9A227 100%);
+  border-radius: 14px;
   text-decoration: none;
-  transition: background 0.15s;
+  transition: filter 0.15s, transform 0.15s;
+  box-shadow: 0 4px 20px rgba(201,162,39,0.35);
 }
-.topBanner:hover { background: rgba(255,255,255,0.1); }
+.topBanner:hover { filter: brightness(1.07); transform: translateY(-1px); }
 .topBannerLabel {
-  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--gold); white-space: nowrap; flex-shrink: 0;
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(0,0,0,0.5); white-space: nowrap; flex-shrink: 0;
+  background: rgba(0,0,0,0.12); padding: 3px 8px; border-radius: 4px;
 }
 .topBannerText {
-  flex: 1; font-size: 0.85rem; font-weight: 600;
-  color: rgba(255,255,255,0.8); white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis;
+  flex: 1; font-size: 1rem; font-weight: 800;
+  color: #000; line-height: 1.2;
 }
 .topBannerCta {
-  font-size: 0.8rem; font-weight: 700; color: var(--gold-light); white-space: nowrap; flex-shrink: 0;
+  flex-shrink: 0; font-size: 0.85rem; font-weight: 800;
+  color: #000; white-space: nowrap;
+  background: rgba(255,255,255,0.35); padding: 7px 16px;
+  border-radius: 999px; border: 2px solid rgba(0,0,0,0.15);
 }
 
 /* Eyebrow */
@@ -595,24 +598,31 @@
 
 /* ── Simple Viator text links ── */
 .viatorLinks {
-  display: flex; flex-wrap: wrap; gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
   padding: 16px 16px 8px;
-  align-items: center;
+}
+@media (max-width: 480px) {
+  .viatorLinks { grid-template-columns: repeat(2, 1fr); }
 }
 .viatorLink {
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.85rem; font-weight: 600;
+  font-size: 0.9rem; font-weight: 700;
   color: var(--navy);
   text-decoration: none;
-  padding: 6px 14px;
+  padding: 12px 8px;
   border: 1.5px solid var(--border);
-  border-radius: 999px;
+  border-radius: 12px;
   background: #fff;
-  transition: border-color 0.15s, color 0.15s;
-  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  text-align: center;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
 }
-.viatorLink:hover { border-color: var(--gold); color: var(--gold); }
+.viatorLink:hover { border-color: var(--gold); color: var(--gold); background: #fffbef; }
 .viatorPowered {
+  grid-column: 1 / -1;
   font-size: 0.65rem; color: var(--text-3);
-  font-family: 'DM Sans', sans-serif; margin-left: auto;
+  font-family: 'DM Sans', sans-serif;
+  text-align: center; padding: 4px 0 8px;
 }
