@@ -204,12 +204,12 @@ export default function Home() {
             <div className={styles.videoZone}>
               <iframe
                 className={styles.videoFrame}
-                src="https://www.youtube.com/embed/live_stream?channel=UCa1E9KGSEZ8-M7NcNUPdEjQ&autoplay=0"
-                title="Tampa Bay Live"
+                src="https://www.youtube.com/embed/3vHrmhfbmNk?autoplay=0&rel=0"
+                title="Tampa Bay Live — City Tour Guide"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />
-              <p className={styles.videoLabel}>📡 Tampa Bay Live — Replace with your stream URL</p>
+              <p className={styles.videoLabel}>📡 Tampa Bay Live</p>
             </div>
           )}
 
