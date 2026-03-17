@@ -1,7 +1,7 @@
 // app/api/search/route.js
 // Queries the curated 'Tampa Resources' table — same dataset as admin panel
 import { NextResponse } from 'next/server';
-import { getAdminClient } from '@/lib/supabase';
+import { getAdminClient, supabase as anonClient } from '@/lib/supabase';
 
 // ── Category aliases — maps user keywords → exact Category enum values ──────
 const CAT_MAP = {
@@ -32,41 +32,36 @@ const CAT_MAP = {
 };
 
 export async function GET(request) {
-  const supabase = getAdminClient();
+  // Try service-role key first (bypasses RLS); fall back to anon client
+  const supabase = getAdminClient() || anonClient;
   if (!supabase) return NextResponse.json({ results: [], hint: 'Supabase not configured.' });
 
   const { searchParams } = new URL(request.url);
   const q        = (searchParams.get('q') || '').trim();
   const category = searchParams.get('category') || '';
   const area     = searchParams.get('area')     || '';
-  const date     = searchParams.get('date')     || '';
   const price    = searchParams.get('price')    || '';
   const qLow     = q.toLowerCase();
 
-  const todayStr  = new Date().toISOString().slice(0, 10);
-  const todayDate = new Date(todayStr);
-
   try {
-    // Select from the curated Tampa Resources table (same as admin)
+    // Select from Tampa Resources — no status filter; all curated records are valid
     let qb = supabase
       .from('Tampa Resources')
-      .select('tables_record_id, Resource, Category, "URL Link", neighborhood, tier, is_core, status, event_type, Keywords, Description')
-      .eq('status', 'approved')
+      .select('tables_record_id, Resource, Category, "URL Link", neighborhood, tier, is_core, Keywords, Description')
+      .not('Resource', 'is', null)
+      .not('URL Link', 'is', null)
       .limit(300);
 
     // ── Category filter ──────────────────────────────────────────────────────
     if (category) {
-      // Direct match from quick-tile or dropdown
       qb = qb.ilike('Category', `%${category}%`);
     } else if (q && CAT_MAP[qLow]) {
-      // Keyword alias → category enum
       qb = qb.ilike('Category', `%${CAT_MAP[qLow]}%`);
     } else if (q) {
-      // Free-text: search Resource name, Keywords, Description
       qb = qb.or(`Resource.ilike.%${q}%,Keywords.ilike.%${q}%,Description.ilike.%${q}%`);
     }
 
-    // ── Area / neighborhood filter ───────────────────────────────────────────
+    // ── Area filter ──────────────────────────────────────────────────────────
     if (area) qb = qb.ilike('neighborhood', `%${area}%`);
 
     // ── Price filter ─────────────────────────────────────────────────────────
@@ -86,7 +81,7 @@ export async function GET(request) {
       url:            r['URL Link'],
       destinationUrl: r['URL Link'],
       area:           r.neighborhood,
-      source_name:    'Tampa Resources',
+      source_name:    r.Category || 'Tampa Resources',
       source_domain:  '',
       summary:        r.Description || '',
       description:    r.Description || '',
