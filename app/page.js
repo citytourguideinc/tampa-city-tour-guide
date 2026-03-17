@@ -221,25 +221,23 @@ export default function Home() {
             </div>
           )}
 
-          {/* Date filters in compact/results mode */}
-          {hasSearched && (
-            <div className={styles.dateBar}>
-              {['', 'today', 'weekend'].map((d, i) => (
-                <button
-                  key={d}
-                  className={`${styles.dateChip} ${dateFilter === d && i < 3 ? styles.dateChipActive : ''}`}
-                  onClick={() => { setDateFilter(d); fetchResults(query, category, d, area); }}
-                >
-                  {i === 0 ? 'Any Date' : i === 1 ? 'Today' : 'This Weekend'}
-                </button>
-              ))}
-              <input
-                type="date"
-                className={styles.datePicker}
-                onChange={e => { setDateFilter(e.target.value); fetchResults(query, category, e.target.value, area); }}
-              />
-            </div>
-          )}
+          {/* Date filters — always visible, trigger search on selection */}
+          <div className={styles.dateBar}>
+            {['', 'today', 'weekend'].map((d, i) => (
+              <button
+                key={d || 'any'}
+                className={`${styles.dateChip} ${dateFilter === d ? styles.dateChipActive : ''}`}
+                onClick={() => { setDateFilter(d); fetchResults(query, category, d, area); }}
+              >
+                {i === 0 ? 'Any Date' : i === 1 ? 'Today' : 'This Weekend'}
+              </button>
+            ))}
+            <input
+              type="date"
+              className={styles.datePicker}
+              onChange={e => { setDateFilter(e.target.value); fetchResults(query, category, e.target.value, area); }}
+            />
+          </div>
         </div>
       </section>
 
@@ -288,7 +286,7 @@ export default function Home() {
         {/* GYG Karaoke Golf Cart Tour — direct link (widget iframe blocks booking) */}
         {!hasSearched && (
           <a
-            href="https://gyg.me/PBnl9fQh"
+            href="https://www.getyourguide.com/tampa-l1187/karaoke-golf-cart-city-tour-tampa-t740841/?partner_id=0G4LDMJ&utm_medium=online_publisher&cmp=Tampa_Karaoke"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.gygBanner}

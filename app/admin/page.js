@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 
 const ADMIN_PWD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
-const TABS = ['📡 Sources', '📄 Items', '🏃 Activities', '🏪 Vendors', '✅ Setup', '🗂 Tampa Resources'];
+const TABS = ['📡 Sources', '📄 Items', '🏃 Activities', '🏪 Vendors', '✅ Setup', '🗂 Tampa Resources', '📊 Analytics'];
 
 export default function AdminPage() {
   const router = useRouter();
@@ -19,12 +19,14 @@ export default function AdminPage() {
 
 // ── Full dashboard ─────────────────────────────────────────────────────────
 function Dashboard({ onLogout }) {
-  const [tab,     setTab]     = useState(0);
-  const [acts,    setActs]    = useState([]);
-  const [vendors, setVendors] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [msg,     setMsg]     = useState('');
-  const [newAct,  setNewAct]  = useState({ activity_name:'', category:'', neighborhood:'', short_summary:'', booking_link:'', official_link:'', icon:'📍', source_name:'', city:'Tampa' });
+  const [tab,       setTab]     = useState(0);
+  const [acts,      setActs]    = useState([]);
+  const [vendors,   setVendors] = useState([]);
+  const [loading,   setLoading] = useState(false);
+  const [msg,       setMsg]     = useState('');
+  const [newAct,    setNewAct]  = useState({ activity_name:'', category:'', neighborhood:'', short_summary:'', booking_link:'', official_link:'', icon:'📍', source_name:'', city:'Tampa' });
+  const [analytics, setAnalytics] = useState(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
 
   // Trusted engine state
   const [sources,     setSources]     = useState([]);
@@ -811,6 +813,63 @@ function Dashboard({ onLogout }) {
                   </div>
                 )}
               </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Analytics Tab ─────────────────────────────────── */}
+        {tab === 6 && (
+          <div>
+            <div className={styles.sourcesHeader}>
+              <h2 className={styles.sectionTitle}>📊 Live Analytics</h2>
+              <button className={styles.btnPrimary} onClick={async () => {
+                setAnalyticsLoading(true);
+                try {
+                  const r = await fetch('/api/admin/analytics', { headers: { 'x-admin-secret': ADMIN_PWD } });
+                  const d = await r.json();
+                  setAnalytics(d);
+                } catch { flash('Failed to load analytics', true); }
+                setAnalyticsLoading(false);
+              }}>
+                {analyticsLoading ? '⏳ Loading…' : '🔄 Refresh'}
+              </button>
+            </div>
+
+            {!analytics && !analyticsLoading && (
+              <p className={styles.muted}>Click Refresh to load live DB counts.</p>
+            )}
+            {analyticsLoading && <p className={styles.muted}>Loading analytics…</p>}
+
+            {analytics && (
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))', gap:'12px', marginTop:'16px' }}>
+                {/* Summary cards */}
+                <div className={styles.sourceCard} style={{ background:'linear-gradient(135deg,#0d47a1,#1565c0)', color:'#fff' }}>
+                  <div style={{ fontSize:'2rem', fontWeight:800 }}>{analytics.tampaResources.total}</div>
+                  <div style={{ fontSize:'0.85rem', opacity:0.8 }}>Tampa Resources (total)</div>
+                </div>
+                <div className={styles.sourceCard} style={{ background:'linear-gradient(135deg,#1b5e20,#2e7d32)', color:'#fff' }}>
+                  <div style={{ fontSize:'2rem', fontWeight:800 }}>{analytics.sources}</div>
+                  <div style={{ fontSize:'0.85rem', opacity:0.8 }}>Trusted Sources</div>
+                </div>
+                <div className={styles.sourceCard} style={{ background:'linear-gradient(135deg,#4a148c,#6a1b9a)', color:'#fff' }}>
+                  <div style={{ fontSize:'2rem', fontWeight:800 }}>{analytics.trustedItems}</div>
+                  <div style={{ fontSize:'0.85rem', opacity:0.8 }}>Trusted Items</div>
+                </div>
+
+                {/* Per-category breakdown */}
+                {analytics.tampaResources.categories.map(({ name, count }) => (
+                  <div key={name} className={styles.sourceCard} style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                    <span style={{ fontWeight:600 }}>{name}</span>
+                    <span className={styles.badge}>{count}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {analytics && (
+              <p className={styles.muted} style={{ marginTop:'16px' }}>
+                Last refreshed: {new Date(analytics.generatedAt).toLocaleTimeString()}
+              </p>
             )}
           </div>
         )}
