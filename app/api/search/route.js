@@ -73,8 +73,20 @@ export async function GET(request) {
     const { data, error } = await qb;
     if (error) throw error;
 
+    // ── Filter dirty / garbage records ───────────────────────────────────────
+    const VALID_CATS = new Set([
+      'Dining', 'Events & Activities', 'Things To Do', 'Arts & Culture',
+      'Family & Attractions', 'Sports', 'Venues', 'Restaurant Events',
+      'Calendars', 'Transportation',
+    ]);
+    const clean = (data || []).filter(r =>
+      r.Resource && r.Resource.length > 3 &&
+      r['URL Link'] && r['URL Link'].startsWith('http') &&
+      VALID_CATS.has(r.Category)
+    );
+
     // ── Normalize to frontend-expected shape ─────────────────────────────────
-    const results = (data || []).map(r => ({
+    const results = clean.map(r => ({
       id:             r.tables_record_id,
       title:          r.Resource,
       category:       r.Category,

@@ -117,15 +117,17 @@ export default function Home() {
     setHasSearched(false); setResults([]); setActiveQuick('');
   }
 
-  // Group results by source
+  // Group results by source — categories must be { catName: items[] } for SourceGroup
   const grouped = results.reduce((acc, item) => {
-    const src = item.source_name || 'Other';
-    if (!acc[src]) acc[src] = { items: [], domain: item.source_domain || '', categories: new Set() };
+    const src = item.source_name || item.category || 'Tampa';
+    if (!acc[src]) acc[src] = { items: [], domain: item.source_domain || 'citytourguide.app', categories: {} };
     acc[src].items.push(item);
-    if (item.category) acc[src].categories.add(item.category);
+    const cat = item.category || 'General';
+    if (!acc[src].categories[cat]) acc[src].categories[cat] = [];
+    acc[src].categories[cat].push(item);
     return acc;
   }, {});
-  const groupEntries = Object.entries(grouped).map(([k, v]) => [k, { ...v, categories: [...v.categories] }]);
+  const groupEntries = Object.entries(grouped);
 
   return (
     <div className={styles.page}>
