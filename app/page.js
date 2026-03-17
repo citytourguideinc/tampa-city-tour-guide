@@ -113,7 +113,7 @@ export default function Home() {
       <header className={styles.navbar}>
         <div className={styles.navInner}>
           <a href="/" className={styles.logoLink} aria-label="City Tour Guide">
-            <img src="/logo.svg" alt="City Tour Guide" className={styles.logoImg} />
+            <img src="/logo.png" alt="City Tour Guide" className={styles.logoImg} />
           </a>
           <a
             href="https://www.viator.com/Tampa/d663?pid=P00292624&mcid=42383&medium=link"

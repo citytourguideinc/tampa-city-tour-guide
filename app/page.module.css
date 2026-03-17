@@ -60,6 +60,7 @@
   width: auto;
   display: block;
   object-fit: contain;
+  filter: invert(1);
 }
 
 /* Partner/sponsored ad banner — expands to fill all space to the right of logo */
