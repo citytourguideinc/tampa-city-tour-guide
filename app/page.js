@@ -162,18 +162,18 @@ export default function Home() {
         )}
 
         <div className={styles.heroContent}>
-          {/* ── TOP HERO BANNER — Owner's GYG Karaoke Golf Cart Tour ── */}
+          {/* ── GYG Karaoke Golf Cart Tour — Official Widget ── */}
           {!hasSearched && (
-            <a
-              href="https://gyg.me/PBnl9fQh"
-              target="_blank" rel="noopener noreferrer"
-              className={styles.topBanner}
-              aria-label="Book: Karaoke Golf Cart City Tour"
-            >
-              <span className={styles.topBannerLabel}>🎶 Featured</span>
-              <span className={styles.topBannerText}>Karaoke Golf Cart City Tour &mdash; Book Now on GetYourGuide!</span>
-              <span className={styles.topBannerCta}>Book Now →</span>
-            </a>
+            <div className={styles.gygWidget}>
+              <div
+                data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
+                data-gyg-locale-code="en-US"
+                data-gyg-widget="activities"
+                data-gyg-partner-id="0G4LDMJ"
+                data-gyg-number-of-items="1"
+                data-gyg-q="karaoke golf cart tour tampa"
+              />
+            </div>
           )}
 
           {!hasSearched && (
@@ -301,15 +301,14 @@ export default function Home() {
           </div>
         )}
 
-        {/* Viator — simple text links */}
+        {/* Viator Official Widget */}
         {!hasSearched && (
-          <div className={styles.viatorLinks}>
-            {VIATOR_FALLBACK.map(p => (
-              <a key={p.code} href={p.url} target="_blank" rel="noopener noreferrer" className={styles.viatorLink}>
-                {p.emoji} {p.title}
-              </a>
-            ))}
-            <span className={styles.viatorPowered}>Powered by Viator</span>
+          <div className={styles.viatorWidget}>
+            <div
+              data-vi-partner-id="P00292624"
+              data-vi-widget-ref="W-00e88448-1190-4c49-94b1-356d0345e485"
+              data-vi-search-term="Tampa"
+            />
           </div>
         )}
       </main>
