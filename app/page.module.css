@@ -299,13 +299,19 @@
 }
 .clearBtn:hover { background: rgba(255,255,255,0.15); color: #fff; }
 
-/* ── Quick-tap category tiles ─────────────────────────────────── */
+/* ── Quick-tap tiles — horizontal scrollable row ── */
 .quickGrid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 10px; width: 100%;
-  align-items: start;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
   animation: fadeUp 0.9s ease both;
 }
+.quickGrid::-webkit-scrollbar { display: none; }
 
 .quickTile {
   display: flex; flex-direction: column;
@@ -461,3 +467,69 @@
 }
 .footerNav a { color: rgba(255,255,255,0.38); text-decoration: none; }
 .footerNav a:hover { color: var(--gold-light); }
+
+/* ── Tile must not shrink in scrollable row ── */
+.quickTile { flex-shrink: 0; width: 76px; }
+@media (max-width: 380px) { .quickTile { width: 66px; } }
+
+/* ── Video / Livestream Zone ── */
+.videoZone {
+  width: 100%; margin-top: 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px; overflow: hidden;
+  animation: fadeUp 1s ease both;
+}
+.videoFrame {
+  width: 100%; aspect-ratio: 16/9;
+  border: none; display: block;
+}
+.videoLabel {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem; color: rgba(255,255,255,0.35);
+  text-align: center; padding: 8px 12px;
+}
+
+/* ── Featured Section in white area ── */
+.featuredSection {
+  max-width: 1200px; margin: 0 auto 0;
+  padding: 24px 16px 0;
+}
+.featuredSectionTitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem; font-weight: 700;
+  color: var(--navy); margin: 0 0 14px;
+  text-transform: uppercase; letter-spacing: 0.07em;
+}
+.featuredRow {
+  display: flex; gap: 10px; overflow-x: auto;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.featuredRow::-webkit-scrollbar { display: none; }
+.featuredCard {
+  flex-shrink: 0; width: 96px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 7px; padding: 14px 8px;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px; text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.featuredCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 16px rgba(0,0,0,0.1);
+  border-color: var(--gold);
+}
+.featuredEmoji { font-size: 1.8rem; line-height: 1; }
+.featuredLabel {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem; font-weight: 700;
+  color: var(--navy); text-align: center; line-height: 1.2;
+}
+.featuredDisclaimer {
+  font-size: 0.65rem; color: var(--text-3);
+  text-align: center; margin: 10px 0 0;
+  font-family: 'DM Sans', sans-serif;
+}

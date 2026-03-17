@@ -7,15 +7,24 @@ import ViatorWidget from '@/components/ViatorWidget';
 import styles       from './page.module.css';
 
 // Quick-tap category tiles — mapped to ACTUAL DB categories
+// More tiles = more discovery. Single scrollable row.
 const QUICK_CATS = [
   { icon: '🎟', label: 'Events',    cat: 'Events' },
   { icon: '🍽', label: 'Dining',    cat: 'Food' },
   { icon: '🏛', label: 'Tours',     cat: 'Tours & Activities' },
   { icon: '🛍', label: 'Shopping',  cat: 'Shopping' },
-  { icon: '🗺', label: 'Discovery', cat: 'Discovery' },
-  { icon: '📅', label: 'This Week', cat: '', date: 'weekend' },
+  { icon: '🗺', label: 'Discover',  cat: 'Discovery' },
+  { icon: '📅', label: 'Weekend',   cat: '', date: 'weekend' },
   { icon: '🆓', label: 'Free',      cat: '', price: 'free' },
-  { icon: '🌟', label: 'Browse All',cat: '' },
+  { icon: '🌟', label: 'All',       cat: '' },
+  { icon: '🎵', label: 'Music',     cat: '', q: 'music' },
+  { icon: '🏊', label: 'Sports',    cat: '', q: 'sports' },
+  { icon: '🎨', label: 'Arts',      cat: '', q: 'arts' },
+  { icon: '🌺', label: 'Family',    cat: '', q: 'family' },
+  { icon: '🌊', label: 'Outdoor',   cat: '', q: 'outdoor' },
+  { icon: '🍻', label: 'Nightlife', cat: '', q: 'nightlife' },
+  { icon: '🏖', label: 'Beaches',   cat: '', q: 'beach' },
+  { icon: '🏛', label: 'Historic',  cat: '', q: 'historic' },
 ];
 
 export default function Home() {
@@ -67,11 +76,12 @@ export default function Home() {
     const nextCat   = isActive ? '' : (tile.cat   || '');
     const nextDate  = isActive ? '' : (tile.date  || '');
     const nextPrice = isActive ? '' : (tile.price || '');
+    const nextQ     = isActive ? '' : (tile.q     || '');
     setCategory(nextCat);
     setDateFilter(nextDate);
-    setQuery('');
+    setQuery(nextQ);
     if (!isActive) {
-      fetchResults('', nextCat, nextDate, area, nextPrice);
+      fetchResults(nextQ, nextCat, nextDate, area, nextPrice);
     } else {
       setHasSearched(false);
       setResults([]);
@@ -189,28 +199,21 @@ export default function Home() {
             </div>
           )}
 
-          {/* ── BOTTOM FEATURED VIATOR BANNER ── */}
+          {/* ── VIDEO / LIVESTREAM ZONE ── */}
           {!hasSearched && (
-            <div className={styles.featuredBanner}>
-              <p className={styles.featuredBannerTitle}>🏆 Featured Tampa Experiences</p>
-              <div className={styles.featuredCards}>
-                {[
-                  { emoji: '🚤', label: 'Sunset Cruise',   href: 'https://www.viator.com/Tampa-Bay/d663-g15953/tours-cruises?pid=P00292624&mcid=42383&medium=link' },
-                  { emoji: '🐊', label: 'Zoo & Wildlife',  href: 'https://www.viator.com/Tampa/d663-g3/tours-nature?pid=P00292624&mcid=42383&medium=link' },
-                  { emoji: '🏙', label: 'City Tours',      href: 'https://www.viator.com/Tampa/d663-g9/tours-city?pid=P00292624&mcid=42383&medium=link' },
-                  { emoji: '🎭', label: 'Events & Shows',  href: 'https://www.viator.com/Tampa/d663-g12/tours-shows?pid=P00292624&mcid=42383&medium=link' },
-                ].map(({ emoji, label, href }) => (
-                  <a key={label} href={href} target="_blank" rel="noopener noreferrer" className={styles.featuredCard}>
-                    <span className={styles.featuredEmoji}>{emoji}</span>
-                    <span className={styles.featuredLabel}>{label}</span>
-                  </a>
-                ))}
-              </div>
-              <p className={styles.featuredDisclaimer}>Powered by Viator · Affiliate links</p>
+            <div className={styles.videoZone}>
+              <iframe
+                className={styles.videoFrame}
+                src="https://www.youtube.com/embed/live_stream?channel=UCa1E9KGSEZ8-M7NcNUPdEjQ&autoplay=0"
+                title="Tampa Bay Live"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+              <p className={styles.videoLabel}>📡 Tampa Bay Live — Replace with your stream URL</p>
             </div>
           )}
 
-          {/* Date filters when results are shown */}
+
           {hasSearched && (
             <div className={styles.dateBar}>
               {['', 'today', 'weekend'].map((d, i) => (
@@ -266,6 +269,29 @@ export default function Home() {
                 )}
               </>
             )}
+          </div>
+        )}
+
+        {/* Featured experiences in white area when not searching */}
+        {!hasSearched && (
+          <div className={styles.featuredSection}>
+            <p className={styles.featuredSectionTitle}>🏆 Featured Tampa Experiences</p>
+            <div className={styles.featuredRow}>
+              {[
+                { emoji: '🚤', label: 'Sunset Cruise',   href: 'https://www.viator.com/Tampa-Bay/d663-g15953/tours-cruises?pid=P00292624&mcid=42383&medium=link' },
+                { emoji: '🐊', label: 'Zoo & Wildlife',  href: 'https://www.viator.com/Tampa/d663-g3/tours-nature?pid=P00292624&mcid=42383&medium=link' },
+                { emoji: '🏙', label: 'City Tours',      href: 'https://www.viator.com/Tampa/d663-g9/tours-city?pid=P00292624&mcid=42383&medium=link' },
+                { emoji: '🎥', label: 'Events & Shows',  href: 'https://www.viator.com/Tampa/d663-g12/tours-shows?pid=P00292624&mcid=42383&medium=link' },
+                { emoji: '🛶', label: 'Water Sports',   href: 'https://www.viator.com/Tampa/d663-g5/tours-water?pid=P00292624&mcid=42383&medium=link' },
+                { emoji: '🍽', label: 'Food Tours',     href: 'https://www.viator.com/Tampa/d663-g4/tours-food?pid=P00292624&mcid=42383&medium=link' },
+              ].map(({ emoji, label, href }) => (
+                <a key={label} href={href} target="_blank" rel="noopener noreferrer" className={styles.featuredCard}>
+                  <span className={styles.featuredEmoji}>{emoji}</span>
+                  <span className={styles.featuredLabel}>{label}</span>
+                </a>
+              ))}
+            </div>
+            <p className={styles.featuredDisclaimer}>Powered by Viator · Affiliate links</p>
           </div>
         )}
       </main>
