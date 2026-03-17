@@ -3,11 +3,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import SearchBar    from '@/components/SearchBar';
 import SourceGroup  from '@/components/SourceGroup';
 import SkeletonCard from '@/components/SkeletonCard';
-import ViatorWidget from '@/components/ViatorWidget';
 import styles       from './page.module.css';
 
-// Quick-tap category tiles — mapped to ACTUAL DB categories
-// More tiles = more discovery. Single scrollable row.
+// Quick-tap tiles — single scrollable row, mapped to real DB categories + keyword searches
 const QUICK_CATS = [
   { icon: '🎟', label: 'Events',    cat: 'Events' },
   { icon: '🍽', label: 'Dining',    cat: 'Food' },
@@ -27,16 +25,36 @@ const QUICK_CATS = [
   { icon: '🏛', label: 'Historic',  cat: '', q: 'historic' },
 ];
 
+const VIATOR_FALLBACK = [
+  { code: 'f1', title: 'Sunset Cruise',      emoji: '🚤', url: 'https://www.viator.com/tours/Tampa/Sunset-Cruises/?pid=P00292624&mcid=42383&medium=link' },
+  { code: 'f2', title: 'Zoo & Wildlife',     emoji: '🐊', url: 'https://www.viator.com/tours/Tampa/Nature-and-Wildlife/?pid=P00292624&mcid=42383&medium=link' },
+  { code: 'f3', title: 'City Tours',         emoji: '🏙', url: 'https://www.viator.com/tours/Tampa/City-Tours/?pid=P00292624&mcid=42383&medium=link' },
+  { code: 'f4', title: 'Events & Shows',     emoji: '🎭', url: 'https://www.viator.com/tours/Tampa/Shows-Concerts-Sports/?pid=P00292624&mcid=42383&medium=link' },
+  { code: 'f5', title: 'Water Sports',       emoji: '🛶', url: 'https://www.viator.com/tours/Tampa/Water-Sports/?pid=P00292624&mcid=42383&medium=link' },
+  { code: 'f6', title: 'Food & Drink',       emoji: '🍽', url: 'https://www.viator.com/tours/Tampa/Food-and-Drink/?pid=P00292624&mcid=42383&medium=link' },
+  { code: 'f7', title: 'Day Trips',          emoji: '🗺', url: 'https://www.viator.com/tours/Tampa/Day-Trips/?pid=P00292624&mcid=42383&medium=link' },
+  { code: 'f8', title: 'Outdoor Activities', emoji: '🌿', url: 'https://www.viator.com/tours/Tampa/Outdoor-Activities/?pid=P00292624&mcid=42383&medium=link' },
+];
+
 export default function Home() {
-  const [query,       setQuery]       = useState('');
-  const [results,     setResults]     = useState([]);
-  const [loading,     setLoading]     = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [category,    setCategory]    = useState('');
-  const [area,        setArea]        = useState('');
-  const [dateFilter,  setDateFilter]  = useState('');
-  const [activeQuick, setActiveQuick] = useState('');
+  const [query,          setQuery]          = useState('');
+  const [results,        setResults]        = useState([]);
+  const [loading,        setLoading]        = useState(false);
+  const [hasSearched,    setHasSearched]    = useState(false);
+  const [category,       setCategory]       = useState('');
+  const [area,           setArea]           = useState('');
+  const [dateFilter,     setDateFilter]     = useState('');
+  const [activeQuick,    setActiveQuick]    = useState('');
+  const [viatorProducts, setViatorProducts] = useState([]);
   const resultsRef = useRef(null);
+
+  // Fetch real Viator featured products on mount
+  useEffect(() => {
+    fetch('/api/viator-featured')
+      .then(r => r.json())
+      .then(d => { if (d.products?.length) setViatorProducts(d.products); })
+      .catch(() => {});
+  }, []);
 
   const fetchResults = useCallback(async (q = '', cat = '', date = '', ar = '', price = '') => {
     setLoading(true);
@@ -94,22 +112,19 @@ export default function Home() {
   }
 
   // Group results by source
-  const sourceGroups = {};
-  for (const item of results) {
-    const key = item.source_name || 'Other';
-    if (!sourceGroups[key]) sourceGroups[key] = { items: [], domain: item.source_domain, categories: {} };
-    sourceGroups[key].items.push(item);
-    const c = item.category || 'Other';
-    if (!sourceGroups[key].categories[c]) sourceGroups[key].categories[c] = [];
-    sourceGroups[key].categories[c].push(item);
-  }
-  const groupEntries = Object.entries(sourceGroups).sort(([, a], [, b]) => b.items.length - a.items.length);
-
-  const today = new Date().toISOString().slice(0, 10);
+  const grouped = results.reduce((acc, item) => {
+    const src = item.source_name || 'Other';
+    if (!acc[src]) acc[src] = { items: [], domain: item.source_domain || '', categories: new Set() };
+    acc[src].items.push(item);
+    if (item.category) acc[src].categories.add(item.category);
+    return acc;
+  }, {});
+  const groupEntries = Object.entries(grouped).map(([k, v]) => [k, { ...v, categories: [...v.categories] }]);
 
   return (
     <div className={styles.page}>
 
+      {/* ── Navbar ── */}
       <header className={styles.navbar}>
         <div className={styles.navInner}>
           <a href="/" className={styles.logoLink} aria-label="City Tour Guide">
@@ -128,7 +143,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ── Hero — full-viewport immersive ── */}
+      {/* ── Hero ── */}
       <section className={`${styles.hero} ${hasSearched ? styles.heroCompact : ''}`}>
         {!hasSearched && (
           <>
@@ -138,16 +153,16 @@ export default function Home() {
         )}
 
         <div className={styles.heroContent}>
+          {/* ── TOP HERO BANNER — Owner's GYG Karaoke Golf Cart Tour ── */}
           {!hasSearched && (
-            /* ── TOP PREMIUM BANNER ── */
             <a
-              href="https://www.viator.com/Tampa/d663?pid=P00292624&mcid=42383&medium=link"
+              href="https://gyg.me/PBnl9fQh"
               target="_blank" rel="noopener noreferrer"
               className={styles.topBanner}
-              aria-label="Sponsored: Book Tampa tours on Viator"
+              aria-label="Book: Karaoke Golf Cart City Tour"
             >
-              <span className={styles.topBannerLabel}>✨ Sponsored</span>
-              <span className={styles.topBannerText}>Book Tampa Bay Tours &amp; Experiences on Viator</span>
+              <span className={styles.topBannerLabel}>🎶 Featured</span>
+              <span className={styles.topBannerText}>Karaoke Golf Cart City Tour &mdash; Book Now on GetYourGuide!</span>
               <span className={styles.topBannerCta}>Book Now →</span>
             </a>
           )}
@@ -183,7 +198,7 @@ export default function Home() {
             )}
           </div>
 
-          {/* Quick-tap category tiles — only on landing */}
+          {/* Quick-tap category tiles */}
           {!hasSearched && (
             <div className={styles.quickGrid}>
               {QUICK_CATS.map(tile => (
@@ -199,7 +214,7 @@ export default function Home() {
             </div>
           )}
 
-          {/* ── VIDEO / LIVESTREAM ZONE ── */}
+          {/* YouTube live stream */}
           {!hasSearched && (
             <div className={styles.videoZone}>
               <iframe
@@ -213,18 +228,23 @@ export default function Home() {
             </div>
           )}
 
-
+          {/* Date filters in compact/results mode */}
           {hasSearched && (
             <div className={styles.dateBar}>
               {['', 'today', 'weekend'].map((d, i) => (
-                <button key={i}
-                  className={`${styles.dateChip} ${dateFilter === d ? styles.dateChipActive : ''}`}
-                  onClick={() => { setDateFilter(d); fetchResults(query, category, d, area); }}>
-                  {d === '' ? 'Any date' : d === 'today' ? 'Today' : 'This Weekend'}
+                <button
+                  key={d}
+                  className={`${styles.dateChip} ${dateFilter === d && i < 3 ? styles.dateChipActive : ''}`}
+                  onClick={() => { setDateFilter(d); fetchResults(query, category, d, area); }}
+                >
+                  {i === 0 ? 'Any Date' : i === 1 ? 'Today' : 'This Weekend'}
                 </button>
               ))}
-              <input type="date" className={styles.datePicker} min={today}
-                onChange={e => { setDateFilter(e.target.value); fetchResults(query, category, e.target.value, area); }} />
+              <input
+                type="date"
+                className={styles.datePicker}
+                onChange={e => { setDateFilter(e.target.value); fetchResults(query, category, e.target.value, area); }}
+              />
             </div>
           )}
         </div>
@@ -272,22 +292,19 @@ export default function Home() {
           </div>
         )}
 
-        {/* Featured experiences in white area when not searching */}
+        {/* Viator Featured — 2-row grid, no title */}
         {!hasSearched && (
           <div className={styles.featuredSection}>
-            <p className={styles.featuredSectionTitle}>🏆 Featured Tampa Experiences</p>
-            <div className={styles.featuredRow}>
-              {[
-                { emoji: '🚤', label: 'Sunset Cruise',   href: 'https://www.viator.com/Tampa-Bay/d663-g15953/tours-cruises?pid=P00292624&mcid=42383&medium=link' },
-                { emoji: '🐊', label: 'Zoo & Wildlife',  href: 'https://www.viator.com/Tampa/d663-g3/tours-nature?pid=P00292624&mcid=42383&medium=link' },
-                { emoji: '🏙', label: 'City Tours',      href: 'https://www.viator.com/Tampa/d663-g9/tours-city?pid=P00292624&mcid=42383&medium=link' },
-                { emoji: '🎥', label: 'Events & Shows',  href: 'https://www.viator.com/Tampa/d663-g12/tours-shows?pid=P00292624&mcid=42383&medium=link' },
-                { emoji: '🛶', label: 'Water Sports',   href: 'https://www.viator.com/Tampa/d663-g5/tours-water?pid=P00292624&mcid=42383&medium=link' },
-                { emoji: '🍽', label: 'Food Tours',     href: 'https://www.viator.com/Tampa/d663-g4/tours-food?pid=P00292624&mcid=42383&medium=link' },
-              ].map(({ emoji, label, href }) => (
-                <a key={label} href={href} target="_blank" rel="noopener noreferrer" className={styles.featuredCard}>
-                  <span className={styles.featuredEmoji}>{emoji}</span>
-                  <span className={styles.featuredLabel}>{label}</span>
+            <div className={styles.featuredGrid}>
+              {(viatorProducts.length >= 8 ? viatorProducts.slice(0,8) : VIATOR_FALLBACK).map(p => (
+                <a key={p.code} href={p.url} target="_blank" rel="noopener noreferrer" className={styles.featuredCard}>
+                  {p.image
+                    ? <img src={p.image} alt={p.title} className={styles.featuredImg} />
+                    : <span className={styles.featuredEmoji}>{p.emoji || '🎟'}</span>
+                  }
+                  <span className={styles.featuredLabel}>{p.title}</span>
+                  {p.price  && <span className={styles.featuredPrice}>{p.price}</span>}
+                  {p.rating && <span className={styles.featuredRating}>★ {p.rating}</span>}
                 </a>
               ))}
             </div>
@@ -296,7 +313,7 @@ export default function Home() {
         )}
       </main>
 
-      {/* ── Footer bar ── */}
+      {/* ── Footer ── */}
       <div className={styles.bottomBar}>
         <nav className={styles.footerNav}>
           <span>© 2026 City Tour Guide, Inc.</span>

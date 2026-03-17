@@ -534,3 +534,33 @@
   text-align: center; margin: 10px 0 0;
   font-family: 'DM Sans', sans-serif;
 }
+
+/* ── Featured Viator section in white area ── */
+.featuredSection {
+  max-width: 1200px; margin: 0 auto;
+  padding: 24px 16px 16px;
+}
+/* 2-row 4-column grid */
+.featuredGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+@media (max-width: 480px) {
+  .featuredGrid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+}
+.featuredImg {
+  width: 100%; aspect-ratio: 1/1;
+  object-fit: cover; border-radius: 8px;
+  display: block;
+}
+.featuredPrice {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7rem; font-weight: 700;
+  color: var(--gold); line-height: 1;
+}
+.featuredRating {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem; font-weight: 600;
+  color: #F5A623; line-height: 1;
+}
