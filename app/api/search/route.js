@@ -1,7 +1,7 @@
 // app/api/search/route.js
 // Queries the curated 'Tampa Resources' table — same dataset as admin panel
 import { NextResponse } from 'next/server';
-import { supabase }     from '@/lib/supabase';
+import { getAdminClient } from '@/lib/supabase';
 
 // ── Category aliases — maps user keywords → exact Category enum values ──────
 const CAT_MAP = {
@@ -32,6 +32,7 @@ const CAT_MAP = {
 };
 
 export async function GET(request) {
+  const supabase = getAdminClient();
   if (!supabase) return NextResponse.json({ results: [], hint: 'Supabase not configured.' });
 
   const { searchParams } = new URL(request.url);
