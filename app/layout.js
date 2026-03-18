@@ -24,8 +24,12 @@ export default function RootLayout({ children }) {
       <body className={outfit.className} style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
         {children}
         <Analytics />
-        {/* GYG removed to prevent it from hijacking simple text links */}
-        {/* Viator Partner Widget */}
+        {/* GYG Partner Analytics + Widget so their widget links render correctly */}
+        <Script
+          src="https://widget.getyourguide.com/dist/pa.umd.production.min.js"
+          data-gyg-partner-id="0G4LDMJ"
+          strategy="afterInteractive"
+        />
         <Script src="https://www.viator.com/orion/partner/widget.js" strategy="afterInteractive" />
         {GA_ID && (
           <>
