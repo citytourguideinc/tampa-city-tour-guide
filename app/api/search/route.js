@@ -41,13 +41,14 @@ export async function GET(request) {
   const category = searchParams.get('category') || '';
   const area     = searchParams.get('area')     || '';
   const price    = searchParams.get('price')    || '';
+  const date     = searchParams.get('date')     || '';
   const qLow     = q.toLowerCase();
 
   try {
-    // Select from Tampa Resources — no status filter; all curated records are valid
+    // Select all columns safely so when event_date is added, it doesn't crash existing queries
     let qb = supabase
       .from('Tampa Resources')
-      .select('tables_record_id, Resource, Category, "URL Link", neighborhood, tier, is_core, Keywords, Description')
+      .select('*')
       .not('Resource', 'is', null)
       .not('URL Link', 'is', null)
       .limit(300);
@@ -79,11 +80,48 @@ export async function GET(request) {
       'Family & Attractions', 'Sports', 'Venues', 'Restaurant Events',
       'Calendars', 'Transportation',
     ]);
-    const clean = (data || []).filter(r =>
+    let clean = (data || []).filter(r =>
       r.Resource && r.Resource.length > 3 &&
       r['URL Link'] && r['URL Link'].startsWith('http') &&
       VALID_CATS.has(r.Category)
     );
+
+    // ── Strict Date Filter ───────────────────────────────────────────────────
+    if (date) {
+      let targetStart = null;
+      let targetEnd = null;
+      const now = new Date();
+      
+      if (date === 'today') {
+        targetStart = new Date(now.setHours(0,0,0,0));
+        targetEnd = new Date(now.setHours(23,59,59,999));
+      } else if (date === 'weekend') {
+        const day = now.getDay();
+        const diffToFriday = day <= 5 ? 5 - day : 6; 
+        const friday = new Date(now);
+        friday.setDate(now.getDate() + diffToFriday);
+        friday.setHours(0,0,0,0);
+        
+        const sunday = new Date(friday);
+        sunday.setDate(friday.getDate() + 2);
+        sunday.setHours(23,59,59,999);
+        
+        targetStart = friday;
+        targetEnd = sunday;
+      } else if (date) {
+        // Precise YYYY-MM-DD string
+        targetStart = new Date(date + 'T00:00:00');
+        targetEnd = new Date(date + 'T23:59:59');
+      }
+
+      clean = clean.filter(r => {
+        // If the resource doesn't have an event_date yet, exclude it from strict date searches
+        if (!r.event_date) return false;
+        
+        const rDate = new Date(r.event_date + 'T12:00:00'); // Use noon to avoid timezone shift dropping it back a day
+        return rDate >= targetStart && rDate <= targetEnd;
+      });
+    }
 
     // ── Normalize to frontend-expected shape ─────────────────────────────────
     const results = clean.map(r => {
@@ -107,7 +145,7 @@ export async function GET(request) {
         isMonetized:    false,
         isNews:         false,
         price:          isFree ? 'Free' : null,
-        event_date:     null, // Tampa Resources DB doesn't have event_date yet
+        event_date:     r.event_date || null, // Will automatically populate once column is added to Supabase
       };
     });
 
