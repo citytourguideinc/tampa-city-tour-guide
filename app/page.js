@@ -288,7 +288,7 @@ export default function Home() {
         {/* GYG — Official Auto Widget per user request */}
         <div className={styles.gygWidgetArea} style={{ width: '100%', marginTop: '24px' }}>
           <div
-            data-gyg-href="https://gyg.me/PBnl9fQh"
+            data-gyg-href="https://www.getyourguide.com/tampa-l1187/karaoke-golf-cart-city-tour-tampa-t740841/?partner_id=0G4LDMJ&utm_medium=online_publisher&cmp=Tampa_Karaoke"
             data-gyg-locale-code="en-US"
             data-gyg-widget="auto"
             data-gyg-partner-id="0G4LDMJ"
