@@ -7,8 +7,27 @@ const COOKIE_NAME  = 'ctg_admin_auth';
 export function middleware(request) {
   const { pathname } = request.nextUrl;
 
-  // Site password temporarily suspended to prove GYG widget functionality
-  
+  // 1. Site-wide Basic Authentication (Stops public viewing before launch)
+  const sitePassword = process.env.SITE_PASSWORD || 'mptampa2026';
+  const basicAuth = request.headers.get('authorization');
+
+  // Skip auth for static assets just in case, though the matcher should handle it
+  if (!basicAuth) {
+    return new NextResponse('Authentication required to view site.', {
+      status: 401,
+      headers: { 'WWW-Authenticate': 'Basic realm="City Tour Guide Preview"' }
+    });
+  }
+
+  const authValue = basicAuth.split(' ')[1];
+  const [user, pwd] = atob(authValue).split(':');
+
+  if (user !== 'admin' || pwd !== sitePassword) {
+    return new NextResponse('Invalid credentials.', {
+      status: 401,
+      headers: { 'WWW-Authenticate': 'Basic realm="City Tour Guide Preview"' }
+    });
+  }
   // 2. Only protect /admin routes (not /admin/login) with the dashboard cookie
   if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
     const token = request.cookies.get(COOKIE_NAME)?.value;
