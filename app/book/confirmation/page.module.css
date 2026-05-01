@@ -1,0 +1,22 @@
+/* app/book/confirmation/page.module.css */
+.page { min-height: 100vh; background: linear-gradient(135deg, #0D1117 0%, #1a2744 60%, #0D4B8E 100%); display: flex; align-items: center; justify-content: center; padding: 24px; font-family: 'Inter', system-ui, sans-serif; }
+.center { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
+.spinner { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.card { background: #fff; border-radius: 24px; padding: 48px 40px; max-width: 520px; width: 100%; text-align: center; box-shadow: 0 24px 80px rgba(0,0,0,0.3); }
+.checkCircle { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #10B981, #059669); color: #fff; font-size: 2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 8px 24px rgba(16,185,129,0.4); }
+.title { font-size: 2rem; font-weight: 900; color: #111827; margin: 0 0 8px; letter-spacing: -0.03em; }
+.sub { color: #6B7280; font-size: 1rem; margin: 0 0 28px; }
+.details { background: #F9FAFB; border-radius: 14px; padding: 18px 20px; margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px; text-align: left; }
+.detailRow { display: flex; justify-content: space-between; align-items: flex-start; font-size: 0.9rem; color: #374151; }
+.detailRow span { color: #6B7280; }
+.detailRow strong { color: #111827; text-align: right; max-width: 60%; }
+.nextStep { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 14px; padding: 20px; margin-bottom: 20px; text-align: left; }
+.nextTitle { font-weight: 800; color: #1E40AF; font-size: 0.95rem; margin-bottom: 6px; }
+.nextText { font-size: 0.85rem; color: #374151; margin: 0 0 14px; }
+.waiverBtn { display: inline-block; background: #1D4ED8; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; transition: background 0.15s; }
+.waiverBtn:hover { background: #1E40AF; }
+.meetingInfo { background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 14px; padding: 18px; font-size: 0.85rem; color: #166534; text-align: left; line-height: 1.6; margin-bottom: 24px; }
+.homeLink { color: #6B7280; font-size: 0.85rem; text-decoration: none; font-weight: 600; }
+.homeLink:hover { color: #374151; }
