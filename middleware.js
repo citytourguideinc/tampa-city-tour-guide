@@ -1,4 +1,4 @@
-// middleware.js — Protects whole site with Basic Auth + /admin routes with password auth
+﻿// middleware.js — Protects whole site with Basic Auth + /admin routes with password auth
 import { NextResponse } from 'next/server';
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'citytourguide2026';
@@ -6,6 +6,26 @@ const COOKIE_NAME  = 'ctg_admin_auth';
 
 export function middleware(request) {
   const { pathname } = request.nextUrl;
+  const hostname = request.headers.get('host') || '';
+
+  // tours.citytourguide.app — public facing, no basic auth, / rewrites to /book
+  if (hostname.startsWith('tours.')) {
+    if (pathname === '/') {
+      const bookUrl = request.nextUrl.clone();
+      bookUrl.pathname = '/book';
+      return NextResponse.rewrite(bookUrl);
+    }
+    // All other routes on tours subdomain pass through freely (no basic auth)
+    if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
+      const token = request.cookies.get(COOKIE_NAME)?.value;
+      if (token !== ADMIN_SECRET) {
+        const loginUrl = new URL('/admin/login', request.url);
+        loginUrl.searchParams.set('from', pathname);
+        return NextResponse.redirect(loginUrl);
+      }
+    }
+    return NextResponse.next();
+  }
 
   // 1. Site-wide Basic Authentication (Stops public viewing before launch)
   // We skip /api/ routes because client-side fetch() doesn't pass Basic Auth headers natively
