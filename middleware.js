@@ -6,16 +6,19 @@ const COOKIE_NAME  = 'ctg_admin_auth';
 
 export function middleware(request) {
   const { pathname } = request.nextUrl;
-  const hostname = request.headers.get('host') || '';
 
-  // tours.citytourguide.app — public facing, no basic auth, / rewrites to /book
-  if (hostname.startsWith('tours.')) {
+  // Detect tours subdomain via multiple header sources
+  const host = request.headers.get('host') || '';
+  const fwdHost = request.headers.get('x-forwarded-host') || '';
+  const isTours = host.startsWith('tours.') || fwdHost.startsWith('tours.');
+
+  // tours.citytourguide.app — public, no basic auth, / rewrites to /book
+  if (isTours) {
     if (pathname === '/') {
       const bookUrl = request.nextUrl.clone();
       bookUrl.pathname = '/book';
       return NextResponse.rewrite(bookUrl);
     }
-    // All other routes on tours subdomain pass through freely (no basic auth)
     if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
       const token = request.cookies.get(COOKIE_NAME)?.value;
       if (token !== ADMIN_SECRET) {
@@ -28,7 +31,6 @@ export function middleware(request) {
   }
 
   // 1. Site-wide Basic Authentication (Stops public viewing before launch)
-  // We skip /api/ routes because client-side fetch() doesn't pass Basic Auth headers natively
   if (!pathname.startsWith('/api/')) {
     const sitePassword = process.env.SITE_PASSWORD || 'mptampa2026';
     const basicAuth = request.headers.get('authorization');
@@ -50,7 +52,7 @@ export function middleware(request) {
       });
     }
   }
-  // 2. Only protect /admin routes (not /admin/login) with the dashboard cookie
+  // 2. Only protect /admin routes with the dashboard cookie
   if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
     const token = request.cookies.get(COOKIE_NAME)?.value;
     if (token !== ADMIN_SECRET) {
@@ -59,11 +61,10 @@ export function middleware(request) {
       return NextResponse.redirect(loginUrl);
     }
   }
-  
+
   return NextResponse.next();
 }
 
 export const config = {
-  // Apply middleware to all routes EXCEPT static assets, images, next.js internals, and crawler bots APIs
   matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)'],
 };
